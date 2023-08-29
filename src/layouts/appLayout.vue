@@ -1,0 +1,41 @@
+<script setup>
+    import Header from "@/layouts/app/Header.vue";
+    import Sidebar from "@/layouts/app/Sidebar.vue";
+    import Footer from "@/layouts/app/Footer.vue";
+    import { useLiveStore } from "@/stores/appLiveStore.js";
+
+    const appLiveStore = useLiveStore();
+</script>
+<template>
+  <div>
+    <Header></Header>
+    <div
+      class="main-container"
+      id="container"
+      :class="[
+        !appLiveStore.state.is_show_sidebar ? 'sidebar-closed sbar-open' : '',
+        appLiveStore.state.menu_style === 'collapsible-vertical'
+          ? 'collapsible-vertical-mobile'
+          : '',
+      ]"
+    >
+      <!--  BEGIN OVERLAY  -->
+      <div
+        class="overlay"
+        :class="{ show: !appLiveStore.state.is_show_sidebar }"
+        @click="appLiveStore.toggleSideBar( !appLiveStore.state.is_show_sidebar)"
+      ></div>
+      <div
+        class="search-overlay"
+        :class="{ show: appLiveStore.state.is_show_search }"
+        @click="appLiveStore.toggleSearch(!appLiveStore.state.is_show_search)"
+      ></div>
+      <!-- END OVERLAY -->
+      <Sidebar></Sidebar>
+      <div id="content" class="main-content">
+        <RouterView />
+        <Footer></Footer>
+      </div>
+    </div>
+  </div>
+</template>

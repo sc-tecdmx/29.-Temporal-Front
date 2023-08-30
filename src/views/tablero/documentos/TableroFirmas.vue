@@ -3,6 +3,11 @@ import { computed, ref } from "vue";
 import axios from "axios";
 import { useLiveStore } from "@/stores/appLiveStore.js";
 import ModalAddTask from "./ModalAddTask.vue"
+import TableroSidebar from "./TableroSidebar.vue"
+import TableroPrioridad from "./TableroPrioridad.vue";
+
+//---
+import TableroBuscar from "./TableroBuscar.vue"
 /*
 import { quillEditor, Quill } from 'vue3-quill'
 */
@@ -13,6 +18,11 @@ import "@/assets/sass/components/custom-modal.scss";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/tables/table-basic.scss";
 import highlight from "@/components/plugins/highlight.vue";
+
+import IconPortapapeles from "@/components/icons/IconPortapapeles.vue"
+import IconPlus from "@/components/icons/IconPlus.vue"
+import IconDropdown from "@/components/icons/IconDropdown.vue"
+import IconFeatherMoreVertical from "@/components/icons/IconFeatherMoreVertical.vue";
 
 const appLiveStore = useLiveStore();
 
@@ -56,9 +66,8 @@ const bind_task_list = async () => {
 
   try {
     const { data } = await axios.get("http://localhost/j/d.php");
-    console.log(data);
     task_list.value = data;
-    console.log(task_list.value);
+    console.log("AXIOS:" + task_list.value);
   } catch (error) {
     console.log(error);
   }
@@ -72,6 +81,7 @@ const tab_changed = (type) => {
 };
 
 const search_tasks = () => {
+    console.log ("search_tasks")
   let res;
   if (selected_tab.value) {
     res = task_list.value.filter((d) => d.status == selected_tab.value);
@@ -82,16 +92,27 @@ const search_tasks = () => {
     d.title.toLowerCase().includes(search_task.value)
   );
 };
-//-----------------------------------
-const priority_class = (task) => {
-  if (task.priority == "low") {
-    return "primary";
-  } else if (task.priority == "middle") {
-    return "warning";
-  } else if (task.priority == "high") {
-    return "danger";
+
+const search_tasks2 = (search_task2) => {
+    console.log ("selected_tab.value>" + selected_tab.value)
+    console.log ("search_task2.value [" + search_task2 + "]")
+   
+    
+  let res;
+  if (selected_tab.value) {
+    res = task_list.value.filter((d) => d.status == selected_tab.value);
+    console.log ("search_tasks2 - Opción 1")
+  } else {
+    res = task_list.value.filter((d) => d.status != "trash");
+    console.log ("search_tasks2 - Opción 2")
   }
+  filtered_task_list.value = res.filter((d) =>
+    d.title.toLowerCase().includes(search_task2)
+  );
 };
+
+//-----------------------------------
+
 const set_priority = (task, name) => {
   task.priority = name;
 };
@@ -213,52 +234,23 @@ const showMessage = (msg = "", type = "success") => {
   <div class="row layout-top-spacing">
     <div class="col-xl-12 col-lg-12 col-md-12">
       <div class="mail-box-container">
+        <!-- No se que hace -->
         <div
           class="mail-overlay"
           :class="{ 'mail-overlay-show': is_show_task_menu }"
           @click="is_show_task_menu = false"
         ></div>
-
+        <!-- ./No se que hace -->
+        <!-- task_menu -->
         <div class="tab-title" :class="{ 'mail-menu-show': is_show_task_menu }">
           <div class="row">
             <div class="col-md-12 col-sm-12 col-12 text-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-clipboard"
-              >
-                <path
-                  d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-                ></path>
-                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-              </svg>
+                <IconPortapapeles />
               <h5 class="app-title">Firmar documentos</h5>
             </div>
             <div class="btn-group mb-3 me-4">
               <button type="button" class="btn btn-info">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="feather feather-plus"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-
+                <IconPlus />
                 Nuevo
               </button>
               <button
@@ -268,20 +260,7 @@ const showMessage = (msg = "", type = "success") => {
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="feather feather-chevron-down"
-                >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+                <IconDropdown />
                 <span class="visually-hidden">Toggle Dropdown</span>
               </button>
               <div class="dropdown-menu">
@@ -299,175 +278,23 @@ const showMessage = (msg = "", type = "success") => {
             </div>
 
             <!-- <perfect-scrollbar class="todoList-sidebar-scroll"> -->
-            <perfect-scrollbar
-              class="todoList-sidebar-scroll col-md-12 col-sm-12 col-12 mt-4 ps-0"
-            >
-              <ul class="nav nav-pills d-block">
-                <li class="nav-item" @click="tab_changed('')">
-                  <a
-                    id="all-list"
-                    href="javascript:;"
-                    class="nav-link"
-                    :class="{ active: selected_tab === '' }"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-list"
-                    >
-                      <line x1="8" y1="6" x2="21" y2="6"></line>
-                      <line x1="8" y1="12" x2="21" y2="12"></line>
-                      <line x1="8" y1="18" x2="21" y2="18"></line>
-                      <line x1="3" y1="6" x2="3" y2="6"></line>
-                      <line x1="3" y1="12" x2="3" y2="12"></line>
-                      <line x1="3" y1="18" x2="3" y2="18"></line>
-                    </svg>
-                    Recibidos
-                    <span class="todo-badge badge">
-                      {{
-                        task_list &&
-                        task_list.filter((d) => d.status != "trash").length
-                      }}
-                    </span>
-                  </a>
-                </li>
-                <li class="nav-item" @click="tab_changed('complete')">
-                  <a
-                    id="todo-task-done"
-                    href="javascript:;"
-                    class="nav-link"
-                    :class="{ active: selected_tab === 'complete' }"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-thumbs-up"
-                    >
-                      <path
-                        d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"
-                      ></path>
-                    </svg>
-                    Enviados
-                    <span class="todo-badge badge">
-                      {{
-                        task_list &&
-                        task_list.filter((d) => d.status == "complete").length
-                      }}
-                    </span>
-                  </a>
-                </li>
-                <li class="nav-item" @click="tab_changed('important')">
-                  <a
-                    id="todo-task-important"
-                    href="javascript:;"
-                    class="nav-link"
-                    :class="{ active: selected_tab === 'important' }"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-star"
-                    >
-                      <polygon
-                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                      ></polygon>
-                    </svg>
-                    Devueltos
-                    <span class="todo-badge badge">
-                      {{
-                        task_list &&
-                        task_list.filter((d) => d.status == "important").length
-                      }}
-                    </span>
-                  </a>
-                </li>
-                <li class="nav-item" @click="tab_changed('trash')">
-                  <a
-                    id="todo-task-trash"
-                    href="javascript:;"
-                    class="nav-link"
-                    :class="{ active: selected_tab === 'trash' }"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-trash-2"
-                    >
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path
-                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                      ></path>
-                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                    </svg>
-                    Papelera
-                  </a>
-                </li>
-              </ul>
-            </perfect-scrollbar>
-            <!-- </perfect-scrollbar> -->
+            <TableroSidebar 
+                :selected_tab="selected_tab"
+                :task_list ="task_list.value"
+                @tab_changed="tab_changed"
+            />
           </div>
         </div>
+        <!-- ./task_menu -->
 
+        <!-- Content Tablero -->
         <div id="todo-inbox" class="accordion todo-inbox">
-          <div class="search">
-            <input
-              type="text"
-              v-model="search_task"
-              class="input-search form-control"
-              v-on:keyup="search_tasks()"
-              placeholder="Buscar aquí..."
-            />
-            <div
-              class="d-flex align-items-center"
-              @click="is_show_task_menu = !is_show_task_menu"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-menu mail-menu d-lg-none"
-              >
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </div>
-          </div>
+        <!-- Tablero Buscador -->
+        <TableroBuscar
+            :is_show_task_menu ="is_show_task_menu"
+            @search_tasks="search_tasks2"
+        />
+        <!-- ./Tablero Buscador -->
 
           <div class="todo-box">
             <perfect-scrollbar
@@ -487,6 +314,7 @@ const showMessage = (msg = "", type = "success") => {
                 :key="task.task_id"
               >
                 <div class="todo-item-inner">
+                  <!-- Checkbox -->
                   <div
                     class="checkbox-primary new-control custom-control custom-checkbox"
                   >
@@ -501,7 +329,8 @@ const showMessage = (msg = "", type = "success") => {
                       :for="`chk-${task.task_id}`"
                     ></label>
                   </div>
-
+                  <!-- ./Checkbox -->
+                  <!-- Documento -->
                   <div
                     class="todo-content"
                     data-bs-toggle="modal"
@@ -512,124 +341,13 @@ const showMessage = (msg = "", type = "success") => {
                     <p class="meta-date">{{ task.date }}</p>
                     <p class="todo-text">{{ task.description_text }}</p>
                   </div>
-
-                  <div class="priority-dropdown">
-                    <div class="dropdown btn-group">
-                      <a
-                        href="javascript:;"
-                        id="ddlPriority"
-                        class="btn dropdown-toggle btn-icon-only"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        :class="[priority_class(task)]"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          style="width: 24px; height: 24px"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-alert-octagon"
-                        >
-                          <polygon
-                            points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"
-                          ></polygon>
-                          <line x1="12" y1="8" x2="12" y2="12"></line>
-                          <line x1="12" y1="16" x2="12" y2="16"></line>
-                        </svg>
-                      </a>
-                      <ul
-                        class="dropdown-menu dropdown-menu-end"
-                        aria-labelledby="ddlPriority"
-                      >
-                        <li>
-                          <a
-                            href="javascript:;"
-                            class="dropdown-item danger"
-                            @click="set_priority(task, 'high')"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="feather feather-alert-octagon"
-                            >
-                              <polygon
-                                points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"
-                              ></polygon>
-                              <line x1="12" y1="8" x2="12" y2="12"></line>
-                              <line x1="12" y1="16" x2="12" y2="16"></line>
-                            </svg>
-                            Alta
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="javascript:;"
-                            class="dropdown-item warning"
-                            @click="set_priority(task, 'middle')"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="feather feather-alert-octagon"
-                            >
-                              <polygon
-                                points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"
-                              ></polygon>
-                              <line x1="12" y1="8" x2="12" y2="12"></line>
-                              <line x1="12" y1="16" x2="12" y2="16"></line>
-                            </svg>
-                            Media
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="javascript:;"
-                            class="dropdown-item primary"
-                            @click="set_priority(task, 'low')"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="feather feather-alert-octagon"
-                            >
-                              <polygon
-                                points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"
-                              ></polygon>
-                              <line x1="12" y1="8" x2="12" y2="12"></line>
-                              <line x1="12" y1="16" x2="12" y2="16"></line>
-                            </svg>
-                            Baja
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
+                  <!-- ./ Documento -->
+                  <!-- Prioridad -->
+                  <TableroPrioridad 
+                  :task = "task"
+                  @set_priority = "set_priority"
+                  />
+                  <!-- ./ Prioridad -->
                   <div class="action-dropdown">
                     <div class="dropdown btn-group">
                       <a
@@ -639,22 +357,7 @@ const showMessage = (msg = "", type = "success") => {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-more-vertical"
-                        >
-                          <circle cx="12" cy="12" r="1"></circle>
-                          <circle cx="12" cy="5" r="1"></circle>
-                          <circle cx="12" cy="19" r="1"></circle>
-                        </svg>
+                      <IconFeatherMoreVertical />
                       </a>
                       <ul
                         class="dropdown-menu dropdown-menu-end"
@@ -720,6 +423,7 @@ const showMessage = (msg = "", type = "success") => {
             </perfect-scrollbar>
           </div>
         </div>
+        <!-- ./Content Tablero -->
       </div>
 
       <!-- Modal -->

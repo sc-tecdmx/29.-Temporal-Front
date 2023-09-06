@@ -12,22 +12,18 @@ export const useLiveStore = defineStore('appLiveStore', () => {
     layout_style: 'full',
   })
   const setLayout = (value) => {
-    console.log('setLayout:' + value);
     state.value.layout = value
   }
 
   const toggleSideBar = (value) => {
-    console.log('toggleSideBar:' + value);
     state.value.is_show_sidebar = value
   }
 
   const toggleSearch = (value) => {
-    console.log('toggleSearch:' + value);
     state.value.is_show_search = value
   }
 
   const toggleDarkMode = (value) => {
-    console.log('toggleDarkMode:' + value);
     //light|dark|system
     value = value || 'light';
     localStorage.setItem('dark_mode', value);
@@ -52,7 +48,6 @@ export const useLiveStore = defineStore('appLiveStore', () => {
   }
 
   const toggleMenuStyle = (value) => {
-    console.log('toggleMenuStyle:' + value);
     //horizontal|vertical|collapsible-vertical
     value = value || '';
     localStorage.setItem('menu_style', value);
@@ -65,7 +60,6 @@ export const useLiveStore = defineStore('appLiveStore', () => {
   }
 
   const toggleLayoutStyle = (value) => {
-    console.log('toggleLayoutStyle:' + value);
     //boxed-layout|large-boxed-layout|full
     value = value || '';
     localStorage.setItem('layout_style', value);

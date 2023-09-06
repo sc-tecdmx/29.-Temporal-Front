@@ -1,6 +1,6 @@
 <script setup>
 import IconAlertOctagon from "@/components/icons/IconAlertOctagon.vue";
-import IconFeather from "@/components/icons/IconFeather.vue";
+
 
 defineProps({
   task: {},

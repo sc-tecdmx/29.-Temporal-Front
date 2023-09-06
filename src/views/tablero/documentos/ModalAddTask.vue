@@ -1,10 +1,10 @@
 <script setup>
-    defineProps({
-    params: { task_id: null,
-              title: "",
-        description: "" }
+  defineProps({
+  params: { task_id: null,
+            title: "",
+      description: "" }
 
-    }   );
+  });
 </script>
 <template>
           <div
@@ -17,7 +17,7 @@
           <div class="modal-content todolist-popup">
             <div class="modal-header">
               <h5 class="modal-title">
-                {{ params.task_id ? "Update Task" : "Add Task" }}
+                {{ params.task_id ? "Actualizar documento" : "Agregar tarea" }}
               </h5>
               <button
                 type="button"

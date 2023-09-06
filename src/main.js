@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-// import { quillEditor } from 'vue3-quill'
+import { QuillEditor  } from 'vue3-quill'
 /*IFR. Falta Store*/
 import App from './App.vue'
 import router from './router'
@@ -28,7 +28,7 @@ window.$appInit = appInit;
 window.$appInit.init();*/
 //--
 const app = createApp(App)
-//app.use(quillEditor)
+app.component('QuillEditor', QuillEditor) 
 app.use(createPinia())
 
 app.use(router)

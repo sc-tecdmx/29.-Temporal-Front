@@ -4,7 +4,7 @@
     const appLiveStore = useLiveStore();
 </script>
 <template>
-    <ul class="navbar-item flex-row ms-md-0 ms-auto">
+    <ul class="navbar-item flex-row ms-md-0 ms-3"> <!--PAO-->
         <li
           class="nav-item align-self-center search-animated"
           :class="{ 'show-search': appLiveStore.state.is_show_search }"

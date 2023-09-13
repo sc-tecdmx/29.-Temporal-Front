@@ -229,7 +229,7 @@ h4 {
 
 .animated-underline-content {
     .nav-tabs {
-        border-bottom: 1px solid $m-color_3;
+        border-bottom: 1px solid $color_inst_sec_dark;
 
         li a {
             padding-top: 15px;
@@ -246,7 +246,7 @@ h4 {
         .nav-link.active,
         .show > .nav-link {
             border-color: transparent;
-            color: $secondary;
+            color: $color_inst_sec_dark;
         }
 
         .nav-link {

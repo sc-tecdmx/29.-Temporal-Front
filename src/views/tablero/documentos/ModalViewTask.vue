@@ -1,6 +1,5 @@
 <script setup>
-  import { quillEditor, Quill } from 'vue3-quill'
-  import "vue3-quill/lib/vue3-quill.css";
+  
   import IconTrash from "@/components/icons/IconTrash.vue"
   
     defineProps({

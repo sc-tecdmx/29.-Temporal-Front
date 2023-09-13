@@ -9,11 +9,15 @@
         type: String,
         required: true,
     },
+    color: {
+      type: String
+    },
     });
 </script>
 <template>
-  <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12 layout-spacing">
-    <div class="widget widget-simple_kpi">
+  <!-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12 layout-spacing"> -->
+  <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12 layout-spacing">
+    <div class="widget widget-simple_kpi"  :class="`border-widget-${color}`">
       <div class="widget-heading">
         <h5>{{ cantidad }}</h5>
         <div class="task-action">
@@ -64,3 +68,30 @@
     </div>
   </div>
 </template>
+<style>
+
+  .border-widget-espera{
+    border: solid  #690061;
+    border-width: 1px 1px 1px 10px;
+  }
+  .border-widget-enviado{
+    border: solid #9A278F;
+    border-width: 1px 1px 1px 10px;
+  }
+  .border-widget-rechazado{
+    border: solid #FF8200;
+    border-width: 1px 1px 1px 10px;
+  }
+  .border-widget-firmado{
+    border: solid #337613;
+    border-width: 1px 1px 1px 10px;
+  }
+  .border-widget-atencion{
+    border: solid #E78279;
+    border-width: 1px 1px 1px 10px;
+  }
+  .border-widget-conocimiento{
+    border: solid #79BAE7;
+    border-width: 1px 1px 1px 10px;
+  }
+</style>

@@ -13,10 +13,7 @@
     position: relative;
     background: $color_inst_gris_claro;
     border: .5px solid $color_inst_gris_fuerte;
-  /*  box-shadow: -10 -30 10px 0 rgba(105, 0, 97, 1); */
-
-  
-  box-shadow: rgba(105, 0, 97, .2) 0px 4px 16px, rgba(105, 0, 97, .1) 0px 8px 32px;
+    box-shadow: rgba(105, 0, 97, .2) 0px 4px 16px, rgba(105, 0, 97, .1) 0px 8px 32px;
     border-radius: 4px;
     color: $color_inst_bg_inverse;
     height: 100%;
@@ -30,37 +27,37 @@
 
     .icon-fill-primary {
         color: $color_inst_gris_fuerte;
-        background-color: #eaf1ff;
+        background-color: $l-primary;
     }
 
     .icon-fill-info {
-        color: #2196f3;
+        color: $info;
         background-color: #bae7ff;
     }
 
     .icon-fill-secondary {
-        color: #805dca;
+        color: $secondary;
         background-color: #dccff7;
     }
 
     .icon-fill-danger {
-        color: #e7515a;
+        color: $danger;
         background-color: #ffe1e2;
     }
 
     .icon-fill-warning {
-        color: #e2a03f;
+        color: $warning;
         background-color: #ffeccb;
     }
 
     .icon-fill-success {
-        color: #009688;
-        background-color: #ddf5f0;
+        color: $m-color_14;
+        background-color: $l-success;
     }
 
     .icon-fill-dark {
-        color: #3b3f5c;
-        background-color: #e3e4eb;
+        color: $dark;
+        background-color: $l-dark;
     }
 
     .widget-heading {
@@ -329,7 +326,7 @@
                         width: 17px;
                         height: 17px;
                         vertical-align: sub;
-                        color: #e3e4eb;
+                        color: $l-dark;
                         stroke-width: 2.5px;
                         transition: 0.5s;
                     }
@@ -556,7 +553,7 @@
                     }
 
                     &.pay-now {
-                        color: #009688 !important;
+                        color: $m-color_14 !important;
                         background: #00968830;
                     }
                 }
@@ -772,7 +769,7 @@
                 svg {
                     width: 16px;
                     height: 16px;
-                    color: #009688;
+                    color: $m-color_14;
                     margin-top: 7px;
                 }
             }
@@ -976,8 +973,8 @@
                                 }
 
                                 &.t-success {
-                                    background-color: #009688;
-                                    box-shadow: 0 10px 20px -8px #009688;
+                                    background-color: $m-color_14;
+                                    box-shadow: 0 10px 20px -8px $m-color_14;
                                 }
 
                                 &.t-danger {
@@ -996,8 +993,8 @@
                                 }
 
                                 &.t-dark {
-                                    background-color: #3b3f5c;
-                                    box-shadow: 0 10px 20px -8px #3b3f5c;
+                                    background-color: $dark;
+                                    box-shadow: 0 10px 20px -8px $dark;
                                 }
 
                                 svg {
@@ -1036,7 +1033,7 @@
 
                                 span {
                                     font-size: 13px;
-                                    color: #009688;
+                                    color: $m-color_14;
                                 }
                             }
 
@@ -1207,14 +1204,14 @@
                 .read-more a {
                     padding: 4px 5px;
                     background: rgba(0, 150, 136, 0.26);
-                    color: #009688;
+                    color: $m-color_14;
                     font-size: 12px;
                     font-weight: 600;
                     border-radius: 4px;
 
                     svg {
                         margin-right: 0;
-                        color: #009688;
+                        color: $m-color_14;
                         width: 16px;
                         height: 16px;
                         fill: transparent;
@@ -1266,7 +1263,7 @@
 
             h5 {
                 font-size: 14px;
-                color: #009688;
+                color: $m-color_14;
                 font-weight: 700;
                 margin-bottom: 20px;
             }
@@ -1328,7 +1325,7 @@
                     align-self: center;
 
                     h5 {
-                        color: #3b3f5c;
+                        color: $dark;
                         font-weight: 700;
                         font-size: 15px;
                         letter-spacing: 0;
@@ -1367,7 +1364,7 @@
                             margin-right: 6px;
                             width: 15px;
                             height: 15px;
-                            color: #009688;
+                            color: $m-color_14;
                             fill: rgba(199, 230, 228, 0.46);
                         }
 

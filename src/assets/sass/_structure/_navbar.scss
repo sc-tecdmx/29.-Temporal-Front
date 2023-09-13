@@ -25,7 +25,7 @@
         justify-content: center;
         width: 240px; /* IFR. Conforme al diseño */
         height: 80px;
-        background:$color_inst_dark;/* IFR . */
+        background:$color_inst_bg_inverse;/* IFR . */ //PAO
         li {
             &.theme-logo {
                 align-self: center;

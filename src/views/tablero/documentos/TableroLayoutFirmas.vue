@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { onMounted } from "vue";
 import axios from "axios";
 
-import { useLiveStore } from "@/stores/appLiveStore.js";
+//import { useLiveStore } from "@/stores/appLiveStore.js";
 import TableroSidebar from "./TableroSidebar.vue";
 import TableroListado from "./TableroListado.vue";
 import TableroBuscar from "./TableroBuscar.vue";
@@ -203,6 +203,7 @@ const showMessage = (msg = "", type = "success") => {
     padding: "10px 20px",
   });
 };
+
 //-- Fin de scrips de lista de tareas
 //-- Axios
 
@@ -211,11 +212,11 @@ const showMessage = (msg = "", type = "success") => {
 </script>
 <template>
   <!-- Tablero de Firmas -->
-  <div class="row mb-2">
+  <!--<div class="row mb-2">
       <div class="col-md-12">
           <h3>Tablero de firmas electrónicas</h3>
       </div>
-  </div>
+  </div>-->
   <div>
     <div class="row layout-top-spacing">
       <div class="col-xl-12 col-lg-12 col-md-12">
@@ -238,6 +239,7 @@ const showMessage = (msg = "", type = "success") => {
                 <button type="button" class="btn btn-info" @click="edit_task()">
                   <IconPlus />
                   Nuevo
+                  <!-- <router-link to="/documento/nuevo" @click="toggleMobileMenu">Nuevo</router-link> -->
                 </button>
 
                 <button
@@ -279,7 +281,7 @@ const showMessage = (msg = "", type = "success") => {
             <TableroBuscar
               :is_show_task_menu="is_show_task_menu"
               @search_tasks="search_tasks"
-            />
+            /> {{ is_show_task_menu }} Aqui
             <!-- ./Tablero Buscador -->
             <div v-if="filtered_task_list">
             <TableroListado

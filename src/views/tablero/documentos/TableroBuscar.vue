@@ -1,9 +1,9 @@
 <script setup>
 import {  ref } from "vue";
 import IconFeather from "@/components/icons/IconFeather.vue"
-    defineProps({
+    const props= defineProps({
         is_show_task_menu: Boolean
-    }   );
+    });
     const buscar_firma = ref("");
     const emit = defineEmits(["search_tasks"]);
 </script>
@@ -20,7 +20,7 @@ import IconFeather from "@/components/icons/IconFeather.vue"
             <div
               class="d-flex align-items-center"
               @click="is_show_task_menu = !is_show_task_menu"
-            >
+            > {{ is_show_task_menu }}
               <IconFeather />
             </div>
             <!-- ./Icono Responsivo -->

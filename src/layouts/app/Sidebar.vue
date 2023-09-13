@@ -106,7 +106,7 @@ onMounted(() => {
                     </a>
                     <ul id="apps" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="#" @click="toggleMobileMenu">Nuevo</router-link>
+                            <router-link to="/documento/nuevo" @click="toggleMobileMenu">Nuevo</router-link>
                         </li>
                     </ul>
                 </li>

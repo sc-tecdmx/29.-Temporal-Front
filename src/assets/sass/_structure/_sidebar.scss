@@ -22,9 +22,9 @@
 
 .sidebar-theme {
     /* background: transparent; */ /* IFR */
-   /* background-color: $color_inst_light; */
-    background: -webkit-linear-gradient(270deg, $color_inst_light 49%, $color_inst_dark 85%, #2c303c00);
-    background: linear-gradient($color_inst_dark  41%, $color_inst_light 95%, rgba(255, 255, 255, 0));
+   /* background-color: $color_inst_light; */ 
+    background: -webkit-linear-gradient(270deg, $color_inst_light 49%, $color_inst_bg_inverse 85%, #2c303c00); //--PAO
+    background: linear-gradient($color_inst_bg_inverse  41%, $color_inst_light 95%, rgba(255, 255, 255, 0)); //--PAO
 }
 
 .sidebar-closed {
@@ -77,8 +77,8 @@
     left: 0px;
     -webkit-filter: blur(5px);
     filter: blur(3px);
-    background: -webkit-linear-gradient(180deg, $color_inst_light 49%, $color_inst_dark 85%, #2c303c00);
-    background: linear-gradient($color_inst_light 41%, $color_inst_dark 95%, rgba(255, 255, 255, 0));
+    background: -webkit-linear-gradient(180deg, $color_inst_light 49%, $color_inst_bg_inverse 85%, #2c303c00); //PAO
+    background: linear-gradient($color_inst_light 41%, $color_inst_bg_inverse 95%, rgba(255, 255, 255, 0)); //PAO
 }
 
 #sidebar {

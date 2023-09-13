@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 export const useLiveStore = defineStore('appLiveStore', () => {
   const state = ref({
     layout: 'app',
-    is_show_sidebar: true,
+    is_show_sidebar: false,
     is_show_search: true,
     is_dark_mode: false,
     dark_mode: 'light',

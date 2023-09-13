@@ -8,7 +8,12 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: IndexView
-    }
+    },
+    {
+      path: '/documento/nuevo',
+      name: 'nuevo',
+      component: () => import('../views/tablero/documentos/nuevo/NuevoView.vue')
+    },
   ]
 })
 

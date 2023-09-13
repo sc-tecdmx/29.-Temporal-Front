@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { QuillEditor  } from 'vue3-quill'
 /*IFR. Falta Store*/
 import App from './App.vue'
 import router from './router'
@@ -19,8 +18,6 @@ import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
 //vue-meta head
 import { createHead } from '@vueuse/head';
 
-//-- Quill Global
-// https://flyween.github.io/vue3-quill/
 
 //-- Establecer configuración inicial por default
 /*import appInit from './app-init';
@@ -28,7 +25,6 @@ window.$appInit = appInit;
 window.$appInit.init();*/
 //--
 const app = createApp(App)
-app.component('QuillEditor', QuillEditor) 
 app.use(createPinia())
 
 app.use(router)

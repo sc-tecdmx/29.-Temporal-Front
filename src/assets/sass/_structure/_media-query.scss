@@ -100,7 +100,7 @@
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
         -webkit-transform: translate3d(0, 0, 0);
-        background: #f1f2f3;
+        //background: #f1f2f3; --PAO
     }
 
     .footer-wrapper {
@@ -139,10 +139,12 @@
                         transition: opacity 200ms, top 200ms;
                     }
 
-                    position: absolute;
+                    position: relative; //PAO
                     bottom: 0;
                     top: 0;
-                    background: #060818;
+                    background: #f8e7f2; //PAO
+                    border-radius: 6px; //PAO
+                    border: 1px solid rgba(81, 83, 101, 0.28); //PAO
                     height: 100%;
                     width: 100%;
                     left: 0;

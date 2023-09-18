@@ -50,11 +50,18 @@ const initPopup = () => {
     document.getElementById("addTaskModal")
   );
 };
+
+const axiosInstance = axios.create({
+  "Access-Control-Allow-Origin": "*"
+});
+
 const bind_task_list = async () => {
   try {
-    const { data } = await axios.get("http://localhost/j/d.php");
+    const { data } = await axiosInstance.get("http://localhost/j/d.php");
     task_list.value = data;
     console.log("AXIOS:" + task_list.value);
+    console.log(task_list.value);
+    console.log(data);
   } catch (error) {
     console.log(error);
   }
@@ -236,15 +243,14 @@ const showMessage = (msg = "", type = "success") => {
                 <h5 class="app-title">Firmar documentos</h5>
               </div>
               <div class="btn-group mb-3 me-4">
-                <button type="button" class="btn btn-info" @click="edit_task()">
+                <button type="button" class="btn btn-primary" @click="edit_task()">
                   <IconPlus />
                   Nuevo
-                  <!-- <router-link to="/documento/nuevo" @click="toggleMobileMenu">Nuevo</router-link> -->
                 </button>
 
                 <button
                   type="button"
-                  class="btn btn-info dropdown-toggle dropdown-toggle-split"
+                  class="btn btn-primary dropdown-toggle dropdown-toggle-split"
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"

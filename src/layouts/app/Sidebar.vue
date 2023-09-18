@@ -55,7 +55,7 @@ onMounted(() => {
                             </svg>
                             <span>Tablero</span>
                         </div>
-                        
+
                     </a>
                 </li>
 

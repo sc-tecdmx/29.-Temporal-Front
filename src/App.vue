@@ -5,6 +5,7 @@
   import "@/assets/sass/app.scss"; /* IFR */
   import appLayout from "./layouts/appLayout.vue";
   
+  
   useMeta({ title: "TECDMX - Tablero de control de Firmas Electrónicas." });
 
   const appLiveStore = useLiveStore();

@@ -12,9 +12,9 @@
 </script>
 <template>
     <div class="form-group row invoice-created-by">
-        <label :for="idName"
-            class="col-sm-4 col-form-label col-form-label-sm">{{ label }}</label>
-        <div class="col-sm-8">
+        <div class="col-sm-12">
+            <label :for="idName"
+            class="col-sm-12 col-form-label col-form-label-sm pb-0">{{ label }}</label>
             <select v-model="params.contenido"
                     class="form-select form-select-sm"
                     :id="idName">
@@ -29,3 +29,6 @@
         </div>
     </div>
 </template>
+<style>
+    
+</style>

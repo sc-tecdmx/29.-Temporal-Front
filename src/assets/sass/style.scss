@@ -1,4 +1,6 @@
 @import '../base/color_variables'; // Color Variables
+
+
 @function get_color($color) {
     @return '%23' + str-slice('#{$color}', 2, -1);
 }

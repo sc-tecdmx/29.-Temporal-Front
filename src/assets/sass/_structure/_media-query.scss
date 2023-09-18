@@ -30,7 +30,7 @@
   */
 
     .main-container.sidebar-closed #content {
-        margin-left: 0;
+        margin-left: 0; 
     }
 
     /*
@@ -100,7 +100,7 @@
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
         -webkit-transform: translate3d(0, 0, 0);
-        //background: #f1f2f3; --PAO
+        //background: #f1f2f3;
     }
 
     .footer-wrapper {

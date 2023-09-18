@@ -36,12 +36,12 @@
         <div class="col-xl-5 invoice-address-company">
             <h4>{{ titulo }}</h4>
         </div>
-                                        <div>
-                                            <multiselect v-model="inputs['input4']" :options="options4" :multiple="true"
-                                                :taggable="true" :searchable="true" placeholder="Seleccionar..."
-                                                selected-label="" select-label="" deselect-label="" @tag="addTag">
-                                            </multiselect>
-                                        </div>
+        <div>
+            <multiselect v-model="inputs['input4']" :options="options4" :multiple="true"
+                :taggable="true" :searchable="true" placeholder="Seleccionar..."
+                selected-label="" select-label="" deselect-label="" @tag="addTag">
+            </multiselect>
+        </div>
         <div class="table-responsive">
             <table role="table" aria-busy="false" aria-colcount="5" class="table table-bordered" id="__BVID__415">
                 <thead role="rowgroup">
@@ -89,16 +89,19 @@
                 </tbody>
             </table>
             </div>
-            <button 
+            <div class="d-flex flex-row-reverse">
+                <button 
                 type="button" 
                 class="btn btn-secondary additem btn-sm"
                 @click="add_item()">{{ labelButton }}</button>
+            </div>
+            
     </div>
 </template>
 <style>
 .select2 .multiselect__option--highlight {
     background: #fff;
-    color: #4361ee;
+    color: #4361ee; 
 }
 
 .select2 .multiselect__option--selected {

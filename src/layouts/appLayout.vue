@@ -4,6 +4,8 @@
     import Footer from "@/layouts/app/Footer.vue";
     import { useLiveStore } from "@/stores/appLiveStore.js";
 
+    import SidebarIcon from "./app/SidebarIcon.vue";
+
     const appLiveStore = useLiveStore();
 </script>
 <template>
@@ -31,11 +33,12 @@
         @click="appLiveStore.toggleSearch(!appLiveStore.state.is_show_search)"
       ></div>
       <!-- END OVERLAY -->
-      <Sidebar></Sidebar>
-      <div id="content" class="main-content">
-        <RouterView />
-        <Footer></Footer>
-      </div>
+        <Sidebar></Sidebar>
+       <!-- <SidebarIcon></SidebarIcon> --> -->
+        <div id="content" class="main-content">
+          <RouterView />
+          <Footer></Footer>
+        </div>
     </div>
   </div>
 </template>

@@ -13,10 +13,13 @@
 </script>
 <template>
     <div class="form-group row invoice-created-by">
-        <label 
+        <!-- <label 
             :for=" idName "
-            class="col-sm-4 col-form-label col-form-label-sm">{{ label }}</label>
-        <div class="col-sm-8">
+            class="col-sm-4 col-form-label col-form-label-sm">{{ label }}</label> -->
+        <div class="col-sm-12">
+            <label 
+            :for=" idName "
+            class="col-sm-12 col-form-label col-form-label-sm pb-0">{{ label }}</label>
             <input 
                 type="text" 
                 v-model="params.contenido"

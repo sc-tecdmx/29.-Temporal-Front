@@ -16,7 +16,6 @@ import { useMeta } from '@/composables/use-meta';
 /** Multiselect */
 import '@/assets/sass/scrollspyNav.scss';
 import highlight from '@/components/plugins/highlight.vue';
-
 import Multiselect from '@suadelabs/vue3-multiselect';
 import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
 
@@ -25,8 +24,10 @@ import SelectCatalogo from '../../../../components/wrapper/SelectCatalogo.vue';
 import TablaAgregar from '../../../../components/wrapper/TablaAgregar.vue';
 import TextAreaNotas from '../../../../components/wrapper/TextAreaNotas.vue';
 import IconUploadCloud from '../../../../components/icons/IconUploadCloud.vue';
+import AgregarArchivoMultiple from '../../../../components/wrapper/AgregarArchivoMultiple.vue';
 import AgregarArchivo from '../../../../components/wrapper/AgregarArchivo.vue';
 import FechaBasica from '../../../../components/wrapper/FechaBasica.vue';
+import SwitchRounded from '../../../../components/wrapper/SwitchRounded.vue';
 
 
 useMeta({ title: 'Vue Multiselect' });
@@ -170,78 +171,142 @@ const remove_item = (item) => {
             </ul>
         </teleport> -->
 
-        <div class="row invoice layout-top-spacing layout-spacing">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center">  <!--PAO -->
+            <div class="col-xxl-10 col-12"> <!--PAO -->
                 <div class="doc-container">
                     <div class="row">
-                        <div class="col-xl-9">
+                        <div class="col-lg-12">
                             <div class="invoice-content">
                                 <div class="invoice-detail-body">
-                                    <div class="invoice-detail-title">
+                                    <div class="invoice-detail-title mb-0">
                                         <div class="col-xl-5 invoice-address-company">
-                                            <h4>Nuevo documento a firmar</h4>
+                                            <h3>Nuevo documento a firmar</h3>
                                         </div>
                                     </div>
-                                    <!-- Título del documento -->
-                                    <div class="invoice-detail-total">
+                                    <!-- Título del documento PAO-->
+                                    <div class="invoice-detail-total mb-3">
                                         <div class="row">
-                                            <div class="col-md-12">
-                                                <InputForm
-                                                    idName="idDocumento"
-                                                    label = "ID del Documento:"
-                                                    placeholder = "id"
-                                                ></InputForm>
-
-                                                <div class="form-group row invoice-created-by">
-                                                    <label for="payment-method-account"
-                                                        class="col-sm-4 col-form-label col-form-label-sm">Folio del
-                                                        documento:</label>
-                                                    <div class="col-sm-5">
-                                                        <input type="text" v-model="params.bank_info.no"
-                                                            id="payment-method-account" class="form-control form-control-sm"
-                                                            placeholder="Generar ..." />
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        Get
-                                                    </div>
-                                                </div>
-
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <SelectCatalogo
+                                                    idName = "internoExterno"
+                                                    label = "Interno-Externo:"
+                                                    options = []
+                                                ></SelectCatalogo>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <SelectCatalogo
+                                                    idName = "areaDestino"
+                                                    label = "Área destino:"
+                                                    options = []
+                                                ></SelectCatalogo>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <SelectCatalogo
+                                                    idName = "areaCopia"
+                                                    label = "Área con copia:"
+                                                    options = []
+                                                ></SelectCatalogo>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
                                                 <SelectCatalogo
                                                     idName = "TipoDocumento"
                                                     label = "Tipo de Documento:"
                                                     options = []
                                                 ></SelectCatalogo>
-
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="idDocumento"
+                                                    label = "ID del Documento:"
+                                                    placeholder = "id"
+                                                ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="folio"
+                                                    label = "Folio:"
+                                                    placeholder = "folio"
+                                                ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <div class="form-group row invoice-created-by">
+                                                    <div class="col-sm-12">
+                                                        <label for="payment-method-account"
+                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Folio del
+                                                        documento:</label>
+                                                        <input type="text" v-model="params.bank_info.no"
+                                                            id="payment-method-account" class="form-control form-control-sm"
+                                                            placeholder="Generar ..." />
+                                                    </div>
+                                                     <!--<div class="col-sm-3">
+                                                        Get
+                                                    </div> -->
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
                                                 <InputForm
                                                     idName="numeroExpediente"
                                                     label = "Número de Expediente:"
                                                     placeholder = "Expediente"
                                                 ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="nombreExpediente"
+                                                    label = "Nombre de Expediente:"
+                                                    placeholder = "Nombre de expediente"
+                                                ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <FechaBasica
+                                                    label="Fecha de documento"
+                                                ></FechaBasica>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <SelectCatalogo
+                                                    idName = "destinatario"
+                                                    label = "Destinatario:"
+                                                    options = []
+                                                ></SelectCatalogo>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <SelectCatalogo
+                                                    idName = "cargo"
+                                                    label = "Cargo:"
+                                                    options = []
+                                                ></SelectCatalogo>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
                                                 <InputForm
                                                     idName="asuntoDocumento"
                                                     label = "Asunto:"
                                                     placeholder = "Asunto"
                                                 ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="elaboro"
+                                                    label = "Elaboró:"
+                                                    placeholder = "Usuario"
+                                                ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
                                                 <InputForm
                                                     idName="contenidoDocumento"
                                                     label = "Contenido:"
                                                     placeholder = "Contenido"
                                                 ></InputForm>
-                                                
-
-
-
                                             </div>
                                         </div>
                                     </div>
                                     <!-- .// Fin del Título del documento -->
-                                    <!-- Aggergar Firmantes -->
+                                    <!-- Agregar Firmantes -->
                                     <TablaAgregar
                                         titulo="Agregar Firmantes"
                                         labelButton="Agregar firmante"
                                     ></TablaAgregar>
 
-                                    <!-- Aggergar Destinatarios -->
+                                    <!-- Agregar Destinatarios -->
                                     <TablaAgregar
                                         titulo="Agregar Destinatarios"
                                         labelButton="Agregar Destinatario"
@@ -256,62 +321,64 @@ const remove_item = (item) => {
                             </div>
                         </div>
 
-                        <div class="col-xl-3">
+                        <div class="col-lg-12">
                             <div class="invoice-actions">
                                 <div class="invoice-action-currency">
-                                    <div class="form-group mb-0">
+                                    <!-- <div class="form-group mb-0"> -->
                                         <label for="currency">Configuración</label>
-                                        <div class="col-3">
-                                            <label class="switch s-default mb-4 me-2">
-                                                <input type="checkbox" checked />
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </div>
-
-                                    </div>
+                                        <SwitchRounded 
+                                            class="ms-2"
+                                            label="Firmar en este orden"
+                                        ></SwitchRounded>
+                                        <SwitchRounded 
+                                            class="ms-2"
+                                            label="Mantener en modo captura"
+                                        ></SwitchRounded>
+                                        <SwitchRounded 
+                                            class="ms-2"
+                                            label="Generar número de oficio"
+                                        ></SwitchRounded>
+                                    <!-- </div> -->
                                 </div>
                                 <!-- Fecha límite de firma -->
-                                <FechaBasica></FechaBasica>
+                                <div class="invoice-action-tax">
+                                    <div class="invoice-action-tax-fields">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-8 col-lg-4">
+                                                <FechaBasica
+                                                    label="Fecha límite de firma"
+                                                ></FechaBasica>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
 
                                 <div class="invoice-action-discount">
                                     <h5>Documentos a firmar</h5>
-
-                                    <!-- Logotipo ------------ +-->
-                                    <!-- <div class="invoice-logo">
-                                        <div class="upload pe-md-4">
-                                            <input ref="fl_profile" type="file" class="d-none" accept="image/*"
-                                                @change="change_file" />
-                                            <img v-if="selected_file"
-                                                :src="selected_file ? selected_file : require('@/assets/images/user-profile.jpeg')"
-                                                alt="profile" class="profile-preview" @click="$refs.fl_profile.click()" />
-                                            <div v-else class="profile-preview upload-preview"
-                                                @click="$refs.fl_profile.click()">
-                                                <div>
-                                                    <IconUploadCloud></IconUploadCloud>
-                                                </div>
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-8 col-lg-6">
+                                            <AgregarArchivoMultiple></AgregarArchivoMultiple>
                                         </div>
-                                    </div> -->
-                                    <!-- /. Fin lLogotipo ------------ +-->
-                                    <AgregarArchivo></AgregarArchivo>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="invoice-actions-btn">
+                            <div class="invoice-actions-btn d-flex flex-row-reverse">
                                 <div class="invoice-action-btn">
                                     <div class="row">
-                                        <div class="col-xl-12 col-md-4">
-                                            <a href="javascript:;" class="btn btn-secondary btn-send">Guardar captura</a>
+                                        <div class="col-xl-4 col-md-4">
+                                            <a href="javascript:;" class="btn btn-primary btn-send">Guardar captura</a>
                                         </div>
-                                        <div class="col-xl-12 col-md-4">
+                                        <div class="col-xl-4 col-md-4">
                                             <a data-bs-toggle="modal" data-bs-target="#composeMailModal"
-                                                id="btn-compose-mail" class="btn btn-primary btn-send"
+                                                id="btn-compose-mail" class="btn btn-secondary btn-send p-3"
                                                 href="javascript:void(0);" @click="open_mail('add')">
                                                 Firmar ahora
                                             </a>
 
                                         </div>
-                                        <div class="col-xl-12 col-md-4">
+                                        <div class="col-xl-4 col-md-4">
                                             <a href="javascript:;" class="btn btn-success btn-download">Enviar a
                                                 firmantes</a>
                                         </div>
@@ -342,61 +409,17 @@ const remove_item = (item) => {
                             <form>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="d-flex mb-4 ">
-                                            <div class="custom-file-container" data-upload-id="myFirstImage">
-                                                <label>Archivo de certificado (*.cer)<a href="javascript:void(0)"
-                                                        class="custom-file-container__image-clear"
-                                                        title="Clear Image">x</a></label>
-                                                <label class="custom-file-container__custom-file">
-                                                    <input type="file"
-                                                        class="custom-file-container__custom-file__custom-file-input"
-                                                        accept="image/*" />
-                                                    <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
-                                                    <span
-                                                        class="custom-file-container__custom-file__custom-file-control"></span>
-                                                </label>
-                                                <div class="custom-file-container__image-preview"></div>
-                                            </div>
-                                        </div>
+                                        <AgregarArchivo
+                                            label="Archivo de certificado (*.cer)"
+                                        ></AgregarArchivo>
                                     </div>
-
-
-                                    
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="d-flex mb-4">
-                                            <div class="custom-file-container" data-upload-id="myFirstImage">
-                                                <label>Archivo de certificado (*.cer)<a href="javascript:void(0)"
-                                                        class="custom-file-container__image-clear"
-                                                        title="Clear Image">x</a></label>
-                                                <label class="custom-file-container__custom-file">
-                                                    <input type="file"
-                                                        class="custom-file-container__custom-file__custom-file-input"
-                                                        accept="image/*" />
-                                                    <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
-                                                    <span
-                                                        class="custom-file-container__custom-file__custom-file-control"></span>
-                                                </label>
-                                                <div class="custom-file-container__image-preview"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="compose-box">
-                        <div class="compose-content">
-                            <form>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        
+                                        <AgregarArchivo
+                                            label="Archivo de certificado (*.key)"
+                                        ></AgregarArchivo>
                                     </div>
                                 </div>
                             </form>
@@ -408,32 +431,5 @@ const remove_item = (item) => {
     </div>
 </template>
 <style>
-.select2 .multiselect__option--highlight {
-    background: #fff;
-    color: #4361ee;
-}
 
-.select2 .multiselect__option--selected {
-    background-color: rgba(27, 85, 226, 0.23921568627450981);
-    color: #4361ee;
-    font-weight: normal;
-}
-
-.select2 .multiselect__option--disabled {
-    background: inherit !important;
-}
-
-.select2 .multiselect__tag {
-    color: #000;
-    background: #e4e4e4;
-}
-
-.select2 .multiselect__tag-icon:after {
-    color: #000 !important;
-}
-
-.select2 .multiselect__tag-icon:focus,
-.select2 .multiselect__tag-icon:hover {
-    background: inherit;
-}
 </style>

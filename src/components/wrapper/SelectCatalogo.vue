@@ -3,12 +3,14 @@
     const props= defineProps({
         idName: String,
         label: String,
-        options: [],
+        options: ref([]),
     });
 
     const params = ref({
         contenido: '',
     });
+
+    const catalogo = props.options;
 </script>
 <template>
     <div class="form-group row invoice-created-by">
@@ -19,12 +21,7 @@
                     class="form-select form-select-sm"
                     :id="idName">
                     <option value="">--Seleccionar--</option>
-                    <option value="United States">Acuerdo de radicación</option>
-                    <option value="United Kingdom">Acuerdo de recepción</option>
-                    <option value="Canada">Acuerdo de turno</option>
-                    <option value="Australia">Oficio</option>
-                    <option value="Germany">Acuerdo plenario</option>
-                    <option value="Sweden">Minuta</option>
+                    <option v-for="opcion in catalogo" value="opcion">{{ opcion }}</option>
             </select>
         </div>
     </div>

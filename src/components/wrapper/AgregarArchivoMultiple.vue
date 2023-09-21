@@ -17,6 +17,11 @@ onMounted(() => {
 
     //multiple file upload
     new FileUploadWithPreview('mySecondImage', {
+        text: {
+                    chooseFile: "Agregar archivo ...",
+                    browse: "Examinar",
+                    selectedCount: "archivos seleccionados",
+                },
          images: {
             baseImage: '@/assets/images/generic/file-preview.png',
             //baseImage: require('@/assets/images/file-preview.png'),
@@ -44,7 +49,7 @@ const initTooltip = () => {
 </script>
 <template>
     <!-- Multiple File Upload -->
-            <div class="custom-file-container m-3" data-upload-id="mySecondImage">
+            <div class="custom-file-container" data-upload-id="mySecondImage">
                 <IconUploadCloud></IconUploadCloud>
                 <label> <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a></label>
                 <label class="custom-file-container__custom-file" >

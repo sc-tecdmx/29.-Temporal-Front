@@ -73,6 +73,8 @@ const bind_task_list = async () => {
 const search_tasks = (search_task) => {
   console.log("search_task["+search_task+"]")
   let res; 
+  console.log("selected_tab");
+  console.log(selected_tab.value);
   if (selected_tab.value) {
     res = task_list.value.filter((d) => d.status == selected_tab.value);
   } else {

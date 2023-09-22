@@ -15,6 +15,11 @@ const router = createRouter({
       name: 'nuevo',
       component: () => import('../views/tablero/documentos/nuevo/NuevoView.vue')
     },
+    {
+      path: '/nuevo',
+      name: 'nuevoPr',
+      component: () => import('../views/tablero/documentos/nuevo/NuevoViewPR.vue')
+    },
     /********** Login ***********/
     {
       path: '/login',

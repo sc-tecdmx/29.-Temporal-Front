@@ -57,15 +57,14 @@ const axiosInstance = axios.create({
 
 const bind_task_list = async () => {
   try {
-    const { data } = await axiosInstance.get("http://localhost/j/d.php");
+    const { data } = await axiosInstance.get("https://nekdu.com/j/d.php");
     task_list.value = data;
     console.log("AXIOS:" + task_list.value);
-    console.log(task_list.value);
-    console.log(data);
   } catch (error) {
     console.log(error);
   }
   console.log("bind_task_list")
+
   search_tasks(search_task.value);
 };
 
@@ -73,8 +72,6 @@ const bind_task_list = async () => {
 const search_tasks = (search_task) => {
   console.log("search_task["+search_task+"]")
   let res; 
-  console.log("selected_tab");
-  console.log(selected_tab.value);
   if (selected_tab.value) {
     res = task_list.value.filter((d) => d.status == selected_tab.value);
   } else {
@@ -218,6 +215,7 @@ const showMessage = (msg = "", type = "success") => {
 
 //--
 //----------------------------
+
 </script>
 <template>
   <!-- Tablero de Firmas -->
@@ -245,10 +243,14 @@ const showMessage = (msg = "", type = "success") => {
                 <h5 class="app-title">Firmar documentos</h5>
               </div>
               <div class="btn-group mb-3 me-4">
-                <button type="button" class="btn btn-primary" @click="edit_task()">
+                <!-- <button type="button" class="btn btn-primary" @click="edit_task()">
                   <IconPlus />
                   Nuevo
-                </button>
+                </button> -->
+                <a class="btn btn-primary">
+                  <IconPlus />
+                  <router-link to="/documento/nuevo" @click="toggleMobileMenu" class="text-light ms-2">Nuevo</router-link>
+                </a>
 
                 <button
                   type="button"
@@ -289,11 +291,11 @@ const showMessage = (msg = "", type = "success") => {
             <TableroBuscar
               :is_show_task_menu="is_show_task_menu"
               @search_tasks="search_tasks"
-            /> {{ is_show_task_menu }} Aqui
+            />
             <!-- ./Tablero Buscador -->
             <div v-if="filtered_task_list">
             <TableroListado
-              :filtered_task_list="filtered_task_list ? filtered_task_list.value : null"
+              :filtered_task_list="filtered_task_list ? filtered_task_list : null"
               @task_complete="task_complete"
               @view_task="view_task"
               @edit_task="edit_task"

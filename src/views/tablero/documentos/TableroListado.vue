@@ -7,8 +7,6 @@ const props=  defineProps({
   filtered_task_list: [],
 });
 const search_task = ref("");
-console.log("props");
-console.log(props);
 
 const emit = defineEmits([
   "task_complete",
@@ -17,6 +15,21 @@ const emit = defineEmits([
   "delete_task",
   "set_important",
 ]);
+const priority_class = (task) => {
+    if (task.priority == 'low') {
+        return 'primary';
+    } else if (task.priority == 'middle') {
+        return 'warning';
+    } else if (task.priority == 'high') {
+        return 'danger';
+    }
+};
+const set_priority = (task, name) => {
+    task.priority = name;
+};
+const view_task = (task) => {
+    selected_task.value = task;
+};
 </script>
 <template>
   <div class="todo-box">
@@ -30,7 +43,6 @@ const emit = defineEmits([
         suppressScrollX: true,
       }"
     >
-    <!-- PAO -->
     <div v-for="task in props.filtered_task_list" class="todo-item all-list"
                                     :class="{ 'todo-task-done': task.status == 'complete' }" :key="task.task_id">
                                     <div class="todo-item-inner">

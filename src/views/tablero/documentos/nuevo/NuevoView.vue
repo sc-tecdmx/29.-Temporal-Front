@@ -13,6 +13,10 @@ import '@/assets/sass/scrollspyNav.scss';
 import highlight from '@/components/plugins/highlight.vue';
 import Multiselect from '@suadelabs/vue3-multiselect';
 import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
+//flatpickr
+import flatPickr from 'vue-flatpickr-component';
+    import 'flatpickr/dist/flatpickr.css';
+    import '@/assets/sass/forms/custom-flatpickr.css';
 
 import InputForm from '@/components/wrapper/InputForm.vue'
 import SelectCatalogo from '../../../../components/wrapper/SelectCatalogo.vue';
@@ -29,8 +33,8 @@ useMeta({ title: 'Vue Multiselect' });
 useMeta({ title: 'Invoice Add' });
 
 /* Select 2 */
-const code_arr = ref([]);
-const options1 = ref(['orange', 'white', 'purple']);
+// const code_arr = ref([]);
+// const options1 = ref(['orange', 'white', 'purple']);
 const inputs = ref({
     input1: [],
     input2: [],
@@ -57,213 +61,217 @@ const options2 = ref([
 // const options4 = ref(['Lic. Otilio Esteban Hernández Pérez', 'Ing. Isaí Fararoni Ramírez', 'Lic. Nallely ']);
 // const options5 = ref(['orange', 'white', 'purple']);
 
-//const catUso = ref(['Interno','Externo']);
+/* Obtener Catálogos */
 const catUso = ref([{ id: '1', label: 'Interno' }, { id: '2', label: 'Externo' }]);
-const catAreaDestino = ref([{id:'1', nombre_adscripcion:'Contraloría General'},
-{id:'2', nombre_adscripcion:'Secretaría General'},
-{id:'3', nombre_adscripcion:'Unidad de Tecnologías de la Información'},
-{id:'4', nombre_adscripcion:'Secretaría Administrativa'},
-{id:'5', nombre_adscripcion:'Dirección General Jurídica'},
-{id:'6', nombre_adscripcion:'Unidad de Jurisprudencia y Estadística'},
-{id:'7', nombre_adscripcion:'Coordinación de Comunicación Social y Relaciones Públicas'},
-{id:'8', nombre_adscripcion:'Pleno del Tribunal'},
-{id:'9', nombre_adscripcion:'Coordinación de Capacitación'},
-{id:'10', nombre_adscripcion:'Coordinación de Transparencia y Archivo'},
-{id:'11', nombre_adscripcion:'Comisión de Controversias Laborales y Administrativas'},
-{id:'12', nombre_adscripcion:'Ponencia del Magistrado Armando Hernández Cruz'},
-{id:'13', nombre_adscripcion:'Ponencia del Magistrado Eduardo Arana Miraval'},
-{id:'14', nombre_adscripcion:'Ponencia del Magistrado Gustavo Anzaldo Hernández'},
-{id:'15', nombre_adscripcion:'Ponencia de la Magistrada María del Carmen Carreón Castro'},
-{id:'16', nombre_adscripcion:'Ponencia de la Magistrada  Gabriela Eugenia del Valle Pérez'},
-{id:'17', nombre_adscripcion:'Presidencia'},
-{id:'18', nombre_adscripcion:'Ponencia de la Magistrada Martha Alejandra Chávez Camarena'},
-{id:'19', nombre_adscripcion:'Coordinación de Género y Derechos Humanos'},
-{id:'20', nombre_adscripcion:'Coordinación de Difusión y Publicación'},
-{id:'21', nombre_adscripcion:'Coordinación de Archivo y Documentación'},
-{id:'22', nombre_adscripcion:'Instituto de Formación y Capacitación'},
-{id:'23', nombre_adscripcion:'Coordinación de Comunicación Social'},
-{id:'24', nombre_adscripcion:'Ponencia de la Magistrada Martha Leticia Mercado Ramírez'},
-{id:'25', nombre_adscripcion:'Ponencia del Magistrado Juan Carlos Sánchez León'},
-{id:'26', nombre_adscripcion:'Defensoría Pública Ciudadana de Procesos Democráticos'},
-{id:'27', nombre_adscripcion:'Coordinación de Vinculación'},
-{id:'28', nombre_adscripcion:'Unidad Especializada de Procedimientos Sancionadores'},
-{id:'29', nombre_adscripcion:'Contraloría Interna'},
-{id:'30', nombre_adscripcion:'Coordinación de Transparencia y Datos Personales'},
-{id:'31', nombre_adscripcion:'Coordinación de Derechos Humanos y Género'},
-{id:'33', nombre_adscripcion:'Unidad de Servicios Informáticos'},
-{id:'34', nombre_adscripcion:'Unidad de Estadística y Jurisprudencia'},
-{id:'35', nombre_adscripcion:'Ponencia del Magistrado Armando Ambriz Hernández'}]);
-const catAreaCopia = ref([{id:'1', nombre_adscripcion:'Contraloría General'},
-{id:'2', nombre_adscripcion:'Secretaría General'},
-{id:'3', nombre_adscripcion:'Unidad de Tecnologías de la Información'},
-{id:'4', nombre_adscripcion:'Secretaría Administrativa'},
-{id:'5', nombre_adscripcion:'Dirección General Jurídica'},
-{id:'6', nombre_adscripcion:'Unidad de Jurisprudencia y Estadística'},
-{id:'7', nombre_adscripcion:'Coordinación de Comunicación Social y Relaciones Públicas'},
-{id:'8', nombre_adscripcion:'Pleno del Tribunal'},
-{id:'9', nombre_adscripcion:'Coordinación de Capacitación'},
-{id:'10', nombre_adscripcion:'Coordinación de Transparencia y Archivo'},
-{id:'11', nombre_adscripcion:'Comisión de Controversias Laborales y Administrativas'},
-{id:'12', nombre_adscripcion:'Ponencia del Magistrado Armando Hernández Cruz'},
-{id:'13', nombre_adscripcion:'Ponencia del Magistrado Eduardo Arana Miraval'},
-{id:'14', nombre_adscripcion:'Ponencia del Magistrado Gustavo Anzaldo Hernández'},
-{id:'15', nombre_adscripcion:'Ponencia de la Magistrada María del Carmen Carreón Castro'},
-{id:'16', nombre_adscripcion:'Ponencia de la Magistrada  Gabriela Eugenia del Valle Pérez'},
-{id:'17', nombre_adscripcion:'Presidencia'},
-{id:'18', nombre_adscripcion:'Ponencia de la Magistrada Martha Alejandra Chávez Camarena'},
-{id:'19', nombre_adscripcion:'Coordinación de Género y Derechos Humanos'},
-{id:'20', nombre_adscripcion:'Coordinación de Difusión y Publicación'},
-{id:'21', nombre_adscripcion:'Coordinación de Archivo y Documentación'},
-{id:'22', nombre_adscripcion:'Instituto de Formación y Capacitación'},
-{id:'23', nombre_adscripcion:'Coordinación de Comunicación Social'},
-{id:'24', nombre_adscripcion:'Ponencia de la Magistrada Martha Leticia Mercado Ramírez'},
-{id:'25', nombre_adscripcion:'Ponencia del Magistrado Juan Carlos Sánchez León'},
-{id:'26', nombre_adscripcion:'Defensoría Pública Ciudadana de Procesos Democráticos'},
-{id:'27', nombre_adscripcion:'Coordinación de Vinculación'},
-{id:'28', nombre_adscripcion:'Unidad Especializada de Procedimientos Sancionadores'},
-{id:'29', nombre_adscripcion:'Contraloría Interna'},
-{id:'30', nombre_adscripcion:'Coordinación de Transparencia y Datos Personales'},
-{id:'31', nombre_adscripcion:'Coordinación de Derechos Humanos y Género'},
-{id:'33', nombre_adscripcion:'Unidad de Servicios Informáticos'},
-{id:'34', nombre_adscripcion:'Unidad de Estadística y Jurisprudencia'},
-{id:'35', nombre_adscripcion:'Ponencia del Magistrado Armando Ambriz Hernández'}]);
-const catDestinatario = ref([{id:'1', nombre:'Lic. Otilio Esteban Hernández Pérez'},{id:'2', nombre:'Ing. Isaí Fararoni Ramírez'},{id:'3', nombre:'Lic. Nallely '}]);
-const catCargo = ref([{id:'1',cargo: 'Jefe de Departamento'},
-{id:'2',cargo: 'Profesionista Técnico E'},
-{id:'3',cargo: 'Jefe de Departamento A'},
-{id:'4',cargo: 'Actuario C'},
-{id:'6',cargo: 'Secretaria Ejecutiva H'},
-{id:'7',cargo: 'Jefe de Departamento B'},
-{id:'8',cargo: 'Actuario D'},
-{id:'9',cargo: 'Profesionista Técnico F'},
-{id:'10',cargo: 'Jefe de Departamento C'},
-{id:'11',cargo: 'Actuario E'},
-{id:'12',cargo: 'Profesionista Técnico G'},
-{id:'13',cargo: 'Jefe de Departamento D'},
-{id:'14',cargo: 'Actuario F'},
-{id:'15',cargo: 'Profesionista Técnico H'},
-{id:'16',cargo: 'Jefe de Departamento E'},
-{id:'17',cargo: 'Asesor B'},
-{id:'18',cargo: 'Profesor - Investigador A'},
-{id:'19',cargo: 'Jefe de Departamento F'},
-{id:'20',cargo: 'Profesor - Investigador B'},
-{id:'21',cargo: 'Jefe de Departamento G'},
-{id:'22',cargo: 'Subdirector de Área A'},
-{id:'23',cargo: 'Profesor - Investigador C'},
-{id:'24',cargo: 'Subdirector de Área B'},
-{id:'25',cargo: 'Asesor C'},
-{id:'26',cargo: 'Secretario Auxiliar'},
-{id:'27',cargo: 'Subdirector de Área C'},
-{id:'28',cargo: 'Secretario Privado A'},
-{id:'29',cargo: 'Secretario Auxiliar A'},
-{id:'30',cargo: 'Secretario Privado B'},
-{id:'31',cargo: 'Subdirector de Área D'},
-{id:'32',cargo: 'Secretario Auxiliar B'},
-{id:'33',cargo: 'Secretario Privado C'},
-{id:'34',cargo: 'Subdirector de Área E'},
-{id:'35',cargo: 'Asesor D'},
-{id:'36',cargo: 'Secretario Auxiliar C'},
-{id:'37',cargo: 'Secretario Particular A'},
-{id:'38',cargo: 'Subdirector de Área F'},
-{id:'39',cargo: 'Secretario de Estudio y Cuenta'},
-{id:'40',cargo: 'Subdirector de Área G'},
-{id:'41',cargo: 'Asesor E'},
-{id:'42',cargo: 'Secretario Particular B'},
-{id:'43',cargo: 'Secretario Particular C'},
-{id:'44',cargo: 'Asesor F'},
-{id:'45',cargo: 'Director A'},
-{id:'46',cargo: 'Secretario de Estudio y Cuenta Coordinador'},
-{id:'47',cargo: 'Secretaio de Estudio y Cuenta A'},
-{id:'48',cargo: 'Secretario Técnico A'},
-{id:'49',cargo: 'Director B'},
-{id:'50',cargo: 'Secretario Tecnico de la Secretaría General A'},
-{id:'51',cargo: 'Secretario Técnico B'},
-{id:'52',cargo: 'Secretario de Estudio y Cuenta B'},
-{id:'53',cargo: 'Director C'},
-{id:'54',cargo: 'Asesor G'},
-{id:'55',cargo: 'Asesor Principal'},
-{id:'56',cargo: 'Secretario Técnico de la Secretaría General B'},
-{id:'57',cargo: 'Secretario Técnico C'},
-{id:'58',cargo: 'Secretario de Estudio y Cuenta C'},
-{id:'59',cargo: 'Director D'},
-{id:'60',cargo: 'Secretario Técnico de la Secretaría General C'},
-{id:'61',cargo: 'Secretario Técnico D'},
-{id:'62',cargo: 'Director E'},
-{id:'63',cargo: 'Coordinador A'},
-{id:'64',cargo: 'Secretario Técnico de la Secretaría General D'},
-{id:'65',cargo: 'Coordinador B'},
-{id:'66',cargo: 'Director F'},
-{id:'67',cargo: 'Coordinador C'},
-{id:'68',cargo: 'Director G'},
-{id:'69',cargo: 'Secretario General'},
-{id:'70',cargo: 'Secretario Administrativo'},
-{id:'71',cargo: 'Contralor General'},
-{id:'72',cargo: 'Director HH'},
-{id:'73',cargo: 'Coordinador DD'},
-{id:'74',cargo: 'Coordinador D'},
-{id:'75',cargo: 'Director H'},
-{id:'76',cargo: 'Secretario General A'},
-{id:'77',cargo: 'Secretario Administrativo A'},
-{id:'78',cargo: 'Contralor General A'},
-{id:'79',cargo: 'Director I'},
-{id:'80',cargo: 'Coordinador E'},
-{id:'81',cargo: 'Secretario General B'},
-{id:'82',cargo: 'Secretario Administrativo B'},
-{id:'83',cargo: 'Contralor General B'},
-{id:'84',cargo: 'Secretario General C'},
-{id:'85',cargo: 'Secretario Administrativo C'},
-{id:'86',cargo: 'Contralor General C'},
-{id:'87',cargo: 'Magistrado Electoral'},
-{id:'88',cargo: 'Presidente del Tribunal'},
-{id:'89',cargo: 'Auditor'},
-{id:'90',cargo: 'Abogado'},
-{id:'91',cargo: 'Secretaria Ejecutiva D'},
-{id:'92',cargo: 'Secretaria Ejecutiva C'},
-{id:'93',cargo: 'Secretaria Ejecutiva F'},
-{id:'94',cargo: 'Secretaria Ejecutiva'},
-{id:'95',cargo: 'Coordinador'},
-{id:'96',cargo: 'Auxiliar A'},
-{id:'97',cargo: 'Auxiliar B'},
-{id:'98',cargo: 'Auxiliar C'},
-{id:'99',cargo: 'Secretaria A'},
-{id:'100',cargo: 'Auxiliar D'},
-{id:'101',cargo: 'Secretaria B'},
-{id:'102',cargo: 'Secretaria C'},
-{id:'103',cargo: 'Chofer A'},
-{id:'104',cargo: 'Secretaria D'},
-{id:'105',cargo: 'Asistente A'},
-{id:'106',cargo: 'Chofer B'},
-{id:'107',cargo: 'Secretaria E'},
-{id:'108',cargo: 'Asistente B'},
-{id:'109',cargo: 'Chofer C'},
-{id:'110',cargo: 'Secretaria F'},
-{id:'111',cargo: 'Asistente C'},
-{id:'112',cargo: 'Secretaria Ejecutiva A'},
-{id:'113',cargo: 'Secretaria Ejecutiva B'},
-{id:'114',cargo: 'Asistente D'},
-{id:'115',cargo: 'Chofer D'},
-{id:'117',cargo: 'Chofer E'},
-{id:'119',cargo: 'Chofer F'},
-{id:'120',cargo: 'Profesionista Técnico A'},
-{id:'121',cargo: 'Secretaria Ejecutiva E'},
-{id:'122',cargo: 'Chofer G'},
-{id:'123',cargo: 'Profesionista Técnico B'},
-{id:'125',cargo: 'Actuario A'},
-{id:'126',cargo: 'Profesionista Técnico C'},
-{id:'127',cargo: 'Asesor A'},
-{id:'128',cargo: 'Actuario B'},
-{id:'129',cargo: 'Profesionista Técnico D'},
-{id:'130',cargo: 'Secretaria Ejecutiva G'},
-{id:'131',cargo: 'Jefe de Departamento H'},
-{id:'132',cargo: 'Secretario de Estudio y Cuenta A'}]);
-const catTipoDocumento = ref([{id:'1',tipo:'Acuerdo de radicación'},
-{id:'2',tipo:'Acuerdo de recepción'},
-{id:'3',tipo:'Acuerdo de turno'},
-{id:'4',tipo:'Oficio'},
-{id:'5',tipo:'Acuerdo plenario'},
-{id:'6',tipo:'Minuta'}]);
+const catAreaDestino = ref([{id:'1', label:'Contraloría General'},
+                            {id:'2', label:'Secretaría General'},
+                            {id:'3', label:'Unidad de Tecnologías de la Información'},
+                            {id:'4', label:'Secretaría Administrativa'},
+                            {id:'5', label:'Dirección General Jurídica'},
+                            {id:'6', label:'Unidad de Jurisprudencia y Estadística'},
+                            {id:'7', label:'Coordinación de Comunicación Social y Relaciones Públicas'},
+                            {id:'8', label:'Pleno del Tribunal'},
+                            {id:'9', label:'Coordinación de Capacitación'},
+                            {id:'10', label:'Coordinación de Transparencia y Archivo'},
+                            {id:'11', label:'Comisión de Controversias Laborales y Administrativas'},
+                            {id:'12', label:'Ponencia del Magistrado Armando Hernández Cruz'},
+                            {id:'13', label:'Ponencia del Magistrado Eduardo Arana Miraval'},
+                            {id:'14', label:'Ponencia del Magistrado Gustavo Anzaldo Hernández'},
+                            {id:'15', label:'Ponencia de la Magistrada María del Carmen Carreón Castro'},
+                            {id:'16', label:'Ponencia de la Magistrada  Gabriela Eugenia del Valle Pérez'},
+                            {id:'17', label:'Presidencia'},
+                            {id:'18', label:'Ponencia de la Magistrada Martha Alejandra Chávez Camarena'},
+                            {id:'19', label:'Coordinación de Género y Derechos Humanos'},
+                            {id:'20', label:'Coordinación de Difusión y Publicación'},
+                            {id:'21', label:'Coordinación de Archivo y Documentación'},
+                            {id:'22', label:'Instituto de Formación y Capacitación'},
+                            {id:'23', label:'Coordinación de Comunicación Social'},
+                            {id:'24', label:'Ponencia de la Magistrada Martha Leticia Mercado Ramírez'},
+                            {id:'25', label:'Ponencia del Magistrado Juan Carlos Sánchez León'},
+                            {id:'26', label:'Defensoría Pública Ciudadana de Procesos Democráticos'},
+                            {id:'27', label:'Coordinación de Vinculación'},
+                            {id:'28', label:'Unidad Especializada de Procedimientos Sancionadores'},
+                            {id:'29', label:'Contraloría Interna'},
+                            {id:'30', label:'Coordinación de Transparencia y Datos Personales'},
+                            {id:'31', label:'Coordinación de Derechos Humanos y Género'},
+                            {id:'33', label:'Unidad de Servicios Informáticos'},
+                            {id:'34', label:'Unidad de Estadística y Jurisprudencia'},
+                            {id:'35', label:'Ponencia del Magistrado Armando Ambriz Hernández'}]);
+                            const catAreaCopia = ref([{id:'1', label:'Contraloría General'},
+                        {id:'2', label:'Secretaría General'},
+                        {id:'3', label:'Unidad de Tecnologías de la Información'},
+                        {id:'4', label:'Secretaría Administrativa'},
+                        {id:'5', label:'Dirección General Jurídica'},
+                        {id:'6', label:'Unidad de Jurisprudencia y Estadística'},
+                        {id:'7', label:'Coordinación de Comunicación Social y Relaciones Públicas'},
+                        {id:'8', label:'Pleno del Tribunal'},
+                        {id:'9', label:'Coordinación de Capacitación'},
+                        {id:'10', label:'Coordinación de Transparencia y Archivo'},
+                        {id:'11', label:'Comisión de Controversias Laborales y Administrativas'},
+                        {id:'12', label:'Ponencia del Magistrado Armando Hernández Cruz'},
+                        {id:'13', label:'Ponencia del Magistrado Eduardo Arana Miraval'},
+                        {id:'14', label:'Ponencia del Magistrado Gustavo Anzaldo Hernández'},
+                        {id:'15', label:'Ponencia de la Magistrada María del Carmen Carreón Castro'},
+                        {id:'16', label:'Ponencia de la Magistrada  Gabriela Eugenia del Valle Pérez'},
+                        {id:'17', label:'Presidencia'},
+                        {id:'18', label:'Ponencia de la Magistrada Martha Alejandra Chávez Camarena'},
+                        {id:'19', label:'Coordinación de Género y Derechos Humanos'},
+                        {id:'20', label:'Coordinación de Difusión y Publicación'},
+                        {id:'21', label:'Coordinación de Archivo y Documentación'},
+                        {id:'22', label:'Instituto de Formación y Capacitación'},
+                        {id:'23', label:'Coordinación de Comunicación Social'},
+                        {id:'24', label:'Ponencia de la Magistrada Martha Leticia Mercado Ramírez'},
+                        {id:'25', label:'Ponencia del Magistrado Juan Carlos Sánchez León'},
+                        {id:'26', label:'Defensoría Pública Ciudadana de Procesos Democráticos'},
+                        {id:'27', label:'Coordinación de Vinculación'},
+                        {id:'28', label:'Unidad Especializada de Procedimientos Sancionadores'},
+                        {id:'29', label:'Contraloría Interna'},
+                        {id:'30', label:'Coordinación de Transparencia y Datos Personales'},
+                        {id:'31', label:'Coordinación de Derechos Humanos y Género'},
+                        {id:'33', label:'Unidad de Servicios Informáticos'},
+                        {id:'34', label:'Unidad de Estadística y Jurisprudencia'},
+                        {id:'35', label:'Ponencia del Magistrado Armando Ambriz Hernández'}]);
+
+const catDestinatario = ref([{id:'1', label:'Lic. Otilio Esteban Hernández Pérez'},{id:'2', label:'Ing. Isaí Fararoni Ramírez'},{id:'3', label:'Lic. Nallely '}]);
+
+const catCargo = ref([{id:'1',label: 'Jefe de Departamento'},
+                    {id:'2',label: 'Profesionista Técnico E'},
+                    {id:'3',label: 'Jefe de Departamento A'},
+                    {id:'4',label: 'Actuario C'},
+                    {id:'6',label: 'Secretaria Ejecutiva H'},
+                    {id:'7',label: 'Jefe de Departamento B'},
+                    {id:'8',label: 'Actuario D'},
+                    {id:'9',label: 'Profesionista Técnico F'},
+                    {id:'10',label: 'Jefe de Departamento C'},
+                    {id:'11',label: 'Actuario E'},
+                    {id:'12',label: 'Profesionista Técnico G'},
+                    {id:'13',label: 'Jefe de Departamento D'},
+                    {id:'14',label: 'Actuario F'},
+                    {id:'15',label: 'Profesionista Técnico H'},
+                    {id:'16',label: 'Jefe de Departamento E'},
+                    {id:'17',label: 'Asesor B'},
+                    {id:'18',label: 'Profesor - Investigador A'},
+                    {id:'19',label: 'Jefe de Departamento F'},
+                    {id:'20',label: 'Profesor - Investigador B'},
+                    {id:'21',label: 'Jefe de Departamento G'},
+                    {id:'22',label: 'Subdirector de Área A'},
+                    {id:'23',label: 'Profesor - Investigador C'},
+                    {id:'24',label: 'Subdirector de Área B'},
+                    {id:'25',label: 'Asesor C'},
+                    {id:'26',label: 'Secretario Auxiliar'},
+                    {id:'27',label: 'Subdirector de Área C'},
+                    {id:'28',label: 'Secretario Privado A'},
+                    {id:'29',label: 'Secretario Auxiliar A'},
+                    {id:'30',label: 'Secretario Privado B'},
+                    {id:'31',label: 'Subdirector de Área D'},
+                    {id:'32',label: 'Secretario Auxiliar B'},
+                    {id:'33',label: 'Secretario Privado C'},
+                    {id:'34',label: 'Subdirector de Área E'},
+                    {id:'35',label: 'Asesor D'},
+                    {id:'36',label: 'Secretario Auxiliar C'},
+                    {id:'37',label: 'Secretario Particular A'},
+                    {id:'38',label: 'Subdirector de Área F'},
+                    {id:'39',label: 'Secretario de Estudio y Cuenta'},
+                    {id:'40',label: 'Subdirector de Área G'},
+                    {id:'41',label: 'Asesor E'},
+                    {id:'42',label: 'Secretario Particular B'},
+                    {id:'43',label: 'Secretario Particular C'},
+                    {id:'44',label: 'Asesor F'},
+                    {id:'45',label: 'Director A'},
+                    {id:'46',label: 'Secretario de Estudio y Cuenta Coordinador'},
+                    {id:'47',label: 'Secretaio de Estudio y Cuenta A'},
+                    {id:'48',label: 'Secretario Técnico A'},
+                    {id:'49',label: 'Director B'},
+                    {id:'50',label: 'Secretario Tecnico de la Secretaría General A'},
+                    {id:'51',label: 'Secretario Técnico B'},
+                    {id:'52',label: 'Secretario de Estudio y Cuenta B'},
+                    {id:'53',label: 'Director C'},
+                    {id:'54',label: 'Asesor G'},
+                    {id:'55',label: 'Asesor Principal'},
+                    {id:'56',label: 'Secretario Técnico de la Secretaría General B'},
+                    {id:'57',label: 'Secretario Técnico C'},
+                    {id:'58',label: 'Secretario de Estudio y Cuenta C'},
+                    {id:'59',label: 'Director D'},
+                    {id:'60',label: 'Secretario Técnico de la Secretaría General C'},
+                    {id:'61',label: 'Secretario Técnico D'},
+                    {id:'62',label: 'Director E'},
+                    {id:'63',label: 'Coordinador A'},
+                    {id:'64',label: 'Secretario Técnico de la Secretaría General D'},
+                    {id:'65',label: 'Coordinador B'},
+                    {id:'66',label: 'Director F'},
+                    {id:'67',label: 'Coordinador C'},
+                    {id:'68',label: 'Director G'},
+                    {id:'69',label: 'Secretario General'},
+                    {id:'70',label: 'Secretario Administrativo'},
+                    {id:'71',label: 'Contralor General'},
+                    {id:'72',label: 'Director HH'},
+                    {id:'73',label: 'Coordinador DD'},
+                    {id:'74',label: 'Coordinador D'},
+                    {id:'75',label: 'Director H'},
+                    {id:'76',label: 'Secretario General A'},
+                    {id:'77',label: 'Secretario Administrativo A'},
+                    {id:'78',label: 'Contralor General A'},
+                    {id:'79',label: 'Director I'},
+                    {id:'80',label: 'Coordinador E'},
+                    {id:'81',label: 'Secretario General B'},
+                    {id:'82',label: 'Secretario Administrativo B'},
+                    {id:'83',label: 'Contralor General B'},
+                    {id:'84',label: 'Secretario General C'},
+                    {id:'85',label: 'Secretario Administrativo C'},
+                    {id:'86',label: 'Contralor General C'},
+                    {id:'87',label: 'Magistrado Electoral'},
+                    {id:'88',label: 'Presidente del Tribunal'},
+                    {id:'89',label: 'Auditor'},
+                    {id:'90',label: 'Abogado'},
+                    {id:'91',label: 'Secretaria Ejecutiva D'},
+                    {id:'92',label: 'Secretaria Ejecutiva C'},
+                    {id:'93',label: 'Secretaria Ejecutiva F'},
+                    {id:'94',label: 'Secretaria Ejecutiva'},
+                    {id:'95',label: 'Coordinador'},
+                    {id:'96',label: 'Auxiliar A'},
+                    {id:'97',label: 'Auxiliar B'},
+                    {id:'98',label: 'Auxiliar C'},
+                    {id:'99',label: 'Secretaria A'},
+                    {id:'100',label: 'Auxiliar D'},
+                    {id:'101',label: 'Secretaria B'},
+                    {id:'102',label: 'Secretaria C'},
+                    {id:'103',label: 'Chofer A'},
+                    {id:'104',label: 'Secretaria D'},
+                    {id:'105',label: 'Asistente A'},
+                    {id:'106',label: 'Chofer B'},
+                    {id:'107',label: 'Secretaria E'},
+                    {id:'108',label: 'Asistente B'},
+                    {id:'109',label: 'Chofer C'},
+                    {id:'110',label: 'Secretaria F'},
+                    {id:'111',label: 'Asistente C'},
+                    {id:'112',label: 'Secretaria Ejecutiva A'},
+                    {id:'113',label: 'Secretaria Ejecutiva B'},
+                    {id:'114',label: 'Asistente D'},
+                    {id:'115',label: 'Chofer D'},
+                    {id:'117',label: 'Chofer E'},
+                    {id:'119',label: 'Chofer F'},
+                    {id:'120',label: 'Profesionista Técnico A'},
+                    {id:'121',label: 'Secretaria Ejecutiva E'},
+                    {id:'122',label: 'Chofer G'},
+                    {id:'123',label: 'Profesionista Técnico B'},
+                    {id:'125',label: 'Actuario A'},
+                    {id:'126',label: 'Profesionista Técnico C'},
+                    {id:'127',label: 'Asesor A'},
+                    {id:'128',label: 'Actuario B'},
+                    {id:'129',label: 'Profesionista Técnico D'},
+                    {id:'130',label: 'Secretaria Ejecutiva G'},
+                    {id:'131',label: 'Jefe de Departamento H'},
+                    {id:'132',label: 'Secretario de Estudio y Cuenta A'}]);
+
+const catTipoDocumento = ref([{id:'1',label:'Acuerdo de radicación'},
+{id:'2',label:'Acuerdo de recepción'},
+{id:'3',label:'Acuerdo de turno'},
+{id:'4',label:'Oficio'},
+{id:'5',label:'Acuerdo plenario'},
+{id:'6',label:'Minuta'}]);
 const catFirmantes = ref(['Lic. Otilio Esteban Hernández Pérez', 'Ing. Isaí Fararoni Ramírez', 'Lic. Nallely ']);
 
+/* Fin catalogos */
 
 const toggleCode = (name) => {
     if (code_arr.value.includes(name)) {
@@ -286,18 +294,15 @@ const addTag1 = (tag) => {
 /* ..// Select 2 */
 const items = ref([]);
 const selected_file = ref(null);
-// const params = ref({
-//     title: '',
-//     invoice_no: '',
-//     from: { name: '', email: '', address: '', phone: '' },
-//     to: { name: '', email: '', address: '', phone: '' },
+const selected_file_cer = ref(null);
+const selected_file_key = ref(null);
 
-//     invoice_date: '',
-//     due_date: '',
-//     bank_info: { no: '', name: '', swift_code: '', country: '' },
-//     notes: '',
-// });
+const certificado = ref({
+    archivoCer:'',
+    archivoKey:''
+});
 
+/* JSON */
 const params = ref({
     idUso:'',
     idAreaDestino:'',
@@ -310,7 +315,7 @@ const params = ref({
 	nombreExpediente:"",
 	fechaDocumento:'',
 	idDestinatario:'',
-	idcargo:'',
+	idCargo:'',
 	asunto:'',
 	elaboro:'',
 	contenido:'',
@@ -336,13 +341,38 @@ const params = ref({
 	],
 	notas:'',
 	configuracion:{
-		"ordenFirma":"",
-		"modoCaptura":"",
-		"generaNumeroOficio":"",
-		"fechaLimite":"",
-		"documentos":[]
+		ordenFirma:'',
+		modoCaptura:'',
+		generaNumeroOficio:'',
+		fechaLimite:'',
+		documentos:[]
 	},
 });
+
+/* Set params */
+const opcionSelectUso = (idOpcion) => {
+    params.value.idUso = idOpcion;
+}
+const opcionSelectAreaDestino = (idOpcion) => {
+    params.value.idAreaDestino = idOpcion;
+}
+const opcionSelectAreaCopia = (idOpcion) => {
+    params.value.idAreaCopia = idOpcion;
+}
+const opcionSelectTipoDocumento = (idOpcion) => {
+    params.value.idAreaCopia = idOpcion;
+}
+const opcionSelectDestinatario = (idOpcion) => {
+    params.value.idDestinatario = idOpcion;
+}
+const opcionSelectCargo = (idOpcion) => {
+    params.value.idCargo = idOpcion;
+}
+
+
+
+
+
 const currency_list = ref([]);
 const selected_currency = ref({ key: 'Oficio de radicación', thumb: 'flags/tecdmx.png' });
 const tax_type_list = ref([]);
@@ -354,10 +384,11 @@ onMounted(() => {
     //set default data
     items.value.push({ id: 1, title: '', description: '', rate: 0, quantity: 0, amount: 100, is_tax: false });
 
+    /* Fecha del documento y fecha limite */
     let dt = new Date();
-    params.value.invoice_date = JSON.parse(JSON.stringify(dt));
+    params.value.fechaDocumento = JSON.parse(JSON.stringify(dt));
     dt.setDate(dt.getDate() + 5);
-    params.value.due_date = dt;
+    params.value.configuracion.fechaLimite = dt;
 
     //currency list
     currency_list.value = [
@@ -386,9 +417,35 @@ onMounted(() => {
     ];
 });
 
+/* Obtener documentos */
 const change_file = (event) => {
     selected_file.value = URL.createObjectURL(event.target.files[0]);
+    params.value.configuracion.documentos = selected_file.value;
 };
+/* Guarda Capruta */
+const enviaCaptura =()=>{
+    console.log("Captura");
+    console.log(params.value);
+}
+
+/* Modal firmar ahora */
+const change_file_cer = (event) => {
+    selected_file_cer.value = URL.createObjectURL(event.target.files[0]);
+    certificado.value.archivoCer = selected_file_cer.value;
+
+};
+const change_file_key = (event) => {
+    selected_file_key.value = URL.createObjectURL(event.target.files[0]);
+    certificado.value.archivoKey = selected_file_key.value;
+};
+
+const enviaFirma=()=>{
+    console.log("certificado");
+    console.log(certificado.value);
+    console.log(params.value.configuracion.documentos);
+}
+/* Termina Modal firmar ahora */
+
 
 const add_item = () => {
     let max_id = 0;
@@ -402,29 +459,9 @@ const remove_item = (item) => {
     items.value = items.value.filter((d) => d.id != item.id);
 };
 
-const setValueNoExpediente= (valor)=>{
-    params.numeroExpediente = valor
-}
-
-console.log("setValueNoExpediente");
-console.log(params);
 </script>
 <template>
     <div class="layout-px-spacing apps-invoice-add">
-        <!-- <teleport to="#breadcrumb">
-            <ul class="navbar-nav flex-row">
-                <li>
-                    <div class="page-header">
-                        <nav class="breadcrumb-one" aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:;">Apps</a></li>
-                                <li class="breadcrumb-item active" aria-current="page"><span>Invoice Add</span></li>
-                            </ol>
-                        </nav>
-                    </div>
-                </li>
-            </ul>
-        </teleport> -->
 
          <div class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center">  <!--PAO -->
             <div class="col-xxl-10 col-12"> <!--PAO -->
@@ -441,87 +478,40 @@ console.log(params);
                                     <!-- Título del documento PAO-->
                                     <div class="invoice-detail-total mb-3">
                                         <div class="row">
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label :for="uso"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Uso:</label>
-                                                        <select v-model="params.idUso"
-                                                                class="form-select form-select-sm"
-                                                                :id="uso">
-                                                                <option value="">--Seleccionar--</option>
-                                                                <option v-for="opcion in catUso" :value="opcion.id">{{ opcion.label }}</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <!-- <SelectCatalogo
-                                                    idName = "internoExterno"
-                                                    label = "Uso:"
-                                                    :options = catUso
-                                                ></SelectCatalogo> -->
+                                            <div class="col-12 col-md-6">
+                                                <SelectCatalogo
+                                                    idName= "catUso"
+                                                    label= "Uso:"
+                                                    :options="catUso"
+                                                    @opcionSelect = "opcionSelectUso"
+                                                ></SelectCatalogo>
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label :for="areaDestino"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Área destino:</label>
-                                                        <select v-model="params.idAreaDestino"
-                                                                class="form-select form-select-sm"
-                                                                :id="areaDestino">
-                                                                <option value="">--Seleccionar--</option>
-                                                                <option v-for="opcion in catAreaDestino" :value="opcion.id">{{ opcion.nombre_adscripcion }}</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <!-- <SelectCatalogo
-                                                    idName = "areaDestino"
-                                                    label = "Área destino:"
-                                                    :options = catAreaDestino
-                                                ></SelectCatalogo> -->
+                                            <div class="col-12 col-md-6">
+                                                <SelectCatalogo
+                                                    idName= "catAreaDestino"
+                                                    label= "Área destino:"
+                                                    :options="catAreaDestino"
+                                                    @opcionSelect = "opcionSelectAreaDestino"
+                                                ></SelectCatalogo>
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label :for="areaCopia"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Área con copia:</label>
-                                                        <select v-model="params.idAreaCopia"
-                                                                class="form-select form-select-sm"
-                                                                :id="areaCopia">
-                                                                <option value="">--Seleccionar--</option>
-                                                                <option v-for="opcion in catAreaDestino" :value="opcion.id">{{ opcion.nombre_adscripcion }}</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <!-- <SelectCatalogo
-                                                    idName = "areaCopia"
-                                                    label = "Área con copia:"
-                                                    :options = catAreaCopia
-                                                ></SelectCatalogo> -->
+                                            <div class="col-12 col-md-6">
+                                                <SelectCatalogo
+                                                    idName= "catAreaCopia"
+                                                    label= "Área con copia:"
+                                                    :options="catAreaCopia"
+                                                    @opcionSelect = "opcionSelectAreaCopia"
+                                                ></SelectCatalogo>
 
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label :for="tipoDocumento"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Tipo de Documento:</label>
-                                                        <select v-model="params.idtipoDocumento"
-                                                                class="form-select form-select-sm"
-                                                                :id="tipoDocumento">
-                                                                <option value="">--Seleccionar--</option>
-                                                                <option v-for="opcion in catTipoDocumento" :value="opcion.id">{{ opcion.tipo }}</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <!-- <SelectCatalogo
-                                                    idName = "tipoDocumento"
-                                                    label = "Tipo de Documento:"
-                                                    :options = catTipoDocumento
-                                                ></SelectCatalogo> -->
+                                            <div class="col-12 col-md-6">
+                                                <SelectCatalogo
+                                                    idName= "catTipoDocumento"
+                                                    label= "Tipo de documento:"
+                                                    :options="catTipoDocumento"
+                                                    @opcionSelect = "opcionSelectTipoDocumento"
+                                                ></SelectCatalogo>
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="col-12 col-md-6">
                                                 <div class="form-group row invoice-created-by">
                                                     <div class="col-sm-12">
                                                         <label
@@ -542,7 +532,7 @@ console.log(params);
                                                     placeholder = "id"
                                                 ></InputForm> -->
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="col-12 col-md-6">
                                                 <div class="form-group row invoice-created-by">
                                                     <div class="col-sm-12">
                                                         <label
@@ -563,7 +553,7 @@ console.log(params);
                                                     placeholder = "folio"
                                                 ></InputForm> -->
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="col-12 col-md-6 ">
                                                 <div class="form-group row invoice-created-by">
                                                     <div class="col-sm-12">
                                                         <label for="payment-method-account"
@@ -578,7 +568,7 @@ console.log(params);
                                                     </div> -->
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="col-12 col-md-6 ">
                                                 <div class="form-group row invoice-created-by">
                                                     <div class="col-sm-12">
                                                         <label
@@ -601,7 +591,7 @@ console.log(params);
                                                     @setValue="setValueNoExpediente"
                                                 ></InputForm> -->
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="col-12 col-md-6 ">
                                                 <div class="form-group row invoice-created-by">
                                                     <div class="col-sm-12">
                                                         <label
@@ -622,52 +612,43 @@ console.log(params);
                                                     placeholder = "Nombre de expediente"
                                                 ></InputForm> -->
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <FechaBasica
+                                            <div class="col-12 col-md-6">
+                                                <div class="row">
+                                                    <div class="form-group mb-1">
+                                                        <label class="mb-0" style="color: black;font-size: 14px;">Fecha de documento:</label>
+                                                        <flat-pickr v-model="params.fechaDocumento"
+                                                                    class="form-control form-control-sm flatpickr active"
+                                                                    placeholder="Seleccionar"></flat-pickr>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div v-if="selected_tax_type.value !== null" class="form-group mb-0 tax-rate-deducted">
+                                                            <label for="rate">Rate (%)</label>
+                                                                <input v-model="selected_tax_type.value" type="number" min="0" max="100"
+                                                                class="input-rate form-control" placeholder="Rate" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <FechaBasica
                                                     label="Fecha de documento"
-                                                ></FechaBasica>
+                                                ></FechaBasica> -->
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label :for="destinatario"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Destinatario:</label>
-                                                        <select v-model="params.idDestinatario"
-                                                                class="form-select form-select-sm"
-                                                                :id="destinatario">
-                                                                <option value="">--Seleccionar--</option>
-                                                                <option v-for="opcion in catDestinatario" :value="opcion.id">{{ opcion.nombre }}</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <!-- <SelectCatalogo
-                                                    idName = "destinatario"
-                                                    label = "Destinatario:"
-                                                    :options = catDestinatario
-                                                ></SelectCatalogo> -->
+                                            <div class="col-12 col-md-6">
+                                                <SelectCatalogo
+                                                    idName= "catDestinatario"
+                                                    label= "Destinatario:"
+                                                    :options="catDestinatario"
+                                                    @opcionSelect = "opcionSelectDestinatario"
+                                                ></SelectCatalogo>
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label :for="cargo"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Cargo:</label>
-                                                        <select v-model="params.idCargo"
-                                                                class="form-select form-select-sm"
-                                                                :id="cargo">
-                                                                <option value="">--Seleccionar--</option>
-                                                                <option v-for="opcion in catCargo" :value="opcion.id">{{ opcion.cargo }}</option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <!-- <SelectCatalogo
-                                                    idName = "cargo"
-                                                    label = "Cargo:"
-                                                    :options = catCargo
-                                                ></SelectCatalogo> -->
+                                            <div class="col-12 col-md-6">
+                                                <SelectCatalogo
+                                                    idName= "catCargo"
+                                                    label= "Cargo:"
+                                                    :options="catCargo"
+                                                    @opcionSelect = "opcionSelectCargo"
+                                                ></SelectCatalogo>
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="col-12 col-md-6">
                                                 <div class="form-group row invoice-created-by">
                                                     <div class="col-sm-12">
                                                         <label
@@ -688,22 +669,51 @@ console.log(params);
                                                     placeholder = "Asunto"
                                                 ></InputForm> -->
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <InputForm
+                                            <div class="col-12 col-md-6">
+                                                <div class="form-group row invoice-created-by">
+                                                    <div class="col-sm-12">
+                                                        <label
+                                                        :for="elaboro"
+                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Elaboró:</label>
+                                                        <input
+                                                            type="text"
+                                                            v-model="params.elaboro"
+                                                            :id="elaboro"
+                                                            class="form-control form-control-sm"
+                                                            placeholder="elaboro "
+                                                            />
+                                                    </div>
+                                                </div>
+                                                <!-- <InputForm
                                                     idName="elaboro"
                                                     label = "Elaboró:"
                                                     placeholder = "Usuario"
-                                                ></InputForm>
+                                                ></InputForm> -->
                                             </div>
-                                            <div class="col-12 col-md-6 col-lg-4">
-                                                <InputForm
-                                                    idName="contenidoDocumento"
+                                            <div class="col-12 col-md-6">
+                                                <div class="form-group row invoice-created-by">
+                                                    <div class="col-sm-12">
+                                                        <label
+                                                        :for="contenidoDoc"
+                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Contenido:</label>
+                                                        <input
+                                                            type="text"
+                                                            v-model="params.contenido"
+                                                            :id="contenidoDoc"
+                                                            class="form-control form-control-sm"
+                                                            placeholder="contenido "
+                                                            />
+                                                    </div>
+                                                </div>
+                                                <!-- <InputForm
+                                                    idName="contenidoDoc"
                                                     label = "Contenido:"
                                                     placeholder = "Contenido"
-                                                ></InputForm>
+                                                ></InputForm> -->
                                             </div>
                                         </div>
                                     </div>
+
                                     <!-- {{ params }} -->
                                     <!-- .// Fin del Título del documento -->
                                     <!-- Agregar Firmantes -->
@@ -720,20 +730,45 @@ console.log(params);
                                     ></TablaAgregar>
 
                                     <!-- ./ Agregar Firmantes -->
-                                    <TextAreaNotas
+                                    <div class="invoice-detail-note">
+                                        <div class="row">
+                                            <div class="col-md-12 align-self-center">
+                                                <div class="form-group row invoice-note">
+                                                    <label for="invoice-detail-notes" class="col-sm-12 col-form-label col-form-label-sm">Notas:</label>
+                                                    <div class="col-sm-12">
+                                                        <textarea v-model="params.notas" rows="3" id="invoice-detail-notes"
+                                                                class="form-control"
+                                                                placeholder="observaciones"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <TextAreaNotas
                                         label="Notas:"
                                         placeholder="Agregue sus observaciones"
-                                    ></TextAreaNotas>
+                                    ></TextAreaNotas> -->
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-lg-12">
                             <div class="invoice-actions">
                                 <div class="invoice-action-currency">
                                     <h4 class="ms-5 mb-3">Configuración</h4>
                                         <!-- <label for="currency">Configuración</label> -->
-                                        <SwitchRounded
+                                        <div class="form-check form-switch ms-5">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="chk-orden-firma" v-model="params.configuracion.ordenFirma">
+                                            <label class="form-check-label ps-1" for="chk-orden-firma">Firmar en este orden</label>
+                                        </div>
+                                        <div class="form-check form-switch ms-5">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="chk-orden-firma" v-model="params.configuracion.modoCaptura">
+                                            <label class="form-check-label ps-1" for="chk-orden-firma">Mantener en modo captura</label>
+                                        </div>
+                                        <div class="form-check form-switch ms-5">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="chk-orden-firma" v-model="params.configuracion.generaNumeroOficio">
+                                            <label class="form-check-label ps-1" for="chk-orden-firma">Generar número de oficio</label>
+                                        </div>
+                                        <!-- <SwitchRounded
                                             class="ms-5"
                                             label="Firmar en este orden"
                                         ></SwitchRounded>
@@ -744,17 +779,34 @@ console.log(params);
                                         <SwitchRounded
                                             class="ms-5"
                                             label="Generar número de oficio"
-                                        ></SwitchRounded>
+                                        ></SwitchRounded> -->
 
                                 </div>
+                                
                                 <!-- Fecha límite de firma -->
                                 <div class="invoice-action-tax ms-4">
                                     <div class="invoice-action-tax-fields">
                                         <div class="row">
                                             <div class="col-12 col-sm-8 col-lg-4">
-                                                <FechaBasica
+
+                                                <div class="row">
+                                                    <div class="form-group mb-1">
+                                                        <label class="mb-0">Fecha límite de firma :</label>
+                                                        <flat-pickr v-model="params.configuracion.fechaLimite"
+                                                                    class="form-control form-control-sm flatpickr active"
+                                                                    placeholder="Seleccionar"></flat-pickr>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div v-if="selected_tax_type.value !== null" class="form-group mb-0 tax-rate-deducted">
+                                                            <label for="rate">Rate (%)</label>
+                                                                <input v-model="selected_tax_type.value" type="number" min="0" max="100"
+                                                                class="input-rate form-control" placeholder="Rate" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <FechaBasica
                                                     label="Fecha límite de firma"
-                                                ></FechaBasica>
+                                                ></FechaBasica> -->
                                             </div>
                                         </div>
                                     </div>
@@ -765,7 +817,11 @@ console.log(params);
                                     <h4>Documentos a firmar</h4>
                                     <div class="row">
                                         <div class="col-12 col-sm-8 col-lg-6">
-                                            <AgregarArchivoMultiple></AgregarArchivoMultiple>
+                                            <div class="mb-3">
+                                                <label for="formFileMultiple" class="form-label"></label>
+                                                <input class="form-control" type="file" id="formFileMultiple" @change="change_file" accept=".pdf" multiple>
+                                            </div>
+                                            <!-- <AgregarArchivoMultiple></AgregarArchivoMultiple> -->
                                         </div>
                                     </div>
                                 </div>
@@ -778,15 +834,14 @@ console.log(params);
                                             <a href="javascript:;" class="btn btn-danger btn-send p-3">Cancelar</a>
                                         </div>
                                         <div class="col-xl-3 col-md-3">
-                                            <a href="javascript:;" class="btn btn-primary btn-send">Guardar captura</a>
+                                            <a href="javascript:;" class="btn btn-primary btn-send" @click="enviaCaptura()">Guardar captura</a>
                                         </div>
                                         <div class="col-xl-3 col-md-3">
                                             <a data-bs-toggle="modal" data-bs-target="#composeMailModal"
                                                 id="btn-compose-mail" class="btn btn-secondary btn-send p-3"
-                                                href="javascript:void(0);" @click="open_mail('add')">
+                                                href="javascript:void(0);" @click="">
                                                 Firmar ahora
                                             </a>
-
                                         </div>
                                         <div class="col-xl-3 col-md-3">
                                             <a href="javascript:;" class="btn btn-success btn-download">Enviar a
@@ -819,19 +874,36 @@ console.log(params);
                             <form>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <AgregarArchivo
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label">Archivo de certificado (*.cer)</label>
+                                            <input class="form-control" type="file" id="formFile" @change="change_file_cer" accept=".cer">
+                                        </div>
+                                        <!-- <AgregarArchivo
                                             label="Archivo de certificado (*.cer)"
-                                        ></AgregarArchivo>
+                                        ></AgregarArchivo> -->
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <AgregarArchivo
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label">Archivo de certificado (*.key)</label>
+                                            <input class="form-control" type="file" id="formFile" @change="change_file_key" accept=".key">
+                                        </div>
+                                        <!-- <AgregarArchivo
                                             label="Archivo de certificado (*.key)"
-                                        ></AgregarArchivo>
+                                        ></AgregarArchivo> -->
                                     </div>
                                 </div>
+                                <div class="row justify-content-end">
+                                    <div class="col-3">
+                                    <a  id="btn-modal-firma" class="btn btn-success btn-send p-3"
+                                        href="javascript:void(0);" @click="enviaFirma()">
+                                        Firmar
+                                    </a>
+                                </div>
+                                </div>
+                                
                             </form>
                         </div>
                     </div>

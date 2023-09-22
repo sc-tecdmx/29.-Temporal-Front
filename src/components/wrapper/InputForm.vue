@@ -20,10 +20,6 @@
         emit('input', value)
     }
 
-    // console.log("params");
-    // console.log(params);
-    //@input="$emit('update:modelValue', params.contenido )"
-
 </script>
 <template>
     <div class="form-group row invoice-created-by">
@@ -40,7 +36,7 @@
                 :id="idName"
                 class="form-control form-control-sm"
                 :placeholder=" placeholder "
-                v-on:input="updateValue($event.target.value)"
+                
                 />
         </div>
     </div>

@@ -1,172 +1,242 @@
 <script setup>
-    import { ref } from 'vue';
-    import '@/assets/sass/authentication/auth-boxed.scss';
+import { ref } from "vue";
+    import { useLiveStore } from "@/stores/appLiveStore.js";
+    import { useAuthStore } from "@/stores/appAuthStore.js";
+    import { useAlertStore } from "@/stores/appAlertStore.js";
 
-    import { useMeta } from '@/composables/use-meta';
-    useMeta({ title: 'Register Boxed' });
+import "@/assets/sass/authentication/auth-boxed.scss";
 
-    const pwd_type = ref('password');
+import { useMeta } from "@/composables/use-meta";
+useMeta({ title: "Registro" });
 
-    const set_pwd_type = () => {
-        if (pwd_type.value === 'password') {
-            pwd_type.value = 'text';
-        } else {
-            pwd_type.value = 'password';
-        }
-    };
+const pwd_type = ref("password");
+
+const set_pwd_type = () => {
+  if (pwd_type.value === "password") {
+    pwd_type.value = "text";
+  } else {
+    pwd_type.value = "password";
+  }
+};
+
+///
+async function onSubmit(values) {
+    
+    const authStore = useAuthStore()
+    const alertStore = useAlertStore()
+    console.log("Registrando...")
+  try {
+    console.log("==eenviado a login...")
+    await authStore.register(values);
+    await router.push("/auth/login");
+    
+    alertStore.success("Registration successful");
+  } catch (error) {
+    alertStore.error(error);
+  }
+}
 </script>
 <template>
-    <div class="form auth-boxed">
-        <div class="form-container outer">
-            <div class="form-form">
-                <div class="form-form-wrap">
-                    <div class="form-container">
-                        <div class="form-content">
-                            <h1 class="">Registro</h1>
-                            <p class="signup-link register">¿Tienes cuenta? <router-link to="/login">Iniciar sesión</router-link></p>
-                            <form class="text-start">
-                                <div class="form">
-                                    <div id="username-field" class="field-wrapper input">
-                                        <label for="username">USUARIO</label>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="feather feather-user"
-                                        >
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                        <input type="text" class="form-control" placeholder="Usuario" />
-                                    </div>
+  <div class="form auth-boxed">
+    <div class="form-container outer">
+      <div class="form-form">
+        <div class="form-form-wrap">
+          <div class="form-container">
+            <div class="form-content">
+              <h1 class="">Registro</h1>
+              <p class="signup-link register">
+                ¿Tienes cuenta?
+                <router-link to="/login">Iniciar sesión</router-link>
+              </p>
+              <form class="text-start">
+                <div class="form">
+                  <div id="username-field" class="field-wrapper input">
+                    <label for="username">USUARIO</label>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="feather feather-user"
+                    >
+                      <path
+                        d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                      ></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Usuario"
+                    />
+                  </div>
 
-                                    <div id="email-field" class="field-wrapper input">
-                                        <label for="email">CORREO ELECTRÓNICO</label>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="feather feather-at-sign register"
-                                        >
-                                            <circle cx="12" cy="12" r="4"></circle>
-                                            <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
-                                        </svg>
-                                        <input type="email" class="form-control" placeholder="Correo electrónico" />
-                                    </div>
+                  <div id="email-field" class="field-wrapper input">
+                    <label for="email">CORREO ELECTRÓNICO</label>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="feather feather-at-sign register"
+                    >
+                      <circle cx="12" cy="12" r="4"></circle>
+                      <path
+                        d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"
+                      ></path>
+                    </svg>
+                    <input
+                      type="email"
+                      class="form-control"
+                      placeholder="Correo electrónico"
+                    />
+                  </div>
 
-                                    <div id="password-field" class="field-wrapper input mb-2">
-                                        <div class="d-flex justify-content-between">
-                                            <label for="password">CONTRASEÑA</label>
-                                            <router-link to="/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
-                                        </div>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="feather feather-lock"
-                                        >
-                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                        </svg>
-                                        <input :type="pwd_type" class="form-control" placeholder="Contraseña" />
-                                        <svg
-                                            @click="set_pwd_type"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            id="toggle-password"
-                                            class="feather feather-eye"
-                                        >
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </div>
-
-                                    <div class="terms_condition mb-4">
-                                        <div class="checkbox-outline-primary custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" value="true" id="chkTerms" />
-                                            <label class="custom-control-label" for="chkTerms"> Acepto  <a href="javascript:;"> terminos y condiciones </a></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-sm-flex justify-content-between">
-                                        <div class="field-wrapper">
-                                            <button type="submit" class="btn btn-primary">Registrarse</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="division">
-                                        <span>O</span>
-                                    </div>
-
-                                    <div class="social">
-                                        <a href="javascript:void(0);" class="btn social-fb">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="feather feather-facebook"
-                                            >
-                                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                                            </svg>
-                                            <span class="brand-name">Facebook</span>
-                                        </a>
-                                        <a href="javascript:void(0);" class="btn social-github">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="feather feather-github"
-                                            >
-                                                <path
-                                                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-                                                ></path>
-                                            </svg>
-                                            <span class="brand-name">Github</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                  <div id="password-field" class="field-wrapper input mb-2">
+                    <div class="d-flex justify-content-between">
+                      <label for="password">CONTRASEÑA</label>
+                      <router-link
+                        to="/recupera_contrasena"
+                        class="forgot-pass-link"
+                        >¿Olvidaste tu contraseña?</router-link
+                      >
                     </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="feather feather-lock"
+                    >
+                      <rect
+                        x="3"
+                        y="11"
+                        width="18"
+                        height="11"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <input
+                      :type="pwd_type"
+                      class="form-control"
+                      placeholder="Contraseña"
+                    />
+                    <svg
+                      @click="set_pwd_type"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      id="toggle-password"
+                      class="feather feather-eye"
+                    >
+                      <path
+                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                      ></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </div>
+
+                  <div class="terms_condition mb-4">
+                    <div
+                      class="checkbox-outline-primary custom-control custom-checkbox"
+                    >
+                      <input
+                        type="checkbox"
+                        class="custom-control-input"
+                        value="true"
+                        id="chkTerms"
+                      />
+                      <label class="custom-control-label" for="chkTerms">
+                        Acepto
+                        <a href="javascript:;">
+                          terminos y condiciones
+                        </a></label
+                      >
+                    </div>
+                  </div>
+
+                  <div class="d-sm-flex justify-content-between">
+                    <div class="field-wrapper">
+                      <button @click="onSubmit" type="submit" class="btn btn-primary">
+                        Registrarse
+                      </button>
+                      
+                    </div>
+                  </div>
+
+                  <div class="division">
+                    <span>O</span>
+                  </div>
+
+                  <div class="social">
+                    <a href="javascript:void(0);" class="btn social-fb">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-facebook"
+                      >
+                        <path
+                          d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                        ></path>
+                      </svg>
+                      <span class="brand-name">Facebook</span>
+                    </a>
+                    <a href="javascript:void(0);" class="btn social-github">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="feather feather-github"
+                      >
+                        <path
+                          d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                        ></path>
+                      </svg>
+                      <span class="brand-name">Github</span>
+                    </a>
+                  </div>
                 </div>
+              </form>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </template>

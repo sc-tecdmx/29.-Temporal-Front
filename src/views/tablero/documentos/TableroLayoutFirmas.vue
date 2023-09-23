@@ -52,12 +52,15 @@ const initPopup = () => {
 };
 
 const axiosInstance = axios.create({
-  "Access-Control-Allow-Origin": "*"
+  headers: {
+   
+  },
+  
 });
 
 const bind_task_list = async () => {
   try {
-    const { data } = await axiosInstance.get("http://localhost/j/d.php");
+    const { data } = await axiosInstance.get("https://www.nekdu.com/j/d.php");
     task_list.value = data;
     console.log("AXIOS:" + task_list.value);
     console.log(task_list.value);
@@ -66,6 +69,7 @@ const bind_task_list = async () => {
     console.log(error);
   }
   console.log("bind_task_list")
+ 
   search_tasks(search_task.value);
 };
 

@@ -1,5 +1,8 @@
 <script setup>
     import { ref } from 'vue';
+    import { useAuthStore } from "@/stores/appAuthStore.js";
+    import { useAlertStore } from "@/stores/appAlertStore.js";
+
     import '@/assets/sass/authentication/auth-boxed.scss';
     import IconFeatherUser from '../../components/icons/IconFeatherUser.vue'
     import IconFeatherLock from '../../components/icons/IconFeatherLock.vue'
@@ -16,6 +19,19 @@
             pwd_type.value = 'password';
         }
     };
+    ///
+    async function onSubmit(values) {
+        console.log ("onSubmit")
+        const authStore = useAuthStore()
+        const { username, password } = values;
+
+        console.log("##- 0 -##");
+        try {
+            await authStore.login(username, password);
+        } catch (error ) {
+            console.log ("##- error -##" + error)
+        }
+    }
 </script>
 <template>
     <div class="form auth-boxed">
@@ -62,7 +78,9 @@
                                     </div>
                                     <div class="d-sm-flex justify-content-between">
                                         <div class="field-wrapper">
-                                            <button type="submit" class="btn btn-primary">Ingresar</button>
+                                            <button  @click="onSubmit" type="button" class="btn btn-primary">Ingresar</button>
+
+                                            
                                         </div>
                                     </div>
 

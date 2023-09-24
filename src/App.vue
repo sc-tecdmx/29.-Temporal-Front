@@ -5,6 +5,9 @@
   import { useLiveStore } from "@/stores/appLiveStore.js";
 
   import "@/assets/sass/app.scss"; /* IFR */
+
+  console.log("◘ App.vue")
+
   /*import authLayout from "./layouts/authLayout.vue";
   import appLayout from "./layouts/appLayout.vue";
   */

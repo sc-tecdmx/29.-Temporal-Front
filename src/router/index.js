@@ -7,7 +7,7 @@ import  IndexView  from '@/views/tablero/IndexView.vue'
 
 import authRouter from './authRouter';
 import tableroRouter from './tableroRouter';
-
+console.log("◘ router/index.js")
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: 'active',
@@ -19,6 +19,8 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+  console.log("# router.index.js" )
+  console.log(JSON.stringify(to.path))
   // clear alert on route change
   const alertStore = useAlertStore();
   alertStore.clear();
@@ -27,9 +29,13 @@ router.beforeEach(async (to) => {
   const publicPages = ['/login', '/registro'];
   const authRequired = !publicPages.includes(to.path);
   const authStore = useAuthStore();
+  console.log('~~ 1 authStore ~~')
+  console.log(authStore)
+  console.log("~~ 2 authStore ~~  state.value.user:-##" );
+  console.log( JSON.stringify( authStore.state))
 
-  if (authRequired && !authStore.user) {
-      authStore.returnUrl = to.fullPath;
+  if (authRequired && !authStore.state.user) {
+      authStore.state.returnUrl = to.fullPath;
       return '/login';
   }
 });

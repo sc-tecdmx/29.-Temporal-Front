@@ -21,15 +21,18 @@
     };
     ///
     async function onSubmit(values) {
-        console.log ("onSubmit")
+        console.log ("# LoginView onSubmit")
         const authStore = useAuthStore()
-        const { username, password } = values;
 
-        console.log("##- 0 -##");
+        //#const { username, password } = values;
+        const username = 'admin'
+        const password= '123456789'
+        
+        console.log("##-LoginView 0 -##");
         try {
             await authStore.login(username, password);
         } catch (error ) {
-            console.log ("##- error -##" + error)
+            console.log ("##- LoginView  error -##" + error)
         }
     }
 </script>

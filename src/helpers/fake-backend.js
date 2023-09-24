@@ -38,11 +38,12 @@ console.log("# fakeBackend " + url)
 
             function authenticate() {
                 const { username, password } = body();
-                
+                console.log ("fakebacend - authenticate")
+                console.log ("username - authenticate:" + username)
                 //## Corregir para que autentique 
-                //## const user = users.find(x => x.username === username && x.password === password);
+                const user = users.find(x => x.username === username && x.password === password);
 
-                //## if (!user) return error('Username or password is incorrect');
+                if (!user) return error('Username or password is incorrect');
 
                 return ok({
                     ...basicDetails(user),
@@ -51,8 +52,10 @@ console.log("# fakeBackend " + url)
             }
 
             function register() {
+                console.log ("fakebackend register")
+                
                 const user = body();
-
+                console.log (JSON.stringify(user))
                 if (users.find(x => x.username === user.username)) {
                     return error('Username "' + user.username + '" is already taken')
                 }
@@ -60,6 +63,7 @@ console.log("# fakeBackend " + url)
                 user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
                 users.push(user);
                 localStorage.setItem(usersKey, JSON.stringify(users));
+                console.log ("fakebackend register.ok")
                 return ok();
             }
 
@@ -109,6 +113,7 @@ console.log("# fakeBackend " + url)
             // helper functions
 
             function ok(body) {
+                console.log('fakebackend - ok')
                 resolve({ ok: true, ...headers(), json: () => Promise.resolve(body) })
             }
 
@@ -117,6 +122,7 @@ console.log("# fakeBackend " + url)
             }
 
             function error(message) {
+                console.log('fakebackend - error')
                 resolve({ status: 400, ...headers(), json: () => Promise.resolve({ message }) })
             }
 

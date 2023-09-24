@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
-    import { useLiveStore } from "@/stores/appLiveStore.js";
-    import { useAuthStore } from "@/stores/appAuthStore.js";
+    import { useUsersStore } from "@/stores/appUsersStore.js";
     import { useAlertStore } from "@/stores/appAlertStore.js";
 
 import "@/assets/sass/authentication/auth-boxed.scss";
@@ -22,12 +21,20 @@ const set_pwd_type = () => {
 ///
 async function onSubmit(values) {
     
-    const authStore = useAuthStore()
+    const usersStore = useUsersStore()
     const alertStore = useAlertStore()
     console.log("Registrando...")
   try {
+    
+    values = {
+        firstName:'admin',
+        lastName:'admin',
+        username:'admin',
+        password:'123456789'
+    }
+    console.log("==eenviado a guardar...")
+    await usersStore.register(values);
     console.log("==eenviado a login...")
-    await authStore.register(values);
     await router.push("/auth/login");
     
     alertStore.success("Registration successful");
@@ -180,7 +187,7 @@ async function onSubmit(values) {
 
                   <div class="d-sm-flex justify-content-between">
                     <div class="field-wrapper">
-                      <button @click="onSubmit" type="submit" class="btn btn-primary">
+                      <button @click="onSubmit" type="button" class="btn btn-primary">
                         Registrarse
                       </button>
                       

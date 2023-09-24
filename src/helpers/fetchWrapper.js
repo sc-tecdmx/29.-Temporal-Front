@@ -26,7 +26,7 @@ function request(method) {
 // helper functions
 
 function authHeader(url) {
-    console.log ("# authHeader  " + url);
+    console.log ("# fetchWrapper - authHeader  " + url);
     // return auth header with jwt if user is logged in and request is to the api url
     const { user } = useAuthStore();
     const isLoggedIn = !!user?.token;
@@ -39,7 +39,7 @@ function authHeader(url) {
 }
 
 async function handleResponse(response) {
-    console.log ("# handleResponse  " + response);
+    console.log ("# fetchWrapper - handleResponse  " + response);
     const isJson = response.headers?.get('content-type')?.includes('application/json');
     const data = isJson ? await response.json() : null;
 

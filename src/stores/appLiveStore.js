@@ -8,7 +8,7 @@ export const useLiveStore = defineStore('appLiveStore', () => {
     is_show_search  : true,
     is_dark_mode    : false,
     dark_mode       : 'light',
-    menu_style      : 'vertical',
+    menu_style      : 'collapsible-vertical',
     layout_style    : 'full',
   })
 

@@ -9,7 +9,8 @@
     const appLiveStore = useLiveStore();
 </script>
 <template>
-  <div>
+  
+  <div :class="[appLiveStore.state.layout_style, appLiveStore.state.menu_style]">
     <Header></Header>
     <div
       class="main-container"

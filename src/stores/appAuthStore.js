@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia';
 
 import { fetchWrapper } from '@/helpers/fetchWrapper.js';
@@ -8,13 +8,15 @@ import { useAlertStore } from '@/stores/appAlertStore.js';
 
 const baseUrl = `${import.meta.env.VITE_API_URL}/auth`;
 
+//Ref: https://pinia.vuejs.org/core-concepts/
+
 export const useAuthStore = defineStore('appAuthStore', () => {
     const state = ref({
         user: JSON.parse(localStorage.getItem('user')),
         returnUrl: null
     })
 
-    const  login = async (username, password) => {
+    const login = async (username, password) => {
         console.log("##-appAuthStore.js 1 -##");
         try {
             const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password });    
@@ -30,7 +32,7 @@ export const useAuthStore = defineStore('appAuthStore', () => {
             localStorage.setItem('user', JSON.stringify(user));
 
             // redirect to previous url or default to home page
-            router.push( '/tablero');
+            router.push( '/tablero/inicio');
         } catch (error) {
             console.log("##-appAuthStore.js 5 -##" + error);
             const alertStore = useAlertStore();
@@ -44,9 +46,5 @@ export const useAuthStore = defineStore('appAuthStore', () => {
             router.push('/login');
     }
 
-    return {
-        state,
-        login,
-        logout
-    }
-}) /*<*/
+    return { state, login,logout}
+})

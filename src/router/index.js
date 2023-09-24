@@ -3,19 +3,21 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/appAuthStore.js';
 import { useAlertStore } from '@/stores/appAlertStore.js';
 
-import  IndexView  from '@/views/tablero/IndexView.vue'
+import publicRouter   from './publicRouter';
+import authRouter     from './authRouter';
+import tableroRouter  from './tableroRouter';
+console.log("🧊 router/index.js")
 
-import authRouter from './authRouter';
-import tableroRouter from './tableroRouter';
-console.log("◘ router/index.js")
+const routes = [
+  { ...publicRouter},
+  { ...authRouter},
+  { ...tableroRouter},
+];
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: 'active',
-  routes: [
-    { path: '/', name: 'home', component: IndexView },
-    { ...authRouter},
-    { ...tableroRouter},
-  ]
+  routes
 })
 
 router.beforeEach(async (to) => {
@@ -26,8 +28,9 @@ router.beforeEach(async (to) => {
   alertStore.clear();
 
   // redirect to login page if not logged in and trying to access a restricted page 
-  const publicPages = ['/login', '/registro'];
+  const publicPages = ['/', '/login', '/registro'];
   const authRequired = !publicPages.includes(to.path);
+  console.log("# router.index.js- beforeEach -" + authRequired)
   const authStore = useAuthStore();
   console.log('~~ 1 authStore ~~')
   console.log(authStore)

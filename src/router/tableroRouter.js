@@ -6,7 +6,7 @@ export default {
     path: '/tablero', 
     component : appLayout,
     children: [
-        { path: '/', name: 'home', component: IndexView},
+        { path: '/tablero/inicio', name: 'tablero-inicio', component: IndexView},
         { path: '/nuevo', name: 'nuevo', component: NuevoView}
     ]
 }

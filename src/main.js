@@ -19,7 +19,7 @@ import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
 import { fakeBackend } from './helpers';
 fakeBackend();
 //~~
-console.log("◘ main.js")
+console.log("🧊 main.js")
 const app = createApp(App)
     app.use(createPinia())
     app.use(router)

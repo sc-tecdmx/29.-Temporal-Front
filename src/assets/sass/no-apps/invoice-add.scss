@@ -1,8 +1,9 @@
 //  =================
 //      Imports
 //  =================
-
+@import '../nekdu_colores.scss';
 @import '../../base/base'; // Base Variables
+
 
 .selectable-dropdown {
     a.dropdown-toggle {
@@ -476,7 +477,7 @@
             border-bottom: 1px solid $m-color_2; 
             width: 100%;
             font-size: 16px;
-            color: $color_inst_text_dark; //PAO
+            color: $paleta_gris_a; //PAO
             font-weight: 500;
         }
 
@@ -570,7 +571,7 @@
             border-bottom: 1px solid $m-color_2;
             width: 100%;
             font-size: 16px;
-            color: $color_inst_text_dark; //PAO
+            color: $paleta_gris_a; //PAO
             font-weight: 500;
         }
 

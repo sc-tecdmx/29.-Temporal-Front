@@ -1,5 +1,6 @@
 <script setup>
-    import "@/assets/sass/widgets/widgets.scss";
+    
+    /*import "@/assets/sass/widgets/widgets.scss";*/
     defineProps({
     cantidad: {
         type: String,

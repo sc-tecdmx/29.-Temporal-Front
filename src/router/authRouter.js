@@ -1,5 +1,6 @@
 import {AuthLayout,Login,Registro,BloqueoView, RecuperarContrasenaView  } from '@/views/login'
 
+
 export default {
     path: '/auth',
     name: 'auth',
@@ -10,6 +11,7 @@ export default {
             component: RecuperarContrasenaView },
         { path: '/bloqueo', name: 'bloqueo', component: BloqueoView },
         { path: '/login', name: 'login', component: Login },
+        
     ]
 }
 

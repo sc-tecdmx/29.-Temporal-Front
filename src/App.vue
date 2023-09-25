@@ -4,7 +4,7 @@
   import { useAuthStore } from "@/stores/appAuthStore.js";
   import { useLiveStore } from "@/stores/appLiveStore.js";
 
-  import "@/assets/sass/app.scss"; /* IFR */
+  import "@/assets/sass/nekdu_app.scss"; /* IFR */
 
   console.log("🧊 App.vue");
   useMeta({ title: "TECDMX - Tablero de control de Firmas Electrónicas." });

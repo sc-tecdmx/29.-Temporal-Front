@@ -1,20 +1,38 @@
 <script setup>
-    import { useMeta }      from '@/composables/use-meta';
-    import IconDropDown from '../../components/icons/IconDropDown.vue';
-    useMeta({ title: "TECDMX | Tablero de Firmas Electrónicas." });
-
+import { useMeta } from "@/composables/use-meta";
+import IconDropDown from "@/components/icons/IconDropDown.vue";
+useMeta({ title: "TECDMX | Tablero de Firmas Electrónicas." });
 </script>
 <template>
-    <div class="row mb-2 mt-3 ms-2">
-      <div class="col-md-11">
-          <h3 class="fw-bolder">Home [p]</h3>
+  <div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+      <div class="col-10 col-sm-8 col-lg-6">
+        <img
+          src="/src/assets/images/tecdmx/vector_home.png"
+          class="d-block mx-lg-auto img-fluid"
+          alt="Bootstrap Themes"
+          width="700"
+          height="500"
+          loading="lazy"
+        />
       </div>
-
-      <p class="d-inline-flex gap-1 col-md-1">
-        <a class="" data-bs-toggle="collapse" href="#collapseWidget" role="button" aria-expanded="false" aria-controls="collapseWidget">
-            <IconDropDown></IconDropDown>
-        </a>
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold lh-1 mb-3">
+          Tablero de Seguimiento de Firmas Electrónicas
+        </h1>
+        <p class="lead">
+          Bienvenido al Portal de Seguimiento de Firmas Electrónicas
+          Certificadas del Tribunal Electoral de la Ciudad de México.
         </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+          <router-link to="/login" class="btn btn-primary btn-lg px-4 me-md-2"
+            >Ingresar</router-link
+          >
+          <button type="button" class="btn btn-outline-secondary btn-lg px-4">
+            Registro
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-    
 </template>

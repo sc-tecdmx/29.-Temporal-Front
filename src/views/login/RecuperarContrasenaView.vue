@@ -1,5 +1,5 @@
 <script setup>
-    import '@/assets/sass/authentication/auth-boxed.scss';
+    import '@/assets/sass/ch-authentication/auth-boxed.scss';
 
     import { useMeta } from '@/composables/use-meta';
     useMeta({ title: 'Password Recovery Boxed' });

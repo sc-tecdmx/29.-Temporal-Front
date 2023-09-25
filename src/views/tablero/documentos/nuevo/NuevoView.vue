@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import '@/assets/sass/apps/invoice-add.scss';
+import '@/assets/sass/no-apps/invoice-add.scss';
 
 //-----------------------
 import '@/assets/sass/forms/file-upload-with-preview.min.css';

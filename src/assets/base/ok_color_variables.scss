@@ -2,8 +2,32 @@
 //	===============================
 //			@Import	Colors
 //	===============================
+/* IFR */
+$color_inst_dark : #070069;
+$color_inst_light :  #9A278F;
+$color_inst_sec_dark: #FF8200;
+$color_inst_text_dark: #000;
+$color_inst_text_ligth: #fff;
+$color_inst_bg_normal : #fff;
+$color_inst_bg_inverse: #690061;
+$color_inst_gris_fuerte: #D9D9D9;
+$color_inst_gris_claro: #EFEDED;
+$color_inst_bg_submenu:#771c6e;
+/* /< IFR */
 
-@import '../sass/nekdu_colores.scss'; // Color Variables
+
+$white: #fff;
+$black: #000;
+
+
+$primary: #690061; //PAO - #4361ee
+$info: #2196f3;
+$success: #FF8200; //PAO - #1abc9c
+$warning: #e2a03f;
+$danger: #e7515a;
+$secondary: #9A278F;//PAO - #805dca
+$dark: #3b3f5c;
+
 
 $l-primary: #eaf1ff;
 $l-info: #e7f7ff;
@@ -20,7 +44,7 @@ $l-dark: #e3e4eb;
 $m-color_1: #f1f2f3;
 $m-color_2: #ebedf2;
 
-$m-color_3: #e0e6ed;
+$m-color_3: #e0e6ed; //background invoice
 $m-color_4: #bfc9d4;
 $m-color_5: #d3d3d3;
 

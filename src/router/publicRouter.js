@@ -5,6 +5,6 @@ export default {
     path: '/home', 
     component : publicLayout,
     children: [
-        { path: '/', name: 'indexHome', component: HomeView},
+        { path: '/', name: 'homeView', component: HomeView},
     ]
 }

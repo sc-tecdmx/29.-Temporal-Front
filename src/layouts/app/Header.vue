@@ -8,13 +8,18 @@
   import Perfil           from '@/components/header/Perfil.vue'
   
   const appLiveStore = useLiveStore();
+  const srcLogoA = "/src/assets/images/tecdmx/logo_tecdmx.png"
+  const classLogo= "theme-logo"
 </script>
 <template>
   <!-- BARRA DE NAVEGACIÓN-->
   <div class="header-container fixed-top">
     <header class="header navbar navbar-expand-sm">
       <!-- Logotipo institucional. -->
-      <BrandLogo />
+      <BrandLogo
+        :srcLogo    = "srcLogoA"
+        :classLogo  = "classLogo"
+      />
       <!-- ./Logotipo institucional. -->
 
       <!-- Hamburger -->

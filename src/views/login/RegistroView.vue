@@ -3,7 +3,7 @@ import { ref } from "vue";
     import { useUsersStore } from "@/stores/appUsersStore.js";
     import { useAlertStore } from "@/stores/appAlertStore.js";
 
-import "@/assets/sass/authentication/auth-boxed.scss";
+import "@/assets/sass/ch-authentication/auth-boxed.scss";
 
 import { useMeta } from "@/composables/use-meta";
 useMeta({ title: "Registro" });

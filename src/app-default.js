@@ -6,4 +6,5 @@ export const $appDefault = {
     navigation: 'vertical', // vertical, collapsible-vertical, horizontal
     layout: 'full', // full, boxed-layout, large-boxed-layout
     //-----------------------------
+    
 };

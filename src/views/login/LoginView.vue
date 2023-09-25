@@ -3,7 +3,7 @@
     import { useAuthStore } from "@/stores/appAuthStore.js";
     import { useAlertStore } from "@/stores/appAlertStore.js";
 
-    import '@/assets/sass/authentication/auth-boxed.scss';
+    import '@/assets/sass/ch-authentication/auth-boxed.scss';
     import IconFeatherUser from '../../components/icons/IconFeatherUser.vue'
     import IconFeatherLock from '../../components/icons/IconFeatherLock.vue'
     import IconFacebook from '../../components/icons/IconFacebook.vue'

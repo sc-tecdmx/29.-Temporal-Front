@@ -10,7 +10,7 @@ import TableroBuscar from "./TableroBuscar.vue";
 import ModalAddTask   from "./ModalAddTask.vue";
 import ModalViewTask  from "./ModalViewTask.vue";
 
-import "@/assets/sass/apps/todolist.scss";
+import "@/assets/sass/no-apps/todolist.scss";
 import "@/assets/css/modulos/todolist-editor.css"
 import "@/assets/sass/components/custom-modal.scss";
 import "@/assets/sass/scrollspyNav.scss";
@@ -253,6 +253,8 @@ const showMessage = (msg = "", type = "success") => {
                   <IconPlus />
                   Nuevo
                 </button>
+
+                
 
                 <button
                   type="button"

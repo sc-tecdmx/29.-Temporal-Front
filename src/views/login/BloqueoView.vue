@@ -1,6 +1,6 @@
 <script setup>
     import { ref } from 'vue';
-    import '@/assets/sass/authentication/auth-boxed.scss';
+    import '@/assets/sass/ch-authentication/auth-boxed.scss';
 
     import { useMeta } from '@/composables/use-meta';
     useMeta({ title: 'Lockscreen Boxed' });

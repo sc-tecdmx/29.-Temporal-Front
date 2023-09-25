@@ -1,29 +1,12 @@
 <script setup>
-    import PublicHeader   from "@/layouts/public/PublicHeader.vue";
-    import PublicSidebar  from "@/layouts/public/PublicSidebar.vue";
-    import PublicFooter   from "@/layouts/public/PublicFooter.vue";
-    import "/src/assets/sass/pages/error/style-maintanence.scss";
-    import { useLiveStore } from "@/stores/appLiveStore.js";
-    const appLiveStore = useLiveStore();
+  import PublicHeader from "@/layouts/public/PublicHeader.vue";
+  import PublicSidebar from "@/layouts/public/PublicSidebar.vue";
+  import PublicFooter from "@/layouts/public/PublicFooter.vue";
+  import { useLiveStore } from "@/stores/appLiveStore.js";
+  // TODO. Reconocer si ya se inició sesión
 </script>
 <template>
   <PublicHeader></PublicHeader>
-  <div class="container col-xxl-8 px-4 py-5 ">
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5 ">
-      <div class="col-10 col-sm-8 col-lg-6">
-        <img src="/src/assets/images/tecdmx/vector_home.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
-      </div>
-      <div class="col-lg-6">
-        <h1 class="display-5 fw-bold lh-1 mb-3">Tablero de Seguimiento de Firmas Electrónicas</h1>
-        <p class="lead">Bienvenido al Portal de Seguimiento de Firmas Electrónicas Certificadas del  Tribunal Electoral de la Ciudad de México.</p>
-        
-        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-          <router-link to="/login" class="btn btn-primary btn-lg px-4 me-md-2">Ingresar</router-link>
-          <button type="button" class="btn btn-outline-secondary btn-lg px-4">Salir</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <PublicFooter></PublicFooter>
+    <router-view></router-view>
+  <PublicFooter></PublicFooter>
 </template>

@@ -3,9 +3,12 @@
     import '@/assets/sass/authentication/auth-boxed.scss';
     import IconFeatherUser from '../../components/icons/IconFeatherUser.vue'
     import IconFeatherLock from '../../components/icons/IconFeatherLock.vue'
+    import IconLogoGoogle from '../../components/icons/IconLogoGoogle.vue';
+    import IconMicrosoftLogo from '../../components/icons/IconMicrosoftLogo.vue';
+    import authLayout from '../../layouts/authLayout.vue';
 
     import { useMeta } from '@/composables/use-meta';
-    useMeta({ title: 'Login Boxed' });
+    useMeta({ title: 'Login' });
 
     const pwd_type = ref('password');
 
@@ -17,7 +20,9 @@
         }
     };
 </script>
+
 <template>
+    <authLayout></authLayout>
     <div class="form auth-boxed">
         <div class="form-container outer">
             <div class="form-form">
@@ -38,7 +43,7 @@
                                     <div id="password-field" class="field-wrapper input mb-2">
                                         <div class="d-flex justify-content-between">
                                             <label for="password">CONTRASEÑA</label>
-                                            <router-link to="/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
+                                            <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
                                         </div>
                                         <IconFeatherLock></IconFeatherLock>
                                         <input :type="pwd_type" class="form-control" placeholder="Password" />
@@ -72,44 +77,16 @@
 
                                     <div class="social">
                                         <a href="javascript:void(0);" class="btn social-fb">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="feather feather-facebook"
-                                            >
-                                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                                            </svg>
-                                            <span class="brand-name">Facebook</span>
+                                            <IconLogoGoogle></IconLogoGoogle>
+                                            <span class="brand-name">Google</span>
                                         </a>
                                         <a href="javascript:void(0);" class="btn social-github">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="feather feather-github"
-                                            >
-                                                <path
-                                                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-                                                ></path>
-                                            </svg>
-                                            <span class="brand-name">Github</span>
+                                            <IconMicrosoftLogo></IconMicrosoftLogo>
+                                            <span class="brand-name ms-1">Microsoft</span>
                                         </a>
                                     </div>
 
-                                    <p class="signup-link">¿No estas registrado? <router-link to="/registro">Crea una cuenta</router-link></p>
+                                    <p class="signup-link">¿No estas registrado? <router-link to="/account/registro">Crea una cuenta</router-link></p>
                                 </div>
                             </form>
                         </div>

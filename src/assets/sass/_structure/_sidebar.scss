@@ -24,7 +24,7 @@
     /* background: transparent; */ /* IFR */
    /* background-color: $color_inst_light; */ 
     background: -webkit-linear-gradient(270deg, $color_inst_light 49%, $color_inst_bg_inverse 85%, #2c303c00); //--PAO
-    background: linear-gradient($color_inst_bg_inverse  41%, $color_inst_light 95%, rgba(255, 255, 255, 0)); //--PAO
+    background: linear-gradient($color_inst_bg_inverse  41%, $color_inst_light 95%, rgba(105, 0, 97, 0.9)); //--PAO
 }
 
 .sidebar-closed {
@@ -94,7 +94,7 @@
             height: calc(100vh - 107px) !important;
             margin-right: 0;
             padding-right: 14px; /*IFR */
-            padding-left: 14px; /*IFR Sin explicación */
+            //padding-left: 14px; /*IFR Sin explicación */
             border-right: 1px solid $color_inst_light;
         }
     }
@@ -394,8 +394,8 @@
         background-color: #fff;
     }
     .sidebar-wrapper {
-        top: 128px;
-        height: calc(100vh - 150px);
+        top: 80px; //PAO
+        height: calc(100vh - 60px); //PAO
         border-radius: 6px;
         #sidebar {
             ul {
@@ -407,7 +407,7 @@
                                 background: transparent;
                                 box-shadow: none;
                                 span {
-                                    color: #060818;
+                                    color: #fff; //PAO
                                 }
                                 svg {
                                     color: #4361ee;
@@ -417,12 +417,12 @@
                                 padding: 9px 20px;
                                 color: #888ea8;
                                 svg {
-                                    color: #515365;
+                                    color: #fff; //PAO
                                 }
                                 &[aria-expanded='true']:not([data-active='true']) {
                                     background: transparent;
                                     box-shadow: none;
-                                    color: #060818;
+                                    color: #fff; //PAO
                                     svg {
                                         color: #4361ee;
                                     }
@@ -475,7 +475,7 @@
         }
         > .sidebar-wrapper {
             width: 52px;
-            left: 16px;
+            left: 0px; //PAO
             background-color: #fff;
             &:hover {
                 width: 212px;

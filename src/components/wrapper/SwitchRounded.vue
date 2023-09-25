@@ -1,22 +1,22 @@
 <script setup>
+    import { ref } from 'vue';
+    import { defineProps, defineEmits } from 'vue';
+
     const props= defineProps({
         label: String,
     });
+    const emit = defineEmits(['chkSwitch']);
+
+    const selected = ref('');
 </script>
 <template>
-    <!-- <div class="row">
-        <div class="col-2">
-            <label class="switch s-secondary mb-4 me-2">
-                <input type="checkbox"/>
-                <span class="slider round"></span>
-            </label>
-        </div>
-        <div class="col-10">
-            <span>{{ label }}</span>
-        </div> 
-    </div> -->
     <div class="form-check form-switch ms-3">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <input v-model="selected"
+            class="form-check-input" 
+            type="checkbox" 
+            role="switch" 
+            id="flexSwitchCheckDefault"
+            @change="emit('chkSwitch', selected)">
         <label class="form-check-label ps-1" for="flexSwitchCheckDefault">{{ label }}</label>
     </div>
 </template>

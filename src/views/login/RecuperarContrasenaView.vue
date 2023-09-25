@@ -1,5 +1,6 @@
 <script setup>
     import '@/assets/sass/authentication/auth-boxed.scss';
+    import IconFeatherAtSign from '../../components/icons/IconFeatherAtSign.vue';
 
     import { useMeta } from '@/composables/use-meta';
     useMeta({ title: 'Password Recovery Boxed' });
@@ -19,21 +20,7 @@
                                         <div class="d-flex justify-content-between">
                                             <label for="email">CORREO ELECTRÓNICO</label>
                                         </div>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="feather feather-at-sign"
-                                        >
-                                            <circle cx="12" cy="12" r="4"></circle>
-                                            <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
-                                        </svg>
+                                        <IconFeatherAtSign></IconFeatherAtSign>
                                         <input type="email" class="form-control" placeholder="Correo electrónico" />
                                     </div>
 

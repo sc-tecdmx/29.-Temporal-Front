@@ -9,12 +9,9 @@
          placeholder: String,
      });
 
-    const emit = defineEmits(['input'])
+    const emit = defineEmits(['inputData'])
 
-
-    const params = ref({
-        contenido: '',
-    });
+    const selected = ref('')
 
     function updateValue(value) {
         emit('input', value)
@@ -32,11 +29,11 @@
             class="col-sm-12 col-form-label col-form-label-sm pb-0">{{ label }}</label>
             <input
                 type="text"
-                v-model="params.contenido"
+                v-model="selected"
                 :id="idName"
                 class="form-control form-control-sm"
                 :placeholder=" placeholder "
-                
+                @change="emit('inputData', selected)"
                 />
         </div>
     </div>

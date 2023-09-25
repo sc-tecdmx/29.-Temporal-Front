@@ -34,7 +34,7 @@
                                     <div id="password-field" class="field-wrapper input mb-2">
                                         <div class="d-flex justify-content-between">
                                             <label for="password">CONTRASEÑA</label>
-                                            <router-link to="/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
+                                            <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
                                         </div>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"

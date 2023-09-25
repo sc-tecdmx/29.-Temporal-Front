@@ -1,14 +1,15 @@
 <script setup>
     import { ref } from 'vue';
+    import { defineProps, defineEmits } from 'vue';
 
     const props= defineProps({
         label: String,
         placeholder: String,
     });
 
-    const params = ref({
-        contenido: '',
-    });
+    const emit = defineEmits(['txtArea']);
+    
+    const selected = ref('');
 </script>
 <template>
     <div class="invoice-detail-note">
@@ -17,9 +18,11 @@
                 <div class="form-group row invoice-note">
                     <label for="invoice-detail-notes" class="col-sm-12 col-form-label col-form-label-sm">{{ label }}</label>
                     <div class="col-sm-12">
-                        <textarea v-model="params.contenido" rows="3" id="invoice-detail-notes"
-                                class="form-control"
-                                :placeholder="placeholder"></textarea>
+                        <textarea v-model="selected" rows="3" id="invoice-detail-notes"
+                            class="form-control"
+                            :placeholder="placeholder"
+                            @change="emit('txtArea', selected)"
+                            ></textarea>
                     </div>
                 </div>
             </div>

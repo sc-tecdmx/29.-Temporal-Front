@@ -19,7 +19,6 @@
         <div class="col-sm-12">
             <label :for="idName"
             class="col-sm-12 col-form-label col-form-label-sm pb-0">{{ label }}</label>
-            <!-- <select v-model="params.contenido" -->
             <select v-model="selected"
                     class="form-select form-select-sm"
                     :id="idName"

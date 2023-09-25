@@ -116,7 +116,7 @@
         h5 {
             position: relative;
             font-size: 18px;
-            font-weight: 700;
+            //font-weight: 700; //PAO
             letter-spacing: 3px;
             color: #515365;
         }
@@ -312,12 +312,12 @@
 
             .todo-content {
                 width: 100%;
-                padding: 20px 10px 20px 3px;
+                padding: 8px 10px 8px 3px; //PAO
             }
 
             .todo-heading {
-                font-size: 18px;
-                font-weight: 600;
+                font-size: 14px; //PAO
+                //font-weight: 600; //PAO
                 color: #515365;
                 margin-bottom: 2px;
                 -webkit-transition: all 0.35s ease;

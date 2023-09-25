@@ -26,6 +26,7 @@ import AgregarArchivoMultiple from '../../../../components/wrapper/AgregarArchiv
 import AgregarArchivo from '../../../../components/wrapper/AgregarArchivo.vue';
 import FechaBasica from '../../../../components/wrapper/FechaBasica.vue';
 import SwitchRounded from '../../../../components/wrapper/SwitchRounded.vue';
+import axios from 'axios';
 
 
 useMeta({ title: 'Vue Multiselect' });
@@ -269,7 +270,15 @@ const catTipoDocumento = ref([{id:'1',label:'Acuerdo de radicación'},
 {id:'4',label:'Oficio'},
 {id:'5',label:'Acuerdo plenario'},
 {id:'6',label:'Minuta'}]);
-const catFirmantes = ref(['Lic. Otilio Esteban Hernández Pérez', 'Ing. Isaí Fararoni Ramírez', 'Lic. Nallely ']);
+//const catFirmantes = ref(['Lic. Otilio Esteban Hernández Pérez', 'Ing. Isaí Fararoni Ramírez', 'Lic. Nallely ']);
+const catFirmantes = ref([{id:'1',label:'Lic. Otilio Esteban Hernández Pérez'},
+                        {id:'2',label: 'Ing. Isaí Fararoni Ramírez'},
+                        {id:'3',label: 'Lic. Nallely '}]);
+const catDestinatarios = ref([{id:'1',label:'Lic. Otilio Esteban Hernández Pérez'},
+                        {id:'2',label: 'Ing. Isaí Fararoni Ramírez'},
+                        {id:'3',label: 'Lic. Nallely '}]);
+const thFirmantes= ['Nombre','Firma', 'Editar', 'Estado', ''];
+const thDestinatarios= ['Nombre','Instrucción', 'Editar', 'Estado', ''];
 
 /* Fin catalogos */
 
@@ -296,10 +305,13 @@ const items = ref([]);
 const selected_file = ref(null);
 const selected_file_cer = ref(null);
 const selected_file_key = ref(null);
+const contrasenaCer = ref(null);
 
 const certificado = ref({
     archivoCer:'',
-    archivoKey:''
+    archivoKey:'',
+    contrasenaCer:'',
+    documento: '',
 });
 
 /* JSON */
@@ -368,7 +380,49 @@ const opcionSelectDestinatario = (idOpcion) => {
 const opcionSelectCargo = (idOpcion) => {
     params.value.idCargo = idOpcion;
 }
-
+const opcionInputIdDocumento = (idData) => {
+    params.value.idDocumento = idData;
+}
+const opcionInputFolio = (idData) => {
+    params.value.folio = idData;
+}
+const opcionInputFolioDocumento = (idData) => {
+    params.value.folioDocumento = idData;
+}
+const opcionInputNumeroExpediente = (idData) => {
+    params.value.numeroExpediente = idData;
+}
+const opcionInputNombreExpediente = (idData) => {
+    params.value.nombreExpediente = idData;
+}
+const opcionInputAsunto = (idData) => {
+    params.value.asunto = idData;
+}
+const opcionInputElaboro = (idData) => {
+    params.value.elaboro = idData;
+}
+const opcionInputContenido = (idData) => {
+    params.value.elaboro = idData;
+}
+const opcionSwitchOrdenFirma = (idData) => {
+    params.value.configuracion.ordenFirma = idData;
+}
+const opcionSwitchModoCaptura = (idData) => {
+    params.value.configuracion.modoCaptura = idData;
+}
+const opcionSwitchGeneraOficio = (idData) => {
+    params.value.configuracion.generaNumeroOficio = idData;
+}
+const opcionTxtAreaNotas = (idData) => {
+    params.value.notas = idData;
+}
+const opcionDateDocumento = (date) => {
+    params.value.fechaDocumento = date;
+}
+const documentoAdjunto = (file) =>{
+    params.value
+}
+/* FIN Set params */
 
 
 
@@ -419,8 +473,10 @@ onMounted(() => {
 
 /* Obtener documentos */
 const change_file = (event) => {
-    selected_file.value = URL.createObjectURL(event.target.files[0]);
+    //selected_file.value = URL.createObjectURL(event.target.files[0]);
+    selected_file.value = event.target.files[0];
     params.value.configuracion.documentos = selected_file.value;
+    certificado.value.documento = selected_file.value;
 };
 /* Guarda Capruta */
 const enviaCaptura =()=>{
@@ -429,20 +485,52 @@ const enviaCaptura =()=>{
 }
 
 /* Modal firmar ahora */
+const archivoEsCer = ref(false);
 const change_file_cer = (event) => {
-    selected_file_cer.value = URL.createObjectURL(event.target.files[0]);
+
+    // selected_file_cer.value = URL.createObjectURL(event.target.files[0]);
+    selected_file_cer.value = event.target.files[0];
     certificado.value.archivoCer = selected_file_cer.value;
+
+
+    const inputElement = document.getElementById("formFileCer");
+    const nombreArchivo = inputElement.value.toLowerCase();
+    console.log("cer");
+    console.log(archivoEsCer.value);
+             if (nombreArchivo.endsWith(".cer")) {
+                console.log("Es cer");
+                archivoEsCer.value = true;
+             } else {
+                console.log("No es cer");
+                 archivoEsCer.value = false;
+                 alert("Por favor, seleccione un archivo con extensión .cer");
+                 inputElement.value = ""; // Borra el campo de entrada
+             }
 
 };
 const change_file_key = (event) => {
-    selected_file_key.value = URL.createObjectURL(event.target.files[0]);
+    //selected_file_key.value = URL.createObjectURL(event.target.files[0]);
+    selected_file_key.value = event.target.files[0];
     certificado.value.archivoKey = selected_file_key.value;
 };
+
+const setContrasena = (contrasena) =>{
+    console.log("constraseña" + contrasena.value);
+    certificado.value.contrasenaCer = contrasena.value;
+}
 
 const enviaFirma=()=>{
     console.log("certificado");
     console.log(certificado.value);
-    console.log(params.value.configuracion.documentos);
+    try {
+        // const {res} = axios.post('profile/student', profile)
+        //     .then(res => {
+        //         return res;
+        //     });
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 /* Termina Modal firmar ahora */
 
@@ -458,6 +546,21 @@ const add_item = () => {
 const remove_item = (item) => {
     items.value = items.value.filter((d) => d.id != item.id);
 };
+
+// const validarExtensionDeArchivo= () => {
+//             const inputElement = document.getElementById("formFileCer");
+//             const nombreArchivo = inputElement.value.toLowerCase();
+
+//             console.log("cer" + archivoEsCer);
+
+//             if (nombreArchivo.endsWith(".cer")) {
+//                 this.archivoEsCer = true;
+//             } else {
+//                 this.archivoEsCer = false;
+//                 alert("Por favor, seleccione un archivo con extensión .cer");
+//                 inputElement.value = ""; // Borra el campo de entrada
+//             }
+//         }
 
 </script>
 <template>
@@ -478,7 +581,7 @@ const remove_item = (item) => {
                                     <!-- Título del documento PAO-->
                                     <div class="invoice-detail-total mb-3">
                                         <div class="row">
-                                            <div class="col-12 col-md-6">
+                                            <div class="col-12 col-md-3">
                                                 <SelectCatalogo
                                                     idName= "catUso"
                                                     label= "Uso:"
@@ -486,6 +589,18 @@ const remove_item = (item) => {
                                                     @opcionSelect = "opcionSelectUso"
                                                 ></SelectCatalogo>
                                             </div>
+
+                                            <div class="col-12 col-md-6 col-lg-3 offset-md-3 ">
+                                                <InputForm
+                                                    idName="folio"
+                                                    label = "Folio:"
+                                                    placeholder = "folio"
+                                                    @inputData="opcionInputFolio"
+                                                ></InputForm>
+                                            </div>
+                                        </div>
+                                        <!-- áreas -->
+                                        <div class="row">
                                             <div class="col-12 col-md-6">
                                                 <SelectCatalogo
                                                     idName= "catAreaDestino"
@@ -503,135 +618,9 @@ const remove_item = (item) => {
                                                 ></SelectCatalogo>
 
                                             </div>
-                                            <div class="col-12 col-md-6">
-                                                <SelectCatalogo
-                                                    idName= "catTipoDocumento"
-                                                    label= "Tipo de documento:"
-                                                    :options="catTipoDocumento"
-                                                    @opcionSelect = "opcionSelectTipoDocumento"
-                                                ></SelectCatalogo>
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label
-                                                        :for="idDocumento"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">ID del Documento:</label>
-                                                        <input
-                                                            type="text"
-                                                            v-model="params.idDocumento"
-                                                            :id="idDocumento"
-                                                            class="form-control form-control-sm"
-                                                            placeholder=" id documento "
-                                                            />
-                                                    </div>
-                                                </div>
-                                                <!-- <InputForm
-                                                    idName="idDocumento"
-                                                    label = "ID del Documento:"
-                                                    placeholder = "id"
-                                                ></InputForm> -->
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label
-                                                        :for="folio"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Folio:</label>
-                                                        <input
-                                                            type="text"
-                                                            v-model="params.folio"
-                                                            :id="folio"
-                                                            class="form-control form-control-sm"
-                                                            placeholder=" folio "
-                                                            />
-                                                    </div>
-                                                </div>
-                                                <!-- <InputForm
-                                                    idName="folio"
-                                                    label = "Folio:"
-                                                    placeholder = "folio"
-                                                ></InputForm> -->
-                                            </div>
-                                            <div class="col-12 col-md-6 ">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label for="payment-method-account"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Folio del
-                                                        documento:</label>
-                                                        <input type="text" v-model="params.folioDocumento"
-                                                            id="payment-method-account" class="form-control form-control-sm"
-                                                            placeholder="Generar ..." />
-                                                    </div>
-                                                     <!--<div class="col-sm-3">
-                                                        Get
-                                                    </div> -->
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-6 ">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label
-                                                        :for="numeroExpediente"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Número de Expediente:</label>
-                                                        <input
-                                                            type="text"
-                                                            v-model="params.numeroExpediente"
-                                                            :id="numeroExpediente"
-                                                            class="form-control form-control-sm"
-                                                            placeholder="expediente "
-                                                            />
-                                                    </div>
-                                                </div>
-                                                <!-- <InputForm
-                                                    idName="numeroExpediente"
-                                                    label = "Número de Expediente:"
-                                                    placeholder = "Expediente"
-                                                    v-model="name"
-                                                    @setValue="setValueNoExpediente"
-                                                ></InputForm> -->
-                                            </div>
-                                            <div class="col-12 col-md-6 ">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label
-                                                        :for="nombreExpediente"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Nombre de Expediente:</label>
-                                                        <input
-                                                            type="text"
-                                                            v-model="params.nombreExpediente"
-                                                            :id="nombreExpediente"
-                                                            class="form-control form-control-sm"
-                                                            placeholder="nombre de expediente "
-                                                            />
-                                                    </div>
-                                                </div>
-                                                <!-- <InputForm
-                                                    idName="nombreExpediente"
-                                                    label = "Nombre de Expediente:"
-                                                    placeholder = "Nombre de expediente"
-                                                ></InputForm> -->
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <div class="row">
-                                                    <div class="form-group mb-1">
-                                                        <label class="mb-0" style="color: black;font-size: 14px;">Fecha de documento:</label>
-                                                        <flat-pickr v-model="params.fechaDocumento"
-                                                                    class="form-control form-control-sm flatpickr active"
-                                                                    placeholder="Seleccionar"></flat-pickr>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <div v-if="selected_tax_type.value !== null" class="form-group mb-0 tax-rate-deducted">
-                                                            <label for="rate">Rate (%)</label>
-                                                                <input v-model="selected_tax_type.value" type="number" min="0" max="100"
-                                                                class="input-rate form-control" placeholder="Rate" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- <FechaBasica
-                                                    label="Fecha de documento"
-                                                ></FechaBasica> -->
-                                            </div>
+                                        </div>
+                                        <!--Datos destinatario-->
+                                        <div class="row">
                                             <div class="col-12 col-md-6">
                                                 <SelectCatalogo
                                                     idName= "catDestinatario"
@@ -648,106 +637,128 @@ const remove_item = (item) => {
                                                     @opcionSelect = "opcionSelectCargo"
                                                 ></SelectCatalogo>
                                             </div>
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label
-                                                        :for="asuntoDocumento"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Asunto:</label>
-                                                        <input
-                                                            type="text"
-                                                            v-model="params.asunto"
-                                                            :id="asuntoDocumento"
-                                                            class="form-control form-control-sm"
-                                                            placeholder="asunto "
-                                                            />
+                                        </div>
+                                        <!-- Datos del documento -->
+                                        <div class="row">
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <SelectCatalogo
+                                                    idName= "catTipoDocumento"
+                                                    label= "Tipo de documento:"
+                                                    :options="catTipoDocumento"
+                                                    @opcionSelect = "opcionSelectTipoDocumento"
+                                                ></SelectCatalogo>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="idDocumento"
+                                                    label = "ID del Documento:"
+                                                    placeholder = "id"
+                                                    @inputData="opcionInputIdDocumento"
+                                                ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="folioDocumento"
+                                                    label = "Folio del documento:"
+                                                    placeholder = "get"
+                                                    @inputData="opcionInputFolioDocumento"
+                                                ></InputForm>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                 <div class="row">
+                                                    <div class="form-group mb-1">
+                                                        <label class="mb-0" style="color: black;font-size: 14px;">Fecha de documento:</label>
+                                                        <flat-pickr v-model="params.fechaDocumento"
+                                                                    class="form-control form-control-sm flatpickr active"
+                                                                    placeholder="Seleccionar"></flat-pickr>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div v-if="selected_tax_type.value !== null" class="form-group mb-0 tax-rate-deducted">
+                                                            <label for="rate">Rate (%)</label>
+                                                                <input v-model="selected_tax_type.value" type="number" min="0" max="100"
+                                                                class="input-rate form-control" placeholder="Rate" />
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <!-- <InputForm
+                                                <!-- <FechaBasica
+                                                    label="Fecha de documento:"
+                                                    :date="params.fechaDocumento"
+                                                    @dateSelected="opcionDateDocumento"
+                                                ></FechaBasica> -->
+
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="numeroExpediente"
+                                                    label = "Número de Expediente:"
+                                                    placeholder = "Expediente"
+                                                    @inputData="opcionInputNumeroExpediente"
+                                                ></InputForm>
+                                            </div>
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <InputForm
+                                                    idName="nombreExpediente"
+                                                    label = "Nombre de Expediente:"
+                                                    placeholder = "Nombre de expediente"
+                                                    @inputData="opcionInputNombreExpediente"
+                                                ></InputForm>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-md-6">
+                                                <InputForm
                                                     idName="asuntoDocumento"
                                                     label = "Asunto:"
                                                     placeholder = "Asunto"
-                                                ></InputForm> -->
+                                                    @inputData="opcionInputAsunto"
+                                                ></InputForm>
                                             </div>
                                             <div class="col-12 col-md-6">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label
-                                                        :for="elaboro"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Elaboró:</label>
-                                                        <input
-                                                            type="text"
-                                                            v-model="params.elaboro"
-                                                            :id="elaboro"
-                                                            class="form-control form-control-sm"
-                                                            placeholder="elaboro "
-                                                            />
-                                                    </div>
-                                                </div>
-                                                <!-- <InputForm
+                                                <InputForm
                                                     idName="elaboro"
                                                     label = "Elaboró:"
-                                                    placeholder = "Usuario"
-                                                ></InputForm> -->
+                                                    placeholder = "usuario"
+                                                    @inputData="opcionInputElaboro"
+                                                ></InputForm>
                                             </div>
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-group row invoice-created-by">
-                                                    <div class="col-sm-12">
-                                                        <label
-                                                        :for="contenidoDoc"
-                                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Contenido:</label>
-                                                        <input
-                                                            type="text"
-                                                            v-model="params.contenido"
-                                                            :id="contenidoDoc"
-                                                            class="form-control form-control-sm"
-                                                            placeholder="contenido "
-                                                            />
-                                                    </div>
-                                                </div>
-                                                <!-- <InputForm
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-md-12">
+                                                <InputForm
                                                     idName="contenidoDoc"
                                                     label = "Contenido:"
-                                                    placeholder = "Contenido"
-                                                ></InputForm> -->
+                                                    placeholder = "contenido"
+                                                    @inputData="opcionInputContenido"
+                                                ></InputForm>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- {{ params }} -->
                                     <!-- .// Fin del Título del documento -->
                                     <!-- Agregar Firmantes -->
                                     <TablaAgregar
                                         titulo="Agregar Firmantes"
                                         labelButton="Agregar firmante"
                                         :options = catFirmantes
+                                        :thtabla = thFirmantes
                                     ></TablaAgregar>
 
                                     <!-- Agregar Destinatarios -->
                                     <TablaAgregar
                                         titulo="Agregar Destinatarios"
                                         labelButton="Agregar Destinatario"
+                                        :options = catDestinatarios
+                                        :thtabla = thDestinatarios
                                     ></TablaAgregar>
 
                                     <!-- ./ Agregar Firmantes -->
-                                    <div class="invoice-detail-note">
-                                        <div class="row">
-                                            <div class="col-md-12 align-self-center">
-                                                <div class="form-group row invoice-note">
-                                                    <label for="invoice-detail-notes" class="col-sm-12 col-form-label col-form-label-sm">Notas:</label>
-                                                    <div class="col-sm-12">
-                                                        <textarea v-model="params.notas" rows="3" id="invoice-detail-notes"
-                                                                class="form-control"
-                                                                placeholder="observaciones"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- <TextAreaNotas
+                                    <TextAreaNotas
                                         label="Notas:"
                                         placeholder="Agregue sus observaciones"
-                                    ></TextAreaNotas> -->
+                                        @txtArea="opcionTxtAreaNotas"
+                                    ></TextAreaNotas>
                                 </div>
                             </div>
                         </div>
@@ -755,34 +766,24 @@ const remove_item = (item) => {
                             <div class="invoice-actions">
                                 <div class="invoice-action-currency">
                                     <h4 class="ms-5 mb-3">Configuración</h4>
-                                        <!-- <label for="currency">Configuración</label> -->
-                                        <div class="form-check form-switch ms-5">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="chk-orden-firma" v-model="params.configuracion.ordenFirma">
-                                            <label class="form-check-label ps-1" for="chk-orden-firma">Firmar en este orden</label>
-                                        </div>
-                                        <div class="form-check form-switch ms-5">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="chk-orden-firma" v-model="params.configuracion.modoCaptura">
-                                            <label class="form-check-label ps-1" for="chk-orden-firma">Mantener en modo captura</label>
-                                        </div>
-                                        <div class="form-check form-switch ms-5">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="chk-orden-firma" v-model="params.configuracion.generaNumeroOficio">
-                                            <label class="form-check-label ps-1" for="chk-orden-firma">Generar número de oficio</label>
-                                        </div>
-                                        <!-- <SwitchRounded
+                                        <SwitchRounded
                                             class="ms-5"
                                             label="Firmar en este orden"
+                                            @chkSwitch="opcionSwitchOrdenFirma"
                                         ></SwitchRounded>
                                         <SwitchRounded
                                             class="ms-5"
                                             label="Mantener en modo captura"
+                                            @chkSwitch="opcionSwitchModoCaptura"
                                         ></SwitchRounded>
                                         <SwitchRounded
                                             class="ms-5"
                                             label="Generar número de oficio"
-                                        ></SwitchRounded> -->
+                                            @chkSwitch="opcionSwitchGeneraOficio"
+                                        ></SwitchRounded>
 
                                 </div>
-                                
+
                                 <!-- Fecha límite de firma -->
                                 <div class="invoice-action-tax ms-4">
                                     <div class="invoice-action-tax-fields">
@@ -811,7 +812,7 @@ const remove_item = (item) => {
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- {{ params }} -->
 
                                 <div class="invoice-action-discount ms-5">
                                     <h4>Documentos a firmar</h4>
@@ -875,8 +876,8 @@ const remove_item = (item) => {
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="mb-3">
-                                            <label for="formFile" class="form-label">Archivo de certificado (*.cer)</label>
-                                            <input class="form-control" type="file" id="formFile" @change="change_file_cer" accept=".cer">
+                                            <label for="formFileCer" class="form-label">Archivo de certificado (*.cer o .pfx)</label>
+                                            <input class="form-control" type="file" id="formFileCer" @change="change_file_cer" accept=".cer, .pfx">
                                         </div>
                                         <!-- <AgregarArchivo
                                             label="Archivo de certificado (*.cer)"
@@ -885,16 +886,30 @@ const remove_item = (item) => {
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" v-if="archivoEsCer">
                                         <div class="mb-3">
-                                            <label for="formFile" class="form-label">Archivo de certificado (*.key)</label>
-                                            <input class="form-control" type="file" id="formFile" @change="change_file_key" accept=".key">
+                                            <label for="formFileKey" class="form-label">Archivo de certificado (*.key)</label>
+                                            <input class="form-control" type="file" id="formFileKey" @change="change_file_key" accept=".key">
                                         </div>
-                                        <!-- <AgregarArchivo
-                                            label="Archivo de certificado (*.key)"
-                                        ></AgregarArchivo> -->
                                     </div>
                                 </div>
+
+                                <div class="form-group row invoice-created-by">
+                                    <div class="col-sm-12">
+                                        <label
+                                        for="contrasenaCer"
+                                        class="col-sm-12 col-form-label col-form-label-sm pb-0">Contraseña</label>
+                                        <input
+                                            type="password"
+                                            v-model="certificado.contrasenaCer"
+                                            id="contrasenaCer"
+                                            class="form-control form-control-sm"
+                                            placeholder="Introduzca su contraseña"
+
+                                            />
+                                    </div>
+                                </div>
+
                                 <div class="row justify-content-end">
                                     <div class="col-3">
                                     <a  id="btn-modal-firma" class="btn btn-success btn-send p-3"
@@ -903,7 +918,7 @@ const remove_item = (item) => {
                                     </a>
                                 </div>
                                 </div>
-                                
+
                             </form>
                         </div>
                     </div>

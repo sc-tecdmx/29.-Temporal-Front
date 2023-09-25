@@ -68,8 +68,8 @@
         justify-content: space-between;
 
         h5 { /* IFR. Figma */
-            font-size: 19px;
-            font-size: 33.16px;
+            //font-size: 19px;
+            font-size: 26px; //PAO
             font-weight: 600;
         }
 
@@ -86,7 +86,7 @@
     }
 
     .widget-content {
-        padding: 0 20px 20px 20px;
+        padding: 0 20px 10px 20px;
 
         .chart-title {
             font-size: 18px;
@@ -739,7 +739,7 @@
                 font-weight: 600;
 
                 &.w-title {
-                    font-size: 18px;
+                    font-size: 12px; //PAO
                 }
 
                 &.w-stats {

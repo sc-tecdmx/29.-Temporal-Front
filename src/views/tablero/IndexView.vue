@@ -9,7 +9,7 @@
 <template>
     <div class="row mb-2 mt-3 ms-2">
       <div class="col-md-11">
-          <h3 class="fw-bolder">Tablero de firmas electrónicas</h3>
+          <h3 class="mt-3">Tablero de firmas electrónicas</h3>
       </div>
 
       <p class="d-inline-flex gap-1 col-md-1">

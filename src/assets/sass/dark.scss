@@ -1082,6 +1082,12 @@ body.dark {
         MEDIA QUERIES
     ======================
     */
+    @media (min-width: 1200px) { //PAO
+        .h3 h3{
+            font-size: 26px !important;
+        }
+    }
+
     @media (max-width: 991px) {
         #sidebar {
             background: #060818;

@@ -348,8 +348,8 @@ label {
     }
 
     &.form-control-sm {
-        padding: 9px 16px;
-        font-size: 13px;
+        padding: 5px 10px; //PAO
+        font-size: 12px; //PAO
     }
 }
 
@@ -383,8 +383,8 @@ label {
     }
 
     &.form-select-sm {
-        font-size: 13px;
-        padding: 9px 16px;
+        font-size: 12px; //PAO
+        padding: 5px 10px; //PAO
     }
 
     &:focus {

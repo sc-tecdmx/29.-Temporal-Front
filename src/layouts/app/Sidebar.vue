@@ -53,10 +53,14 @@ onMounted(() => {
                                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
                             </svg>
-                            <span>Tablero</span>
+                            <span>Inicio</span>
                         </div>
-
                     </a>
+                    <ul id="dashboard" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
+                        <li>
+                            <router-link to="/" @click="toggleMobileMenu">Tablero Principal</router-link>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="menu">

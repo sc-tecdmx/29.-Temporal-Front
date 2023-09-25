@@ -72,26 +72,26 @@
 
   .border-widget-espera{
     border: solid  #690061;
-    border-width: 1px 1px 1px 10px;
+    border-width: 10px 1px 1px 1px;
   }
   .border-widget-enviado{
     border: solid #9A278F;
-    border-width: 1px 1px 1px 10px;
+    border-width: 10px 1px 1px 1px;
   }
   .border-widget-rechazado{
     border: solid #FF8200;
-    border-width: 1px 1px 1px 10px;
+    border-width: 10px 1px 1px 1px;
   }
   .border-widget-firmado{
     border: solid #337613;
-    border-width: 1px 1px 1px 10px;
+    border-width: 10px 1px 1px 1px;
   }
   .border-widget-atencion{
     border: solid #E78279;
-    border-width: 1px 1px 1px 10px;
+    border-width: 10px 1px 1px 1px;
   }
   .border-widget-conocimiento{
     border: solid #79BAE7;
-    border-width: 1px 1px 1px 10px;
+    border-width: 10px 1px 1px 1px;
   }
 </style>

@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+//import {cors}  from 'cors'
 /*IFR. Falta Store*/
 import App from './App.vue'
 import router from './router'
@@ -26,7 +27,7 @@ window.$appInit.init();*/
 //--
 const app = createApp(App)
 app.use(createPinia())
-
+//app.use(cors());
 app.use(router)
 /* IFR Agregado */
 app.use(PerfectScrollbar)

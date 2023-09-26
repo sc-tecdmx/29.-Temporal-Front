@@ -23,7 +23,7 @@
                     <div class="form-container">
                         <div class="form-content">
                             <div class="d-flex user-meta">
-                                <img src="@/assets/images/profile-7.jpeg" class="usr-profile" alt="avatar" />
+                                <img src="@/assets/images/generic/profile-15.jpeg" class="usr-profile" alt="avatar" />
                                 <div class="">
                                     <p class="">Shaun Park</p>
                                 </div>

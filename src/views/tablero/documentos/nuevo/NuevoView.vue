@@ -27,6 +27,7 @@ import AgregarArchivo from '../../../../components/wrapper/AgregarArchivo.vue';
 import FechaBasica from '../../../../components/wrapper/FechaBasica.vue';
 import SwitchRounded from '../../../../components/wrapper/SwitchRounded.vue';
 import axios from 'axios';
+import { getCertificadoData } from '@/firma/main.mjs';
 
 
 useMeta({ title: 'Vue Multiselect' });
@@ -419,9 +420,6 @@ const opcionTxtAreaNotas = (idData) => {
 const opcionDateDocumento = (date) => {
     params.value.fechaDocumento = date;
 }
-const documentoAdjunto = (file) =>{
-    params.value
-}
 /* FIN Set params */
 
 
@@ -487,24 +485,17 @@ const enviaCaptura =()=>{
 /* Modal firmar ahora */
 const archivoEsCer = ref(false);
 const change_file_cer = (event) => {
-
-    // selected_file_cer.value = URL.createObjectURL(event.target.files[0]);
     selected_file_cer.value = event.target.files[0];
     certificado.value.archivoCer = selected_file_cer.value;
 
-
     const inputElement = document.getElementById("formFileCer");
     const nombreArchivo = inputElement.value.toLowerCase();
-    console.log("cer");
-    console.log(archivoEsCer.value);
+    // console.log("cer");
+    // console.log(archivoEsCer.value);
              if (nombreArchivo.endsWith(".cer")) {
-                console.log("Es cer");
                 archivoEsCer.value = true;
              } else {
-                console.log("No es cer");
                  archivoEsCer.value = false;
-                 alert("Por favor, seleccione un archivo con extensión .cer");
-                 inputElement.value = ""; // Borra el campo de entrada
              }
 
 };
@@ -521,7 +512,27 @@ const setContrasena = (contrasena) =>{
 
 const enviaFirma=()=>{
     console.log("certificado");
-    console.log(certificado.value);
+    const certFileData = {'file':certificado.value.archivoCer, 'buffer':null, 'base64': null, 'iscer':archivoEsCer.value};
+    const keyFileData = {'file':certificado.value.archivoKey, 'buffer':null, 'base64': null};
+    const docFileData = {'file':certificado.value.documento, 'buffer':null, 'base64': null};
+
+    getCertificadoData(certFileData, keyFileData, 
+    docFileData, certificado.value.contrasenaCer);
+
+    
+
+    
+/*
+    const certFileData = req.files['certFile'][0];
+    let keyFileData = null;
+    if (req.files['keyFile']) {
+        keyFileData = req.files['keyFile'][0];
+    }
+    const pdfFilesData = req.files['pdfFiles'];
+    const password = req.body.password;
+    */
+
+
     try {
         // const {res} = axios.post('profile/student', profile)
         //     .then(res => {
@@ -873,11 +884,16 @@ const remove_item = (item) => {
                     <div class="compose-box">
                         <div class="compose-content">
                             <form>
+                                <!-- <div class="alert alert-arrow-right alert-icon-right alert-light-danger alert-dismissible mb-4" role="alert">
+                                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">×</button>
+                                    <svg></svg>
+                                    <strong>Certificado inválido!</strong> Su certificado no esta vigente.
+                                </div> -->
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="formFileCer" class="form-label">Archivo de certificado (*.cer o .pfx)</label>
-                                            <input class="form-control" type="file" id="formFileCer" @change="change_file_cer" accept=".cer, .pfx">
+                                            <input class="form-control" type="file" id="formFileCer" @change="change_file_cer" accept=".cer,.pfx">
                                         </div>
                                         <!-- <AgregarArchivo
                                             label="Archivo de certificado (*.cer)"

@@ -1,6 +1,5 @@
 <script setup>
-  import { computed } from "vue";
-  import { useMeta } from "@/composables/use-meta.js";
+  import { useMeta }      from "@/composables/use-meta.js";
   import { useAuthStore } from "@/stores/appAuthStore.js";
   import { useLiveStore } from "@/stores/appLiveStore.js";
 
@@ -8,8 +7,9 @@
 
   console.log("🧊 App.vue");
   useMeta({ title: "TECDMX - Tablero de control de Firmas Electrónicas." });
-  const authStore = useAuthStore();
-  const appLiveStore = useLiveStore();
+  window.$$config.init();
+  /* const authStore = useAuthStore();
+  const appLiveStore = useLiveStore(); */
 </script>
 <template>
   <router-view />

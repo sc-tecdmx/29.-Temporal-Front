@@ -1,9 +1,10 @@
 import { createPinia } from 'pinia'
 import { useLiveStore } from "@/stores/appLiveStore.js";
-import { $appDefault } from './app-default';
+import { $appDefault } from './AppDefault.js';
 
 export default {
     init() {
+        console.log("🧊 AppConfig.js.init()");
         const appStore = useLiveStore();
 
         let val = localStorage.getItem('dark_mode'); // light, dark, system
@@ -36,4 +37,6 @@ export default {
         appStore.toggleDarkMode( mode || 'light');
         return mode;
     }
+    //TODO. IFR. Agregar todos los métodos que deban quedar guardados
+    //---------- para el siguiente inicio de sesión
 }

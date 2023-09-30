@@ -8,6 +8,7 @@ import authRouter     from './authRouter';
 import tableroRouter  from './tableroRouter';
 console.log("🧊 router/index.js")
 
+
 const routes = [
   { ...publicRouter},
   { ...authRouter},

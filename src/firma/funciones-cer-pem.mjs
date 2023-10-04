@@ -1,7 +1,6 @@
 import forge from 'node-forge';
 
 export function getCertificadoAndPublicKeyCER(cerBase64, payload){
-  console.log(cerBase64);
   const pemCertificate = `-----BEGIN CERTIFICATE-----\n${cerBase64}\n-----END CERTIFICATE-----\n`;
   const x509Cert = forge.pki.certificateFromPem(pemCertificate);
   //console.log(x509Cert);

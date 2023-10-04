@@ -1,8 +1,8 @@
 <script setup></script>
 <template>
-  <div class="footer-wrapper">
-    <div class="footer-section f-section-1"></div>
-    <div class="footer-section f-section-2">
+  <div class="footer-wrapper justify-content-center">
+    <!-- <div class="footer-section f-section-1"></div> -->
+    <div class="footer-section f-section-1">
       <p>
         Magdalena #21, Del Valle Centro, Benito Juárez, C.P. 03100, Ciudad de
         México, Tel. 55 5340 4600
@@ -13,6 +13,6 @@
         >
       </p>
     </div>
-    <div class="footer-section f-section-3"></div>
+    <!-- <div class="footer-section f-section-3"></div> -->
   </div>
 </template>

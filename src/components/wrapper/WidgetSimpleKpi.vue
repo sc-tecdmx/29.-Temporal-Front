@@ -79,19 +79,19 @@
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-rechazado{
-    border: solid #FF8200;
+    border: solid #F85F2A;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-firmado{
-    border: solid #337613;
+    border: solid #FF8200;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-atencion{
-    border: solid #E78279;
+    border: solid #E7515A;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-conocimiento{
-    border: solid #79BAE7;
+    border: solid #7589ED;
     border-width: 10px 1px 1px 1px;
   }
 </style>

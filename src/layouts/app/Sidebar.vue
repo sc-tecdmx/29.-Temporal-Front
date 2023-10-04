@@ -58,7 +58,7 @@ onMounted(() => {
                     </a>
                     <ul id="dashboard" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="/" @click="toggleMobileMenu">Tablero Principal</router-link>
+                            <router-link to="/" @click="toggleMobileMenu">Tablero de control</router-link>
                         </li>
                     </ul>
                 </li>

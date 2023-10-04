@@ -1,7 +1,7 @@
 import forge from 'node-forge';
 
 export function getCertificadoAndPublicKeyAndPrivateKeyPFX(pfxBinary, password, payload){
-  const pkcs12Asn1 = forge.asn1.fromDer(pfxBinary);
+  const pkcs12Asn1 = forge.asn1.fromDer(forge.util.createBuffer(pfxBinary));
   decryptPFX(pkcs12Asn1, password, payload);
   let aliasBag = payload.data.certAliasBag;
   let keyAliasBag = payload.data.keyAliasBag;

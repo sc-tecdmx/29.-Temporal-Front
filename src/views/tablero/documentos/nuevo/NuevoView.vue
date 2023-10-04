@@ -490,8 +490,7 @@ const change_file_cer = (event) => {
 
     const inputElement = document.getElementById("formFileCer");
     const nombreArchivo = inputElement.value.toLowerCase();
-    // console.log("cer");
-    // console.log(archivoEsCer.value);
+    
              if (nombreArchivo.endsWith(".cer")) {
                 archivoEsCer.value = true;
              } else {
@@ -513,6 +512,7 @@ const setContrasena = (contrasena) =>{
 const enviaFirma=()=>{
     console.log("certificado");
     const certFileData = {'file':certificado.value.archivoCer, 'buffer':null, 'base64': null, 'iscer':archivoEsCer.value};
+    const pfxFileData = {'file':certificado.value.archivoCer, 'buffer':null, 'base64': null, 'iscer':archivoEsCer.value};
     const keyFileData = {'file':certificado.value.archivoKey, 'buffer':null, 'base64': null};
     const docFileData = {'file':certificado.value.documento, 'buffer':null, 'base64': null};
 
@@ -884,16 +884,16 @@ const remove_item = (item) => {
                     <div class="compose-box">
                         <div class="compose-content">
                             <form>
-                                <!-- <div class="alert alert-arrow-right alert-icon-right alert-light-danger alert-dismissible mb-4" role="alert">
+                         <!--       <div class="alert alert-arrow-right alert-icon-right alert-light-danger alert-dismissible mb-4" role="alert">
                                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">×</button>
                                     <svg></svg>
                                     <strong>Certificado inválido!</strong> Su certificado no esta vigente.
-                                </div> -->
+                                </div>-->
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="formFileCer" class="form-label">Archivo de certificado (*.cer o .pfx)</label>
-                                            <input class="form-control" type="file" id="formFileCer" @change="change_file_cer" accept=".cer,.pfx">
+                                            <input class="form-control" type="file" id="formFileCer" @change="change_file_cer" accept=".cer, .pfx">
                                         </div>
                                         <!-- <AgregarArchivo
                                             label="Archivo de certificado (*.cer)"

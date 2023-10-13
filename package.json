@@ -26,6 +26,7 @@
     "pinia": "^2.1.6",
     "sass": "^1.66.1",
     "sass-loader": "^13.3.2",
+    "v-tables-3": "^0.4.7",
     "vue": "^3.3.4",
     "vue-flatpickr-component": "^9.0.5",
     "vue-router": "^4.2.4",

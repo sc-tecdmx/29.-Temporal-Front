@@ -1,17 +1,25 @@
 <script setup>
-    import { ref } from 'vue';
+import { ref } from 'vue';
+//composable
+import { useGetData } from "@/composables/getData";
+
+    const {data, getData, loading, errorData} = useGetData();
+
     const props= defineProps({
         idName: String,
         label: String,
-        options: ref([]),
+        url: String
     });
 
     const emit = defineEmits(['opcionSelect']);
 
-    const catalogo = props.options;
-    const selected = ref('0')
+    const selected = ref('0');
 
+    getData(props.url);
+    
 
+    
+    
 
 </script>
 <template>
@@ -25,7 +33,7 @@
                     @change="emit('opcionSelect', selected)"
                     >
                     <option value="0">--Seleccionar--</option>
-                    <option v-for="opcion in catalogo" :value="opcion.id">{{ opcion.label }}</option>
+                    <option v-for="opcion in data" :value="opcion.id">{{ opcion.label }}</option>
             </select>
         </div>
     </div>

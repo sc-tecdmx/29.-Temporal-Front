@@ -10,17 +10,18 @@ import TableroBuscar from "./TableroBuscar.vue";
 import ModalAddTask   from "./ModalAddTask.vue";
 import ModalViewTask  from "./ModalViewTask.vue";
 
+
 import "@/assets/sass/apps/todolist.scss";
 import "@/assets/css/modulos/todolist-editor.css"
 import "@/assets/sass/components/custom-modal.scss";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/tables/table-basic.scss";
 
-import highlight from "@/components/plugins/highlight.vue";
+//import highlight from "@/components/plugins/highlight.vue";
 
 import IconPortapapeles from "@/components/icons/IconPortapapeles.vue";
 import IconPlus from "@/components/icons/IconPlus.vue";
-import IconDropdown from "@/components/icons/IconDropdown.vue";
+//import IconDropdown from "@/components/icons/IconDropdown.vue";
 
 
 //---------------------------
@@ -243,31 +244,27 @@ const showMessage = (msg = "", type = "success") => {
                 <h5 class="app-title">Firmar documentos</h5>
               </div>
               <div class="btn-group mb-3 me-4">
-                <!-- <button type="button" class="btn btn-primary" @click="edit_task()">
+                <button type="button" class="btn btn-primary" >
                   <IconPlus />
                   Nuevo
-                </button> -->
-                <a class="btn btn-primary">
-                  <IconPlus />
-                  <router-link to="/documento/nuevo" @click="toggleMobileMenu" class="text-light ms-2">Nuevo</router-link>
-                </a>
+                </button>
+                
 
                 <button
                   type="button"
                   class="btn btn-primary dropdown-toggle dropdown-toggle-split"
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
-                  aria-expanded="false"
-                >
+                  aria-expanded="false">
                   <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="javascript:void(0);"
-                    >Firma individual</a
-                  >
-                  <a class="dropdown-item" href="javascript:void(0);"
-                    >Firma múltiple</a
-                  >
+                  <div>
+                    <router-link to="/documento/nuevo/simple" class="text-dark ms-3" style="font-size: 14px;">Firma individual</router-link>
+                  </div>
+                  <div>
+                    <router-link to="/documento/nuevo/multiple" class="text-dark ms-3" style="font-size: 14px;">Firma múltiple</router-link>
+                  </div>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="javascript:void(0);"
                     >Subir archivo</a
@@ -314,8 +311,11 @@ const showMessage = (msg = "", type = "success") => {
 
         <ModalAddTask params="params" />
       </div>
+
+      
     </div>
   </div>
+  
   <!-- ./Tablero de Firmas -->
 </template>
 <style>

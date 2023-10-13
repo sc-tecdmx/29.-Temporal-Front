@@ -16,7 +16,7 @@
 </script>
 <template>
   <!-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12 layout-spacing"> -->
-  <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12 layout-spacing">
+  <div class="col-xl-2 col-lg-3 col-md-6 col-12 layout-spacing">
     <div class="widget widget-simple_kpi"  :class="`border-widget-${color}`">
       <div class="widget-heading">
         <h5>{{ cantidad }}</h5>

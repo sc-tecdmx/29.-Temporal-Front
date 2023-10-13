@@ -14,9 +14,14 @@ const router = createRouter({
       component: () => import('../views/tablero/IndexView.vue')
     },
     {
-      path: '/documento/nuevo',
+      path: '/documento/nuevo/:tipo',
       name: 'nuevo',
       component: () => import('../views/tablero/documentos/nuevo/NuevoView.vue')
+    },
+    {
+      path: '/documento/recibido',
+      name: 'recibido',
+      component: () => import('../views/tablero/documentos/nuevo/RecibidoView.vue')
     },
     /********** Login ***********/
     {
@@ -38,6 +43,26 @@ const router = createRouter({
       path: '/account/bloqueo',
       name: 'bloqueo',
       component: () => import('../views/login/BloqueoView.vue')
+    },
+    {
+      path: '/account/perfil',
+      name: 'perfil',
+      component: () => import('../views/login/PerfilView.vue')
+    },
+    {
+      path: '/config/catalogo/areas',
+      name: 'areasAdscripcion',
+      component: () => import('../views/configuracion/catalogos/AreasAdscripcionView.vue')
+    },
+    {
+      path: '/config/catalogo/personal',
+      name: 'personal',
+      component: () => import('../views/configuracion/catalogos/PersonalView.vue')
+    },
+    {
+      path: '/config/catalogo/roles',
+      name: 'roles',
+      component: () => import('../views/configuracion/catalogos/RolesView.vue')
     },
     /********** FinLogin ***********/
     //  { ...accountRoutes },

@@ -436,13 +436,11 @@ export const getCertificadoData = async (certFileData, keyFileData, pdfFilesData
         }
         console.log('Este es el OCSP y timestamp: ', responseOCSPTimeStamp);
         firmarPDF(certificadoDTO, password, payload.data.x509Cert, responseOCSPTimeStamp.timestamp, responseOCSPTimeStamp.serialNumber);
-        
-      }
 
+      }
     } else {//Certificado expirado
       alert(payload.message);
     }
-
   } else if (certFileData.iscer === true) {//.CER
     const keyFileObj = await getMimeTypeAndArrayBufferFromFile(keyFileData.file);
     keyFileData.buffer = keyFileObj.arrayBuffer;
@@ -475,8 +473,6 @@ export const getCertificadoData = async (certFileData, keyFileData, pdfFilesData
           /*  const responseOCSPTimeStamp = {'basicResponse':'blablaba', 
             'timestamp':'19/09/2023 10:29:42 p. m.',
             'serialNumber':'56545456456454'};*/
-
-
           console.log('Este es el OCSP y timestamp: ', responseOCSPTimeStamp);
           firmarPDF(certificadoDTO, password, payload.data.x509Cert, responseOCSPTimeStamp.timestamp, responseOCSPTimeStamp.serialNumber);
         }
@@ -486,10 +482,6 @@ export const getCertificadoData = async (certFileData, keyFileData, pdfFilesData
     } else {//Certificado expirado
       alert(payload.message);
     }
-
-
-
-
   }
 
 }

@@ -1,6 +1,13 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useLiveStore } from "@/stores/appLiveStore.js";
+/* Iconos */
+import IconFeatherSettings from '../../components/icons/IconFeatherSettings.vue';
+import IconFeatherChevronRight from '../../components/icons/IconFeatherChevronRight.vue';
+import IconFeatherHome from '../../components/icons/IconFeatherHome.vue';
+import IconFeatherFileText from '../../components/icons/IconFeatherFileText.vue';
+import IconList from '../../components/icons/IconList.vue';
+
 const appLiveStore = useLiveStore();
 const menu_collapse = ref('dashboard');
 onMounted(() => {
@@ -36,23 +43,13 @@ onMounted(() => {
 
             <perfect-scrollbar class="list-unstyled menu-categories" tag="ul" :options="{ wheelSpeed: 0.5, swipeEasing: !0, minScrollbarLength: 40, maxScrollbarLength: 300, suppressScrollX: true }">
                 <li class="menu">
+                    <!-- <router-link to="/" @click="toggleMobileMenu">
+                        <IconFeatherHome></IconFeatherHome>
+                        Tablero de control
+                    </router-link> -->
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-controls="dashboard" aria-expanded="false">
                         <div class="">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-home"
-                            >
-                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                            </svg>
+                            <IconFeatherHome></IconFeatherHome>
                             <span>Inicio</span>
                         </div>
                     </a>
@@ -66,51 +63,69 @@ onMounted(() => {
                 <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#apps" aria-controls="apps" aria-expanded="false">
                         <div class="">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-cpu"
-                            >
-                                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                                <rect x="9" y="9" width="6" height="6"></rect>
-                                <line x1="9" y1="1" x2="9" y2="4"></line>
-                                <line x1="15" y1="1" x2="15" y2="4"></line>
-                                <line x1="9" y1="20" x2="9" y2="23"></line>
-                                <line x1="15" y1="20" x2="15" y2="23"></line>
-                                <line x1="20" y1="9" x2="23" y2="9"></line>
-                                <line x1="20" y1="14" x2="23" y2="14"></line>
-                                <line x1="1" y1="9" x2="4" y2="9"></line>
-                                <line x1="1" y1="14" x2="4" y2="14"></line>
-                            </svg>
+                            <IconFeatherFileText></IconFeatherFileText>
                             <span>Documentos</span>
                         </div>
                         <div>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-chevron-right"
-                            >
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
+                            <IconFeatherChevronRight></IconFeatherChevronRight>
                         </div>
                     </a>
                     <ul id="apps" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="/documento/nuevo" @click="toggleMobileMenu">Nuevo</router-link>
+                            <a class="dropdown-toggle" href="#tipo-firma" data-bs-parent="#tipo-firma" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                Nuevo
+                                <IconFeatherChevronRight></IconFeatherChevronRight>
+                            </a>
+
+                            <ul id="tipo-firma" class="collapse list-unstyled sub-submenu">
+                                <li @click="toggleMobileMenu">
+                                    <router-link to="/documento/nuevo/simple" @click="toggleMobileMenu">Firma Simple</router-link>
+                                </li>
+                                <li @click="toggleMobileMenu">
+                                    <router-link to="/documento/nuevo/multiple" @click="toggleMobileMenu">Firma Multiple</router-link>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu">
+                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#configuracion" aria-controls="apps" aria-expanded="false">
+                        <div class="">
+                            <IconFeatherSettings></IconFeatherSettings>
+                            <span>Configuración</span>
+                        </div>
+                        <div>
+                            <IconFeatherChevronRight></IconFeatherChevronRight>
+                        </div>
+                    </a>
+                    <ul id="configuracion" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
+                        <li>
+                            <router-link to="#" @click="toggleMobileMenu">conf</router-link>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu">
+                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#catalogo" aria-controls="apps" aria-expanded="false">
+                        <div class="">
+                            <IconList></IconList>
+                            <span>Catálogos</span>
+                        </div>
+                        <div>
+                            <IconFeatherChevronRight></IconFeatherChevronRight>
+                        </div>
+                    </a>
+                    <ul id="catalogo" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
+                        <li>
+                            <router-link to="/config/catalogo/areas" @click="toggleMobileMenu">Áreas de adscripción</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/config/catalogo/personal" @click="toggleMobileMenu">Personal</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/config/catalogo/roles" @click="toggleMobileMenu">Roles</router-link>
+                        </li>
+                        <li>
+                            <router-link to="#" @click="toggleMobileMenu">Tipos de documentos</router-link>
                         </li>
                     </ul>
                 </li>

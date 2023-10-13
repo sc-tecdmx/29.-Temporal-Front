@@ -18,6 +18,8 @@ import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
 
 //vue-meta head
 import { createHead } from '@vueuse/head';
+// datatables
+import { ClientTable } from 'v-tables-3';
 
 
 //-- Establecer configuración inicial por default
@@ -33,4 +35,4 @@ app.use(router)
 app.use(PerfectScrollbar)
 app.use(createHead())
 app.mount('#app')
-
+app.use(ClientTable)

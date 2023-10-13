@@ -40,7 +40,7 @@
       <!-- Herramientas encabezado -->
       <div class="navbar-item flex-row ms-md-auto">
         <!-- Cortina comentarios -->
-       <Comentarios />
+       <!-- <Comentarios /> -->
         <!-- ./Comentarios -->
         <!-- Notificaciones -->
         <Notificaciones />

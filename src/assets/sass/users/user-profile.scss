@@ -52,7 +52,7 @@
             width: 55px;
             background: $primary;
             border-radius: 50%;
-            bottom: 9px;
+            bottom: -2px; //PAO 9px
             left: 15px;
         }
     }
@@ -75,7 +75,7 @@
 
     .user-info-list ul.contacts-block {
         border: none;
-        max-width: 217px;
+        //max-width: 217px; //PAO
         margin: 36px auto;
 
         li {

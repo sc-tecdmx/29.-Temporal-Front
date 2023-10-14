@@ -72,7 +72,8 @@ onMounted(() => {
                     </a>
                     <ul id="apps" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <a class="dropdown-toggle" href="#tipo-firma" data-bs-parent="#tipo-firma" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                            <router-link to="/documento/nuevo/simple" @click="toggleMobileMenu">Nuevo</router-link>
+                            <!-- <a class="dropdown-toggle" href="#tipo-firma" data-bs-parent="#tipo-firma" data-bs-toggle="collapse" role="button" aria-expanded="false">
                                 Nuevo
                                 <IconFeatherChevronRight></IconFeatherChevronRight>
                             </a>
@@ -84,11 +85,11 @@ onMounted(() => {
                                 <li @click="toggleMobileMenu">
                                     <router-link to="/documento/nuevo/multiple" @click="toggleMobileMenu">Firma Multiple</router-link>
                                 </li>
-                            </ul>
+                            </ul> -->
                         </li>
                     </ul>
                 </li>
-                <li class="menu">
+                <!-- <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#configuracion" aria-controls="apps" aria-expanded="false">
                         <div class="">
                             <IconFeatherSettings></IconFeatherSettings>
@@ -100,10 +101,10 @@ onMounted(() => {
                     </a>
                     <ul id="configuracion" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="#" @click="toggleMobileMenu">conf</router-link>
+                            <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administración Roles</router-link>
                         </li>
                     </ul>
-                </li>
+                </li> -->
                 <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#catalogo" aria-controls="apps" aria-expanded="false">
                         <div class="">
@@ -125,7 +126,7 @@ onMounted(() => {
                             <router-link to="/config/catalogo/roles" @click="toggleMobileMenu">Roles</router-link>
                         </li>
                         <li>
-                            <router-link to="#" @click="toggleMobileMenu">Tipos de documentos</router-link>
+                            <router-link to="/config/catalogo/tipoDocumento" @click="toggleMobileMenu">Tipos de documentos</router-link>
                         </li>
                     </ul>
                 </li>

@@ -64,6 +64,16 @@ const router = createRouter({
       name: 'roles',
       component: () => import('../views/configuracion/catalogos/RolesView.vue')
     },
+    {
+      path: '/config/catalogo/tipoDocumento',
+      name: 'tipoDocumento',
+      component: () => import('../views/configuracion/catalogos/TiposDocumentoView.vue')
+    },
+    {
+      path: '/config/adminRolPersonaApp',
+      name: 'adminRolPersonaApp',
+      component: () => import('../views/configuracion/PersonalRolAppView.vue')
+    },
     /********** FinLogin ***********/
     //  { ...accountRoutes },
     //  { ...usersRoutes },

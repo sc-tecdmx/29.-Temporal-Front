@@ -290,11 +290,11 @@ span {
 
 .form-group label,
 label {
-    font-size: 15px;
-    color: #888ea8;
+    font-size: 14px; //PAO
+    color: #515365; //PAO #888ea8
     letter-spacing: 1px;
     padding-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0; //PAO 0.5rem
 }
 
 /*  Disable forms     */

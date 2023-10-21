@@ -425,6 +425,7 @@
                                     color: #fff; //PAO
                                     svg {
                                         color: #FF8200; //PAO #4361ee
+                                        fill: transparent; //PAO
                                     }
                                 }
                                 svg {
@@ -478,7 +479,7 @@
             left: 0px; //PAO
             background-color: #fff;
             &:hover {
-                width: 212px;
+                width: 240px; //PAO 212px
                 .collapse.show {
                     display: block;
                 }

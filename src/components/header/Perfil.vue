@@ -2,6 +2,8 @@
 import IconFeatherUser from '../icons/IconFeatherUser.vue';
 import IconFeatherInbox from '../icons/IconFeatherInbox.vue';
 import IconFeatherLogout from '../icons/IconFeatherLogout.vue';
+import IconFeatherLock from '../icons/IconFeatherLock.vue'
+import IconFeatherSettings from '../icons/IconFeatherSettings.vue';
 </script>
 <template>
             <div class="dropdown nav-item user-profile-dropdown btn-group">
@@ -25,9 +27,15 @@ import IconFeatherLogout from '../icons/IconFeatherLogout.vue';
               </router-link>
             </li>
             <li role="presentation">
+              <router-link to="/account/cambiar_contrasena" class="dropdown-item">
+                <IconFeatherLock></IconFeatherLock>
+                Cambio de conrtaseña
+              </router-link>
+            </li>
+            <li role="presentation">
               <router-link to="#" class="dropdown-item">
-                <IconFeatherInbox></IconFeatherInbox>
-                Mensajes
+                <IconFeatherSettings></IconFeatherSettings>
+                Configuración
               </router-link>
             </li>
             <li role="presentation">

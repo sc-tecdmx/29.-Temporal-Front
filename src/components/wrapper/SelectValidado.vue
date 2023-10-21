@@ -22,15 +22,15 @@ import { useGetData } from "@/composables/getData";
 
     getData(props.url);
 
-    const form3 = ref({ select: '' });
+    //const form3 = ref({ select: '' });
     const is_submit_form3 = ref(false);
 
     const submit_form3 = () => {
         is_submit_form3.value = true;
-        if (form3.value.select) {
-            //form validated success
-            //showMessage('Form submitted successfully.');
-        }
+        // if (form3.value.select) {
+        //     //form validated success
+        //     //showMessage('Form submitted successfully.');
+        // }
     };
 
     const showMessage = (msg = '', type = 'success') => {
@@ -53,7 +53,8 @@ import { useGetData } from "@/composables/getData";
                         @change="submit_form3(); emit('opcionSelect', selected, is_submit_form3)"
                     >
                         <option value="">-- Seleccionar --</option>
-                        <option v-for="opcion in data" :value="opcion.id">{{ opcion.label }}</option>
+                         <option v-for="opcion in data" :value="opcion.id">{{ opcion.label }}</option> 
+                        <!-- <option v-for="(value,key) in data" :value="key">{{ key }} : {{ value }} </option> -->
                     </select>
                     <div class="valid-feedback">Validado</div>
                     <div class="invalid-feedback">Selecciona una opción</div>

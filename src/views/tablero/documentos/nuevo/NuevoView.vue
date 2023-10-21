@@ -26,6 +26,8 @@ import TextAreaNotas from '../../../../components/wrapper/TextAreaNotas.vue';
 //import FechaBasica from '../../../../components/wrapper/FechaBasica.vue';
 import SwitchRounded from '../../../../components/wrapper/SwitchRounded.vue';
 import SelectValidado from '../../../../components/wrapper/SelectValidado.vue';
+import InputValidado from '../../../../components/wrapper/InputValidado.vue';
+//Firma
 import { getCertificadoData } from '@/firma/main.mjs';
 
 //useMeta({ title: 'Vue Multiselect' });
@@ -145,9 +147,19 @@ const params = ref({
 	},
 });
 
+const form = ref({  selectUso: false, 
+                    inputFolio: false 
+                });
+const is_submit_form = ref(false);
+
 /* Set params */
-const opcionSelectUso = (idOpcion) => {
+const opcionSelectUso = (idOpcion, campoValido) => {
     params.value.idUso = idOpcion;
+    if(idOpcion == 0){
+        form.selectUso = false;
+    }else{
+        form.selectUso = campoValido;
+    }
 }
 const opcionSelectAreaDestino = (idOpcion) => {
     params.value.idAreaDestino = idOpcion;
@@ -167,8 +179,13 @@ const opcionSelectCargo = (idOpcion) => {
 const opcionInputIdDocumento = (idData) => {
     params.value.idDocumento = idData;
 }
-const opcionInputFolio = (idData) => {
+const opcionInputFolio = (idData, campoValido) => {
     params.value.folio = idData;
+    if(idData == 0){
+        form.inputFolio = false;
+    }else{
+        form.inputFolio = campoValido;
+    }
 }
 const opcionInputFolioDocumento = (idData) => {
     params.value.folioDocumento = idData;
@@ -205,7 +222,27 @@ const opcionDateDocumento = (date) => {
 }
 /* FIN Set params */
 
+const submit_form3 = () => {
+        //is_submit_form.value = true;
+        console.log("Submit");
+        console.log(form.selectUso);
+        console.log(form.inputFolio);
+    //verifica que no este vacio
+        if(form.selectUso == undefined ){
+            console.log("undifined");
+            form.selectUso = false;
+        }
+        if(form.inputFolio == undefined){
+            form.inputFolio = false;
+        }
 
+        if(!form.selectUso){
+            alert("Seleccionar opcion en campo Uso");
+        }
+        if(!form.inputFolio){
+            alert("Ingresar folio");
+        }
+    };
 
 
 const currency_list = ref([]);
@@ -318,6 +355,8 @@ const remove_item = (item) => {
     items.value = items.value.filter((d) => d.id != item.id);
 };
 
+
+
 </script>
 <template>
     <div class="layout-px-spacing apps-invoice-add">
@@ -334,23 +373,41 @@ const remove_item = (item) => {
                                             <h3>Nuevo documento a firmar</h3>
                                         </div>
                                     </div>
-                                    <!-- <form class="select" novalidate @submit.stop.prevent="submit_form3">
-                                            <div class="col-12 col-md-3">
-                                                <SelectValidado></SelectValidado>
-                                            </div>
-                                        <button class="btn btn-primary mt-2" type="submit">Submit form</button>
-                                    </form> -->
+                                            
                                     <!-- Título del documento PAO-->
                                     <div class="invoice-detail-total mb-3">
                                         <div class="row">
-                                            <div class="col-12 col-md-3">
+                                            <form class="select" novalidate @submit.stop.prevent="submit_form3">
+                                                <div class="row">
+                                                    <div class="col-12 col-md-3">
+                                                    <SelectValidado
+                                                        idName= "catUso"
+                                                        label= "Destino de oficio:"
+                                                        url="http://localhost/j/documentos/catUso.php"
+                                                        :is_submit_form = is_submit_form
+                                                        @opcionSelect = "opcionSelectUso"
+                                                    ></SelectValidado>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-3 offset-md-3 ">
+                                                    <InputValidado
+                                                        idName="folio"
+                                                        label = "Folio:"
+                                                        placeholder = "folio"
+                                                        @inputData="opcionInputFolio"
+                                                    ></InputValidado>
+                                                </div>
+                                                </div>
+                                                
+                                             <!-- <button class="btn btn-primary mt-2" type="submit">Submit form</button> -->
+                                            </form>
+                                            <!-- <div class="col-12 col-md-3">
                                                 <SelectCatalogo
                                                     idName= "catUso"
                                                     label= "Uso:"
                                                     url="http://localhost/j/documentos/catUso.php"
                                                     @opcionSelect = "opcionSelectUso"
                                                 ></SelectCatalogo>
-                                            </div>
+                                            </div> 
 
                                             <div class="col-12 col-md-6 col-lg-3 offset-md-3 ">
                                                 <InputForm
@@ -359,7 +416,7 @@ const remove_item = (item) => {
                                                     placeholder = "folio"
                                                     @inputData="opcionInputFolio"
                                                 ></InputForm>
-                                            </div>
+                                            </div>-->
                                         </div>
                                         <!-- áreas -->
                                         <div class="row">

@@ -43,11 +43,13 @@ onMounted(() => {
 
             <perfect-scrollbar class="list-unstyled menu-categories" tag="ul" :options="{ wheelSpeed: 0.5, swipeEasing: !0, minScrollbarLength: 40, maxScrollbarLength: 300, suppressScrollX: true }">
                 <li class="menu">
-                    <!-- <router-link to="/" @click="toggleMobileMenu">
-                        <IconFeatherHome></IconFeatherHome>
-                        Tablero de control
-                    </router-link> -->
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-controls="dashboard" aria-expanded="false">
+                    <a class="dropdown-toggle" aria-controls="dashboard" aria-expanded="false">
+                        <div class="">
+                            <IconFeatherHome class="d-inline"></IconFeatherHome>
+                            <router-link to="/" @click="toggleMobileMenu" class="menu_tab d-inline">Inicio</router-link>
+                        </div>
+                    </a>
+                    <!-- <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-controls="dashboard" aria-expanded="false">
                         <div class="">
                             <IconFeatherHome></IconFeatherHome>
                             <span>Inicio</span>
@@ -57,7 +59,7 @@ onMounted(() => {
                         <li>
                             <router-link to="/" @click="toggleMobileMenu">Tablero de control</router-link>
                         </li>
-                    </ul>
+                    </ul> -->
                 </li>
 
                 <li class="menu">
@@ -72,8 +74,8 @@ onMounted(() => {
                     </a>
                     <ul id="apps" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="/documento/nuevo/simple" @click="toggleMobileMenu">Nuevo</router-link>
-                            <!-- <a class="dropdown-toggle" href="#tipo-firma" data-bs-parent="#tipo-firma" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                            <!-- <router-link to="/documento/nuevo/simple" @click="toggleMobileMenu">Nuevo</router-link> -->
+                            <a class="dropdown-toggle" href="#tipo-firma" data-bs-parent="#tipo-firma" data-bs-toggle="collapse" role="button" aria-expanded="false">
                                 Nuevo
                                 <IconFeatherChevronRight></IconFeatherChevronRight>
                             </a>
@@ -85,11 +87,11 @@ onMounted(() => {
                                 <li @click="toggleMobileMenu">
                                     <router-link to="/documento/nuevo/multiple" @click="toggleMobileMenu">Firma Multiple</router-link>
                                 </li>
-                            </ul> -->
+                            </ul>
                         </li>
                     </ul>
                 </li>
-                <!-- <li class="menu">
+                <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#configuracion" aria-controls="apps" aria-expanded="false">
                         <div class="">
                             <IconFeatherSettings></IconFeatherSettings>
@@ -104,7 +106,7 @@ onMounted(() => {
                             <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administración Roles</router-link>
                         </li>
                     </ul>
-                </li> -->
+                </li>
                 <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#catalogo" aria-controls="apps" aria-expanded="false">
                         <div class="">
@@ -135,3 +137,10 @@ onMounted(() => {
     </div>
     <!--  END SIDEBAR  -->
 </template>
+<style>
+.menu_tab{
+    color:#FFF;
+    padding: 12px 16px;
+    display: flex;
+}
+</style>

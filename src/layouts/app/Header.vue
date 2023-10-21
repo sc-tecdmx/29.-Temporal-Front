@@ -18,9 +18,9 @@
       <!-- ./Logotipo institucional. -->
 
       <!-- Hamburger -->
-      <ul class="navbar-item flex-row ms-md-4 ms-auto">
+      <!-- <ul class="navbar-item flex-row ms-md-4 ms-auto">-->
         <!-- Logotipo institucional. -->
-        <li class="nav-item theme-logo">
+        <!--<li class="nav-item theme-logo">
             <a
               href="javascript:void(0);"
               class="sidebarCollapse"
@@ -30,7 +30,7 @@
               <IconHamburger/>
             </a>
         </li>
-      </ul>
+      </ul> -->
       <!-- ./Hamburger-->
 
      <!-- Buscar -->
@@ -43,7 +43,9 @@
        <!-- <Comentarios /> -->
         <!-- ./Comentarios -->
         <!-- Notificaciones -->
-        <Notificaciones />
+        <Notificaciones 
+          url="http://localhost/j/notificaciones.php"
+        />
         <!-- ./Notificaciones-->
         <!-- Profile-->
         <Perfil />

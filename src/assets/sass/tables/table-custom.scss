@@ -33,7 +33,7 @@
         background: #eff5ff !important;
         color: #515365;
         text-transform: none;
-        font-size: 14px;
+        font-size: 12px; //PAO
         user-select: none;
         border-top: 0;
         font-weight: 600;
@@ -41,7 +41,7 @@
 
     .table td,
     .table th {
-        padding: 10px 21px;
+        padding: 4px 8px; //PAO 10px 21px
     }
 
     .table-hover:not(.table-dark) tbody tr:hover td {

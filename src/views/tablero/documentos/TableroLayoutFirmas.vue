@@ -1,19 +1,19 @@
 <script setup>
-import { ref } from "vue";
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 
 //import { useLiveStore } from "@/stores/appLiveStore.js";
 import TableroSidebar from "./TableroSidebar.vue";
 import TableroListado from "./TableroListado.vue";
 import TableroBuscar from "./TableroBuscar.vue";
-import ModalAddTask   from "./ModalAddTask.vue";
-import ModalViewTask  from "./ModalViewTask.vue";
+// import ModalAddTask   from "./ModalAddTask.vue";
+// import ModalViewTask  from "./ModalViewTask.vue";
+import TableroTablaListado from "../documentos/TableroTablaListado.vue";
 
 
 import "@/assets/sass/apps/todolist.scss";
 import "@/assets/css/modulos/todolist-editor.css"
-import "@/assets/sass/components/custom-modal.scss";
+//import "@/assets/sass/components/custom-modal.scss";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/tables/table-basic.scss";
 
@@ -43,13 +43,13 @@ const editor_options = ref({
     ],
   },
 });
-let addTaskModal = ref(null);
-let quillEditorData = ref(null);
+ let addTaskModal = ref(null);
+// let quillEditorData = ref(null);
 //--------------
 const initPopup = () => {
-  addTaskModal = new window.bootstrap.Modal(
-    document.getElementById("addTaskModal")
-  );
+  // addTaskModal = new window.bootstrap.Modal(
+  //   document.getElementById("addTaskModal")
+  // );
 };
 
 const axiosInstance = axios.create({
@@ -60,18 +60,18 @@ const bind_task_list = async () => {
   try {
     const { data } = await axiosInstance.get("https://nekdu.com/j/d.php");
     task_list.value = data;
-    console.log("AXIOS:" + task_list.value);
+    //console.log("AXIOS:" + task_list.value);
   } catch (error) {
     console.log(error);
   }
-  console.log("bind_task_list")
+  //console.log("bind_task_list")
 
   search_tasks(search_task.value);
 };
 
 
 const search_tasks = (search_task) => {
-  console.log("search_task["+search_task+"]")
+  //console.log("search_task["+search_task+"]")
   let res; 
   if (selected_tab.value) {
     res = task_list.value.filter((d) => d.status == selected_tab.value);
@@ -216,7 +216,7 @@ const showMessage = (msg = "", type = "success") => {
 
 //--
 //----------------------------
-
+const thTablero= ref(['folio','estado','prioridad', 'uuid', 'asunto', 'firmante', 'destinatario', 'detalle']);
 </script>
 <template>
   <!-- Tablero de Firmas -->
@@ -225,8 +225,9 @@ const showMessage = (msg = "", type = "success") => {
           <h3>Tablero de firmas electrónicas</h3>
       </div>
   </div>-->
-  <div>
-    <div class="row layout-top-spacing">
+  <div class="row no-gutters justify-content-center">
+    <div class="col-12 col-xxl-10">
+      <div class="row layout-top-spacing">
       <div class="col-xl-12 col-lg-12 col-md-12">
         <div class="mail-box-container">
           <!-- Botón responsivo -->
@@ -248,8 +249,6 @@ const showMessage = (msg = "", type = "success") => {
                   <IconPlus />
                   Nuevo
                 </button>
-                
-
                 <button
                   type="button"
                   class="btn btn-primary dropdown-toggle dropdown-toggle-split"
@@ -284,13 +283,19 @@ const showMessage = (msg = "", type = "success") => {
 
           <!-- Content Tablero -->
           <div id="todo-inbox" class="accordion todo-inbox">
+            <TableroTablaListado
+              title=""
+              url="http://localhost/j/tablero_principal.php"
+              :thtabla = thTablero
+            ></TableroTablaListado>
+
             <!-- Tablero Buscador -->
-            <TableroBuscar
+            <!-- <TableroBuscar
               :is_show_task_menu="is_show_task_menu"
               @search_tasks="search_tasks"
-            />
+            /> -->
             <!-- ./Tablero Buscador -->
-            <div v-if="filtered_task_list">
+            <!-- <div v-if="filtered_task_list">
             <TableroListado
               :filtered_task_list="filtered_task_list ? filtered_task_list : null"
               @task_complete="task_complete"
@@ -299,21 +304,23 @@ const showMessage = (msg = "", type = "success") => {
               @delete_task="delete_task"
               @set_important="set_important"
             />
-          </div>
+          </div> -->
           </div>
           <!-- ./Content Tablero -->
         </div>
 
         <!-- Modal -->
-        <ModalViewTask v-if="selected_task" params="params" 
+        <!-- <ModalViewTask v-if="selected_task" params="params" 
           :selected_task="selected_task"
         />
 
-        <ModalAddTask params="params" />
+        <ModalAddTask params="params" /> -->
       </div>
 
       
     </div>
+    </div>
+    
   </div>
   
   <!-- ./Tablero de Firmas -->

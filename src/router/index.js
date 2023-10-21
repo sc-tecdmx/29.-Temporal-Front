@@ -50,6 +50,11 @@ const router = createRouter({
       component: () => import('../views/login/PerfilView.vue')
     },
     {
+      path: '/account/cambiar_contrasena',
+      name: 'cambiarContrasena',
+      component: () => import('../views/login/CambiarContrasenaView.vue')
+    },
+    {
       path: '/config/catalogo/areas',
       name: 'areasAdscripcion',
       component: () => import('../views/configuracion/catalogos/AreasAdscripcionView.vue')

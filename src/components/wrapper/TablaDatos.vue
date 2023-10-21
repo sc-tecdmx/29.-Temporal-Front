@@ -13,9 +13,9 @@
         url: String,
         thtabla: ref([])
     });
-    // console.log("props")
-    // console.log(props)
-    const columns = props.thtabla;
+    
+    //const columns = props.thtabla;
+    const columns = ref([]);
     const items = ref([]);
     // console.log("columns");
     // console.log(columns);
@@ -55,10 +55,8 @@
             "Access-Control-Allow-Origin": "*",
         });
 
-        const catalogoPersonal = async () => {
+        const datosTabla = async () => {
             const url = props.url;
-            // console.log("url");
-            // console.log(url);
         try {
             const { data } = await axiosInstance.get(url);
             items.value = data;
@@ -66,12 +64,24 @@
         } catch (error) {
             console.log(error);
         }
-            // console.log("items");
-            // console.log(items.value);
+            //  console.log("items");
+            //  console.log(items.value);
+            //Arreglar imprime doble los registros
+            items.value.forEach(e => {
+                for(var key in e){
+                    //console.log(etiqueta);
+                    columns.value.push(key);
+                    // if(e[key].constructor == Object){
+                    //     console.log("tiene campos");
+                    //     for(var subKey in key){
+                    //         console.log(subKey);
+                    //     }
+                    // }
+                }
+                //console.log(columns)
+             });
         };
-
-        catalogoPersonal();
-
+        datosTabla();
     };
 
     const capitalize = (text) => {

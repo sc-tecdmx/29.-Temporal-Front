@@ -1,9 +1,74 @@
 <script setup>
+import { onMounted, ref } from "vue";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
 
 import { useMeta } from "@/composables/use-meta";
-useMeta({ title: "User Profile" });
+useMeta({ title: "Perfil de usuario" });
+
+//composable
+import { useGetData } from "@/composables/getData";
+
+//Iconos
+import IconAward from "@/components/icons/IconAward.vue";
+import IconMail from "@/components/icons/IconMail.vue";
+import IconMapPin from "@/components/icons/IconMapPin.vue";
+import IconFeatherFileText from "@/components/icons/IconFeatherFileText.vue";
+
+const { data, getData, loading, errorData } = useGetData();
+const archivoEsCer = ref(false);
+const selected_file_cer = ref(null);
+const certificado = ref({
+  archivoCer: "",
+  archivoKey: "",
+  contrasenaCer: "",
+});
+
+getData("http://localhost/j/perfil_usuario.php");
+
+const change_file_cer = (event) => {
+  selected_file_cer.value = event.target.files[0];
+  certificado.value.archivoCer = selected_file_cer.value;
+
+  const inputElement = document.getElementById("formFileCer");
+  const nombreArchivo = inputElement.value.toLowerCase();
+
+  if (nombreArchivo.endsWith(".cer")) {
+    archivoEsCer.value = true;
+  } else {
+    archivoEsCer.value = false;
+  }
+};
+const enviaFirma = () => {
+  console.log("Actualiza certificado");
+  const certFileData = {
+    file: certificado.value.archivoCer,
+    buffer: null,
+    base64: null,
+    iscer: archivoEsCer.value,
+  };
+  const pfxFileData = {
+    file: certificado.value.archivoCer,
+    buffer: null,
+    base64: null,
+    iscer: archivoEsCer.value,
+  };
+  const keyFileData = {
+    file: certificado.value.archivoKey,
+    buffer: null,
+    base64: null,
+  };
+  const docFileData = {
+    file: certificado.value.documento,
+    buffer: null,
+    base64: null,
+  };
+
+  // console.log(certFileData);
+  // console.log(pfxFileData);
+  // console.log(keyFileData);
+  // console.log(docFileData);
+};
 </script>
 <template>
   <div class="row no-gutters justify-content-center">
@@ -15,92 +80,42 @@ useMeta({ title: "User Profile" });
               <h3 class="">Perfil</h3>
             </div>
             <div class="text-center user-info">
-              <img
-                src="@/assets/images/tecdmx/profile_90x90.png"
-                alt="avatar"
-              />
-              <p class="">Otilio Esteban Hernández Pérez</p>
+              <img src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" />
+              <p class="">
+                {{ data?.nombre }} {{ data?.apellido1 }} {{ data?.apellido2 }}
+              </p>
             </div>
             <div class="user-info-list">
               <div class="d-flex justify-content-between">
                 <ul class="contacts-block list-unstyled">
                   <li class="contacts-block__item">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-phone"
-                    >
-                      <path
-                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-                      ></path>
-                    </svg>
-                    Extención: 1048
+                    <IconAward></IconAward>
+                    {{ data?.puesto.s_desc_nombramiento }}
+                  </li>
+
+                  <li class="contacts-block__item">
+                    <IconMail></IconMail>
+                    {{ data?.s_email_inst }}
                   </li>
                   <li class="contacts-block__item">
-                    <!-- <a href="mailto:example@mail.com"></a> -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-mail"
-                    >
-                      <path
-                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-                      ></path>
-                      <polyline points="22,6 12,13 2,6"></polyline></svg
-                    >otilio.hernandez@tecdmx.org.mx
+                    <IconMapPin></IconMapPin>
+                    {{ data?.area.s_desc_area }}
                   </li>
                   <li class="contacts-block__item">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-map-pin"
+                    <IconFeatherFileText></IconFeatherFileText>
+                    Certificado
+                    <p class="ms-5 text-secondary">
+                      Válido de {{ data?.certificado.d_fecha_registro }} a
+                      {{ data?.certificado.d_fecha_revocación }}
+                    </p>
+                    <button
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#certificadoModal"
+                      id="btn-certificado"
                     >
-                      <path
-                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
-                      ></path>
-                      <circle cx="12" cy="10" r="3"></circle></svg
-                    >Unidad de Tecnologías de la Información
-                  </li>
-                  <li class="contacts-block__item">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-award"
-                    >
-                      <circle cx="12" cy="8" r="7"></circle>
-                      <polyline
-                        points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"
-                      ></polyline>
-                    </svg>
-                    Director
+                      Actualizar certificado
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -108,6 +123,100 @@ useMeta({ title: "User Profile" });
           </div>
         </div>
       </div>
+      <!-- Modal -->
+      <div
+        id="certificadoModal"
+        class="modal fade"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-md modal-dialog-centered">
+          <div class="modal-content mailbox-popup">
+            <div class="modal-header">
+              <h5 class="modal-title">Actualizar Certificado</h5>
+              <button
+                type="button"
+                data-dismiss="modal"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                class="btn-close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="compose-box">
+                <div class="compose-content">
+                  <form>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="mb-3">
+                          <label for="formFileCer" class="form-label"
+                            >Archivo de certificado (*.cer o .pfx)</label
+                          >
+                          <input
+                            class="form-control"
+                            type="file"
+                            id="formFileCer"
+                            @change="change_file_cer"
+                            accept=".cer, .pfx"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12" v-if="archivoEsCer">
+                        <div class="mb-3">
+                          <label for="formFileKey" class="form-label"
+                            >Archivo de certificado (*.key)</label
+                          >
+                          <input
+                            class="form-control"
+                            type="file"
+                            id="formFileKey"
+                            @change="change_file_key"
+                            accept=".key"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group row invoice-created-by">
+                      <div class="col-sm-12">
+                        <label
+                          for="contrasenaCer"
+                          class="col-sm-12 col-form-label col-form-label-sm pb-0"
+                          >Contraseña</label
+                        >
+                        <input
+                          type="password"
+                          v-model="certificado.contrasenaCer"
+                          id="contrasenaCer"
+                          class="form-control form-control-sm"
+                          placeholder="Introduzca su contraseña"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="row justify-content-end">
+                      <div class="col-3">
+                        <a
+                          id="btn-modal-firma"
+                          class="btn btn-success btn-send p-3"
+                          href="javascript:void(0);"
+                          @click="enviaFirma()"
+                        >
+                          Actualizar
+                        </a>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Fin Modal -->
     </div>
   </div>
 </template>

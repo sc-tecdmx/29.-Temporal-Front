@@ -49,17 +49,6 @@ onMounted(() => {
                             <router-link to="/" @click="toggleMobileMenu" class="menu_tab d-inline">Inicio</router-link>
                         </div>
                     </a>
-                    <!-- <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard" aria-controls="dashboard" aria-expanded="false">
-                        <div class="">
-                            <IconFeatherHome></IconFeatherHome>
-                            <span>Inicio</span>
-                        </div>
-                    </a>
-                    <ul id="dashboard" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
-                        <li>
-                            <router-link to="/" @click="toggleMobileMenu">Tablero de control</router-link>
-                        </li>
-                    </ul> -->
                 </li>
 
                 <li class="menu">
@@ -74,20 +63,7 @@ onMounted(() => {
                     </a>
                     <ul id="apps" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <!-- <router-link to="/documento/nuevo/simple" @click="toggleMobileMenu">Nuevo</router-link> -->
-                            <a class="dropdown-toggle" href="#tipo-firma" data-bs-parent="#tipo-firma" data-bs-toggle="collapse" role="button" aria-expanded="false">
-                                Nuevo
-                                <IconFeatherChevronRight></IconFeatherChevronRight>
-                            </a>
-
-                            <ul id="tipo-firma" class="collapse list-unstyled sub-submenu">
-                                <li @click="toggleMobileMenu">
-                                    <router-link to="/documento/nuevo/simple" @click="toggleMobileMenu">Firma Simple</router-link>
-                                </li>
-                                <li @click="toggleMobileMenu">
-                                    <router-link to="/documento/nuevo/multiple" @click="toggleMobileMenu">Firma Multiple</router-link>
-                                </li>
-                            </ul>
+                            <router-link to="/documento/nuevo" @click="toggleMobileMenu">Nuevo</router-link>
                         </li>
                     </ul>
                 </li>

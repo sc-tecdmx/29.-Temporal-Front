@@ -14,7 +14,7 @@ onMounted(() => {
 <template>
     <div class="row no-gutters justify-content-center me-2">
         <div class="col-12 col-xxl-10">
-            <h3 class="mt-4">Catalogo Personal</h3>
+            <h3 class="mt-4">Catálogo Personal</h3>
 
             <TablaDatos
                 title="Catálogo Personal"

@@ -808,10 +808,10 @@ select.form-control.form-custom {
 
     .dropdown-menu {
         border: none;
-        border: 1px solid #e0e6ed;
+        border: 1px solid #690061; //PAO #e0e6ed
         z-index: 1028;
         box-shadow: none;
-        padding: 0.35rem 0;
+        padding: 0.35rem 0.35rem; //PAO 0.35rem 0
         // top: 0 !important;
         // right: auto;
         border-radius: 4px;

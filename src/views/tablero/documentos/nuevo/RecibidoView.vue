@@ -1,10 +1,15 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-    import '@/assets/sass/apps/invoice-preview.scss';
+import '@/assets/sass/apps/invoice-preview.scss';
+//composable
+import { useGetData } from "@/composables/getData";
 
-    import { getCertificadoData } from '@/firma/main.mjs';
-    import { useMeta } from '@/composables/use-meta';
-    useMeta({ title: 'Invoice Preview' });
+import { getCertificadoData } from '@/firma/main.mjs';
+import { useMeta } from '@/composables/use-meta';
+useMeta({ title: 'Detalle Documento' });
+
+const {data, getData, loading, errorData} = useGetData();
+
 
     const items = ref([]);
     const columns = ref([]);
@@ -13,6 +18,7 @@ import { onMounted, ref } from 'vue';
 
     onMounted(() => {
         bind_data();
+        getData("http://localhost/j/doc_recibido.php");
     });
 
     const bind_data = () => {
@@ -120,22 +126,22 @@ const motivoRechazo=()=>{
                                                         <div class="col-sm-6 col-12 me-auto">
                                                             <div class="d-flex">
                                                                 <!-- <img class="company-logo" src="@/assets/images/cork-logo.png" alt="company" /> -->
-                                                                <h3 class="align-self-center">Asunto del documento</h3>
+                                                                <h3 class="align-self-center">{{ data?.s_asunto }}</h3>
                                                             </div>
                                                         </div>
 
                                                         <div class="col-sm-6 text-sm-end">
-                                                            <p class="inv-list-number"><span class="inv-title">Folio : </span> <span class="inv-number">TTT-AAA-2020-001</span></p>
+                                                            <p class="inv-list-number"><span class="inv-title">Folio : </span> <span class="inv-number">{{ data?.folio_documento }}</span></p>
                                                         </div>
 
                                                         <div class="col-sm-6 align-self-center mt-3">
-                                                            <p class="inv-street-addr">Interno(uso)</p>
-                                                            <p class="inv-email-address">Área destino</p>
-                                                            <p class="inv-email-address">Destinatario</p>
+                                                            <p class="inv-street-addr">{{ data?.desc_destino_documento }}</p>
+                                                            <p class="inv-email-address">Área destino: {{ data?.s_desc_area }}</p>
+                                                            <p class="inv-email-address">Área copia: </p>
                                                         </div>
                                                         <div class="col-sm-6 align-self-center mt-3 text-sm-end">
-                                                            <p class="inv-created-date"><span class="inv-title">Fecha del Documento : </span> <span class="inv-date">20 Aug 2020</span></p>
-                                                            <p class="inv-due-date"><span class="inv-title">Fecha límite : </span> <span class="inv-date">26 Aug 2020</span></p>
+                                                            <p class="inv-created-date"><span class="inv-title">Fecha del Documento : </span> <span class="inv-date">{{ data?.creacion_documento_fecha }}</span></p>
+                                                            <p class="inv-due-date"><span class="inv-title">Fecha límite : </span> <span class="inv-date">{{ data?.d_fecha_limite_firma }}</span></p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -151,15 +157,15 @@ const motivoRechazo=()=>{
                                                         </div> -->
 
                                                         <div class="col-xl-8 col-lg-7 col-md-6 col-sm-4">
-                                                            <p class="inv-street-addr">Tipo de documento</p>
-                                                            <p class="inv-street-addr">Expediente</p>
-                                                            <p class="inv-email-address">Nombre de expediente</p>
+                                                            <p class="inv-street-addr">{{ data?.desc_tipo_documento }}</p>
+                                                            <p class="inv-street-addr">Expediente: {{ data?.n_num_expediente }}</p>
+                                                            <p class="inv-email-address">Nombre de expediente: {{ data?.s_descripcion }}</p>
                                                             <!-- <p class="inv-email-address">(128) 666 070</p> -->
                                                         </div>
 
                                                         <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-12 order-sm-0 order-1">
-                                                            <div class="inv--payment-info">
-                                                                <p><span class="inv-subtitle">Elaboró:</span> <span>Juan Pérez</span></p>
+                                                            <div class="inv--payment-info me-5 pe-5">
+                                                                <p><span class="inv-subtitle">Elaboró:</span> <span>{{ data?.nombre }} {{ data?.apellido1 }} {{ data?.apellido2 }}</span></p>
                                                                 <!-- <p><span class="inv-subtitle">Account Number: </span> <span>1234567890</span></p>
                                                                 <p><span class="inv-subtitle">SWIFT code:</span> <span>VS70134</span></p>
                                                                 <p><span class="inv-subtitle">Country: </span> <span>United States</span></p> -->
@@ -241,7 +247,7 @@ const motivoRechazo=()=>{
                                 <div class="invoice-action-btn">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-3 col-sm-6">
-                                            <a href="javascript:;" class="btn btn-primary btn-send">Turnar</a>
+                                            <a href="javascript:;" class="btn btn-primary btn-send">Enviar/Transferir</a>
                                         </div>
                                         <!-- <div class="col-xl-12 col-md-3 col-sm-6">
                                             <a href="javascript:;" class="btn btn-secondary btn-print action-print" @click="print()">Print</a>

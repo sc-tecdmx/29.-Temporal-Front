@@ -1,11 +1,11 @@
 <script setup>
     import { ref } from 'vue';
     import '@/assets/sass/authentication/auth-boxed.scss';
-    import IconFeatherUser from '../../components/icons/IconFeatherUser.vue'
-    import IconFeatherLock from '../../components/icons/IconFeatherLock.vue'
-    import IconLogoGoogle from '../../components/icons/IconLogoGoogle.vue';
-    import IconMicrosoftLogo from '../../components/icons/iconmicrosoftlogo.vue';
-    import IconFeatherAtSign from '../../components/icons/IconFeatherAtSign.vue';
+    import IconFeatherUser from '@/components/icons/IconFeatherUser.vue'
+    import IconFeatherLock from '@/components/icons/IconFeatherLock.vue'
+    import IconLogoGoogle from '@/components/icons/IconLogoGoogle.vue';
+    import IconMicrosoftLogo from '@/components/icons/iconmicrosoftlogo.vue';
+    import IconFeatherAtSign from '@/components/icons/IconFeatherAtSign.vue';
 
     import { useMeta } from '@/composables/use-meta';
     useMeta({ title: 'Register Boxed' });

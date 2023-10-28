@@ -13,13 +13,18 @@ const router = createRouter({
       //component: IndexView
       component: () => import('../views/tablero/IndexView.vue')
     },
+    // {
+    //   path: '/documento/nuevo/:tipo',
+    //   name: 'nuevo',
+    //   component: () => import('../views/tablero/documentos/nuevo/NuevoView.vue')
+    // },
     {
-      path: '/documento/nuevo/:tipo',
+      path: '/documento/nuevo',
       name: 'nuevo',
       component: () => import('../views/tablero/documentos/nuevo/NuevoView.vue')
     },
     {
-      path: '/documento/recibido',
+      path: '/documento/recibido/:id',
       name: 'recibido',
       component: () => import('../views/tablero/documentos/nuevo/RecibidoView.vue')
     },

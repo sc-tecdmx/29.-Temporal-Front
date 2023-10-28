@@ -13,7 +13,7 @@ onMounted(() => {
 <template>
   <div class="row no-gutters justify-content-center">
     <div class="col-12 col-xxl-10">
-      <h3 class="mt-4">Catalogo Tipos de Documento</h3>
+      <h3 class="mt-4">Catálogo Tipos de Documento</h3>
       <div class="contenedor_cat">
         <div class="d-flex justify-content-center">
           <div class="spinner-border text-primary" role="status" v-if="loading">

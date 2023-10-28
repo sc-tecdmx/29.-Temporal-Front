@@ -43,7 +43,7 @@
                     :placeholder=" placeholder "
                     @change="submit_form1(); emit('inputData', selected, is_submit_form1)"
                     />
-                <div class="valid-feedback">Validado</div>
+                <!-- <div class="valid-feedback">Validado</div> -->
                 <div class="invalid-feedback">Ingrese texto</div>
             </div>
         </div>

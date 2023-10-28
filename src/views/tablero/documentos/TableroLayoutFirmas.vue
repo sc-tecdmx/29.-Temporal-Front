@@ -216,7 +216,7 @@ const showMessage = (msg = "", type = "success") => {
 
 //--
 //----------------------------
-const thTablero= ref(['folio','estado','prioridad', 'uuid', 'asunto', 'firmante', 'destinatario', 'detalle']);
+//const thTablero= ref(['folio','estado','prioridad', 'uuid', 'asunto', 'firmante', 'destinatario', 'detalle']);
 </script>
 <template>
   <!-- Tablero de Firmas -->
@@ -245,33 +245,11 @@ const thTablero= ref(['folio','estado','prioridad', 'uuid', 'asunto', 'firmante'
                 <h5 class="app-title">Firmar documentos</h5>
               </div>
               <div class="btn-group mb-3 me-4">
-                <button type="button" class="btn btn-primary" >
-                  <IconPlus />
-                  Nuevo
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false">
-                  <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu">
-                  <div>
-                    <router-link to="/documento/nuevo/simple" class="text-dark ms-3" style="font-size: 14px;">Firma individual</router-link>
-                  </div>
-                  <div>
-                    <router-link to="/documento/nuevo/multiple" class="text-dark ms-3" style="font-size: 14px;">Firma múltiple</router-link>
-                  </div>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="javascript:void(0);"
-                    >Subir archivo</a
-                  >
-                </div>
+                <router-link to="/documento/nuevo" class="btn btn-primary ms-3" style="font-size: 14px;">
+                    <IconPlus class="me-1"/>
+                    Nuevo
+                  </router-link>
               </div>
-
-              <!-- <perfect-scrollbar class="todoList-sidebar-scroll"> -->
               <TableroSidebar
                 :selected_tab="selected_tab"
                 :task_list="task_list.value"
@@ -284,27 +262,8 @@ const thTablero= ref(['folio','estado','prioridad', 'uuid', 'asunto', 'firmante'
           <!-- Content Tablero -->
           <div id="todo-inbox" class="accordion todo-inbox">
             <TableroTablaListado
-              title=""
               url="http://localhost/j/tablero_principal.php"
-              :thtabla = thTablero
             ></TableroTablaListado>
-
-            <!-- Tablero Buscador -->
-            <!-- <TableroBuscar
-              :is_show_task_menu="is_show_task_menu"
-              @search_tasks="search_tasks"
-            /> -->
-            <!-- ./Tablero Buscador -->
-            <!-- <div v-if="filtered_task_list">
-            <TableroListado
-              :filtered_task_list="filtered_task_list ? filtered_task_list : null"
-              @task_complete="task_complete"
-              @view_task="view_task"
-              @edit_task="edit_task"
-              @delete_task="delete_task"
-              @set_important="set_important"
-            />
-          </div> -->
           </div>
           <!-- ./Content Tablero -->
         </div>

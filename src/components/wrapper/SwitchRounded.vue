@@ -17,7 +17,7 @@
             role="switch" 
             id="flexSwitchCheckDefault"
             @change="emit('chkSwitch', selected)">
-        <label class="form-check-label ps-1" for="flexSwitchCheckDefault">{{ label }}</label>
+        <label class="form-check-label ps-1 fw-normal" for="flexSwitchCheckDefault">{{ label }}</label>
     </div>
 </template>
 
@@ -25,5 +25,10 @@
 .form-check-input:checked {
     background-color: #690061 !important;
     border-color: #690061 !important;
+}
+.form-check-input:focus {
+    border-color: #9a4d94;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(154,77,148,.25);
 }
 </style>

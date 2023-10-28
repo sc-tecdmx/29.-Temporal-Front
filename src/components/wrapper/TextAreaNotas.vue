@@ -1,31 +1,36 @@
 <script setup>
-    import { ref } from 'vue';
-    import { defineProps, defineEmits } from 'vue';
+import { ref } from "vue";
+import { defineProps, defineEmits } from "vue";
 
-    const props= defineProps({
-        label: String,
-        placeholder: String,
-    });
+const props = defineProps({
+  label: String,
+  placeholder: String,
+});
 
-    const emit = defineEmits(['txtArea']);
-    
-    const selected = ref('');
+const emit = defineEmits(["txtArea"]);
+
+const selected = ref("");
 </script>
 <template>
-    <div class="invoice-detail-note">
-        <div class="row">
-            <div class="col-md-12 align-self-center">
-                <div class="form-group row invoice-note">
-                    <label for="invoice-detail-notes" class="col-sm-12 col-form-label col-form-label-sm">{{ label }}</label>
-                    <div class="col-sm-12">
-                        <textarea v-model="selected" rows="3" id="invoice-detail-notes"
-                            class="form-control"
-                            :placeholder="placeholder"
-                            @change="emit('txtArea', selected)"
-                            ></textarea>
-                    </div>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-md-12 align-self-center">
+      <div class="form-group row invoice-note">
+        <label
+          for="invoice-detail-notes"
+          class="col-sm-12 col-form-label col-form-label-sm"
+          >{{ label }}</label
+        >
+        <div class="col-sm-12">
+          <textarea
+            v-model="selected"
+            rows="3"
+            id="invoice-detail-notes"
+            class="form-control form-control-sm"
+            :placeholder="placeholder"
+            @change="emit('txtArea', selected)"
+          ></textarea>
         </div>
+      </div>
     </div>
+  </div>
 </template>

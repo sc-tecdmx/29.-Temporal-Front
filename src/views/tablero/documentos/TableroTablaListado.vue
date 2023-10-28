@@ -1,6 +1,7 @@
 <script setup>
     import { onMounted, ref } from 'vue';
     import axios from 'axios';
+    import { useRouter } from 'vue-router';
     
     //flatpickr para Fecha
     import flatPickr from 'vue-flatpickr-component';
@@ -10,19 +11,28 @@
     import PDF from 'pdf-vue3';
     //Iconos
     import IconMoreHorizontal from '@/components/icons/IconMoreHorizontal.vue';
-    import IconChevronDown from '../../../components/icons/IconChevronDown.vue';
-    import IconAlertOctagon from '../../../components/icons/IconAlertOctagon.vue';
-    import IconPieChart from '../../../components/icons/IconPieChart.vue';
-    import IconPaperclip from '../../../components/icons/IconPaperclip.vue';
-    import IconEdit from '../../../components/icons/IconEdit.vue';
-    import IconXOctagon from '../../../components/icons/IconXOctagon.vue';
+    import IconChevronDown from '@/components/icons/IconChevronDown.vue';
+    import IconAlertOctagon from '@/components/icons/IconAlertOctagon.vue';
+    import IconFeatherFileText from '@/components/icons/IconFeatherFileText.vue';
+    import IconEdit from '@/components/icons/IconEdit.vue';
+    import IconXOctagon from '@/components/icons/IconXOctagon.vue';
+    import IconSend from '@/components/icons/IconSend.vue';
+    import IconFeatherCheck from '@/components/icons/IconFeatherCheck.vue';
+    import IconFeatherX from '@/components/icons/IconFeatherX.vue';
+    import IconFilePlus from '@/components/icons/IconFilePlus.vue';
+    import IconEye from '@/components/icons/IconEye.vue';
+    import IconSignature from '@/components/icons/IconSignature.vue';
 
     const props=  defineProps({
         filtered_task_list: [],
+        url: String,
     });
 
+    const router = useRouter();
+
     /* inicia getData */
-    const columns = ['acciones','folio','estado','prioridad','asunto','fecha','firmantes','destinatarios', 'adjunto', 'detalle'];
+    //const columns = ['acciones','e','p','d','folio','asunto','fecha','firmantes','destinatarios', 'detalle'];
+    const columns = ['acciones','p','d','folio','asunto','fecha','firmantes','destinatarios'];
     const items = ref([]);
     
     const bind_data = () => {
@@ -32,7 +42,7 @@
         });
 
         const datosTabla = async () => {
-            const url = "http://localhost/j/tablero_principal.php";
+            const url = props.url;
             try {
                 const { data } = await axiosInstance.get(url);
                 items.value = data;
@@ -58,7 +68,7 @@
             filterPlaceholder: 'Buscar...',
             limit: 'Resultados:',
         },
-        // sortable: ['name', 'position', 'office', 'age', 'start_date', 'salary'],
+        sortable: ['name', 'position', 'office', 'age', 'start_date', 'salary'],
         sortIcon: {
             base: 'sort-icon-none',
             up: 'sort-icon-asc',
@@ -73,18 +83,13 @@
     });
 
     //Detalle
-    const view_row = (item) => {
-        alert("Detalle" + item.folio_documento);
-    };
+    // const verDetalle = (item) => {
+    //     alert("Detalle" + item.folio_documento);
+    // };
     //Archivo adjunto
-    const documento = ref([]);
+    const pathdocumento = ref("");
     const pdf_view = (path) =>{
-        console.log("path");
-        console.log(path);
-        //alert("path" + path);
-        pathDocumento = "../../../assets/images/Documento_prueba_firma.pdf";
-        console.log("pathDocumento");
-        console.log(pathDocumento);
+        pathdocumento.value = path;
     }
     //Botón ocultar columnas
     const show_hide_columns = (column, value) => {
@@ -119,36 +124,92 @@
         items.value = dt;
     };
 
-    const rangoFecha= () =>{
-        console.log("date3");
-        console.log(date3);
-        const cortado = date3.value.split("to");
-        console.log(cortado);
+    const campoRangoFecha = ref(false);
+    const buscarFecha = () => {
+        //console.log("buscarFecha")
+        campoRangoFecha.value = !campoRangoFecha.value;
+
     }
+    const rangoFecha= () =>{
+        // console.log("date3");
+        // console.log(date3);
+        const cortado = date3.value.split("to");
+        //console.log(cortado);
+        const fecha_inicio = cortado[0].trim();
+        const fecha_fin = cortado[1].trim();
+        console.log(fecha_inicio);
+        console.log(fecha_fin);
+    }
+
+    let docCreado = false;
+    let docEnviado = false;
+    let docFirma = false;
+    let docRechazado = false;
+    let docTerminado = false;
+    let titulo = "";
+    
+
     //Clase para icono Estado
     const class_estado = (estado) => {
         if (estado == '1') {
+            titulo = "Creado";
+            docCreado = true;
+            docEnviado = false;
+            docFirma = false;
+            docRechazado = false;
+            docTerminado = false;
             return 'creado';
         } else if (estado == '2') {
+            titulo = "Enviado";
+            docCreado = false;
+            docEnviado = true;
+            docFirma = false;
+            docRechazado = false;
+            docTerminado = false;
             return 'enviado';
         } else if (estado == '3') {
+            titulo = "En Firma";
+            docCreado = false;
+            docEnviado = false;
+            docFirma = true;
+            docRechazado = false;
+            docTerminado = false;
             return 'enFirma';
         } else if (estado == '4') {
+            titulo = "Rechazado";
+            docCreado = false;
+            docEnviado = false;
+            docFirma = false;
+            docRechazado = true;
+            docTerminado = false;
             return 'rechazado';
         } else if (estado == '5') {
+            titulo = "Terminado";
+            docCreado = false;
+            docEnviado = false;
+            docFirma = false;
+            docRechazado = false;
+            docTerminado = true;
             return 'terminado';
         }
     };
+
+    let titlePrioriodad = "";
+
     //Clase para icono Prioridad
     const class_prioridad = (prioridad) => {
         if (prioridad == 'alta') {
+            titlePrioriodad= "Alta";
             return 'alta';
         } else if (prioridad == 'media') {
+            titlePrioriodad= "Media";
             return 'media';
         } else if (prioridad == 'baja') {
+            titlePrioriodad= "Baja";
             return 'baja';
         }
     };
+    
     //Firmar documento
     const firmar = (documento) => {
         console.log("firmar documento");
@@ -166,15 +227,12 @@
             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                 <div class="panel br-6 p-0 mt-5">
                     <div class="custom-table">
-                        <div class="d-flex p-3 justify-content-between">
-                            <div class="d-flex align-items-sm-center flex-column flex-sm-row ms-1">
-                                <span class="text-nowrap me-sm-2">Rango de fecha:</span>
-                                <flat-pickr v-model="date3" :config="{ mode: 'range' }" class="form-control form-control-sm flatpickr active" @onChange="rangoFecha()"></flat-pickr>
-                            </div>
-                        </div>
-
                         <v-client-table :data="items" :columns="columns" :options="table_option">
                             <template #beforeFilter>
+                                <div class="checkbox-primary custom-control custom-checkbox me-2 mt-2">
+                                    <input type="checkbox" class="custom-control-input" id="chk_primary" @change="buscarFecha()"/>
+                                    <label class="custom-control-label" for="chk_primary"> Buscar por rango de fecha</label>
+                                </div>
                                 <div class="custom-dropdown dropdown btn-group">
                                     <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <button aria-haspopup="true" aria-expanded="false" type="button" class="btn dropdown-toggle btn-outline-primary">
@@ -198,61 +256,126 @@
                                             </label>
                                         </div>
                                     </div>
+                                    <div class="d-flex p-3 justify-content-between" v-if="campoRangoFecha">
+                                        <div class="d-flex align-items-sm-center flex-column flex-sm-row ms-1">
+                                            <!-- <span class="text-nowrap me-sm-2">Rango de fecha:</span> -->
+                                            <flat-pickr v-model="date3" :config="{ mode: 'range' }" class="form-control form-control-sm flatpickr active" @onChange="rangoFecha()"></flat-pickr>
+                                        </div>
+                                    </div>
                                 </div>
                             </template>
                             <template #acciones="props">
                                 <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
-                                    @click="firmar(props)"
-                                >
+                                    data-bs-toggle="tooltip"
+                                    title="Firmar Ahora"
+                                    @click="firmar(props)">
                                     <IconEdit></IconEdit>
                                 </a>
                                 <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
-                                    @click="rechazar(props)"
-                                >
+                                    data-bs-toggle="tooltip"
+                                    title="Rechazar"
+                                    @click="rechazar(props)">
                                     <IconXOctagon></IconXOctagon>
+                                    
+                                </a>
+                                <a href="javascript:;"
+                                    id="ddlPriority"
+                                    class="btn dropdown-toggle btn-icon-only ms-2"
+                                    data-bs-toggle="tooltip"
+                                    title="Detalle"
+                                    @click="router.push(`/documento/recibido/${props.row.folio_documento}`)">
+                                    <IconEye></IconEye>
+                                </a>
+                                <a href="javascript:;"
+                                    id="ddlPriority"
+                                    class="btn dropdown-toggle btn-icon-only ms-2"
+                                    :class="[class_estado(props.row.id_etapa_documento)]"
+                                    data-bs-toggle="tooltip"
+                                    :title="titulo"
+                                >
+                                    <IconFilePlus v-if="docCreado"></IconFilePlus>
+                                    <IconSend v-if="docEnviado"></IconSend>
+                                    <IconSignature v-if="docFirma"></IconSignature>
+                                    <IconFeatherX v-if="docRechazado"></IconFeatherX>
+                                    <IconFeatherCheck v-if="docTerminado"></IconFeatherCheck>
                                 </a>
                             </template>
-                            <template #folio="props">{{ props.row.folio_documento }}</template>
-                            <template #estado="props"> <!--{{ props.row.id_etapa_documento }} -->
-                                 <div class="priority-dropdown">
-                                    <div class="dropdown btn-group">
-                                        <a href="javascript:;"
-                                            id="ddlPriority"
-                                            class="btn dropdown-toggle btn-icon-only"
-                                            :class="[class_estado(props.row.id_etapa_documento)]"
-                                        >
-                                                    <IconPieChart></IconPieChart>
-                                        </a>
-                                            </div>
-                                        </div>
-                            </template>
-                            <template #prioridad="props">
+                            <template #p="props">
                                 <div class="priority-dropdown">
                                     <div class="dropdown btn-group">
                                         <a href="javascript:;"
                                             id="ddlPriority"
                                             class="btn dropdown-toggle btn-icon-only"
-                                            :class="[class_prioridad(props.row.prioridad)]"
+                                            :class="[class_prioridad(props.row.desc_prioridad)]"
+                                            data-bs-toggle="tooltip"
+                                            :title="titlePrioriodad"
                                         >
                                             <IconAlertOctagon></IconAlertOctagon>
                                         </a>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
                             </template>
+                            <!-- <template #e="props">
+                                <div class="priority-dropdown">
+                                    <div class="dropdown btn-group">
+                                        <a href="javascript:;"
+                                            id="ddlPriority"
+                                            class="btn dropdown-toggle btn-icon-only"
+                                            :class="[class_estado(props.row.id_etapa_documento)]">
+                                            <div title="Creado"><IconFilePlus v-if="docCreado"></IconFilePlus></div>
+                                            <div title="Enviado"><IconSend v-if="docEnviado"></IconSend></div>
+                                            <div title="En Firma"><IconSignature v-if="docFirma"></IconSignature></div>
+                                            <div title="Rechazado"><IconFeatherX v-if="docRechazado"></IconFeatherX></div>
+                                            <div title="Terminado"><IconFeatherCheck v-if="docTerminado"></IconFeatherCheck></div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </template> -->
+                            <template #d="props">
+                                <a href="javascript:;"
+                                    class="btn dropdown-toggle btn-icon-only"
+                                    @click="pdf_view(props.row.documento_path)"
+                                    v-if="props.row.documento_path && props.row.documento_path.length"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalxl">
+                                    <IconFeatherFileText></IconFeatherFileText>
+                                </a>
+                                <!-- Button trigger modal -->
+                                <!-- <button type="button" class="btn btn-success mb-2 me-2" data-bs-toggle="modal" data-bs-target="#sliderModal">Slider</button> -->
+                            </template>
+                            <template #folio="props">{{ props.row.folio_documento }}</template>
+                            
                             <template #asunto="props">
-                                {{ props.row.s_asunto }}
+                                <!-- <div :title="props.row.s_asunto" class="">
+                                    <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                        {{ props.row.s_asunto }}
+                                    </span>
+                                </div> -->
+                                <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
+                                    <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                        {{ props.row.s_asunto }}
+                                    </span>
+                                </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li class="font-list">
+                                            {{ props.row.s_asunto }}
+                                        </li>
+
+                                    </ul>
                             </template>
                             <template #fecha="props">
                                 {{ props.row.creacion_documento_fecha }}
                             </template>
                             <template #firmantes="props">
                                 <div class="me-2 custom-dropdown dropdown btn-group">
-                                    <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <IconMoreHorizontal></IconMoreHorizontal>
+                                    <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
+                                        <span class="d-inline-block text-truncate" style="max-width: 100px;">
+                                            {{ props.row.firmantes[0].nombre }} {{ props.row.firmantes[0].apellido1 }} {{ props.row.firmantes[0].apellido2 }},
+                                        </span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li class="font-list" v-for="firmante in props.row.firmantes">
@@ -264,8 +387,13 @@
                             </template>
                             <template #destinatarios="props">
                                 <div class="me-2 custom-dropdown dropdown btn-group">
-                                    <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <!-- <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <IconMoreHorizontal></IconMoreHorizontal>
+                                    </a> -->
+                                    <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
+                                        <span class="d-inline-block text-truncate" style="max-width: 100px;">
+                                            {{ props.row.destinatarios[0].nombre }} {{ props.row.destinatarios[0].apellido1 }} {{ props.row.destinatarios[0].apellido2 }},
+                                        </span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li class="font-list" v-for="destinatario in props.row.destinatarios">
@@ -275,21 +403,9 @@
                                     </ul>
                                 </div>
                             </template>
-                            <template #adjunto="props">
-                                <a href="javascript:;"
-                                    class="cancel"
-                                    @click="pdf_view(props.row.documento_path)"
-                                    v-if="props.row.documento_path && props.row.documento_path.length"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#sliderModal"
-                                >
-                                    <IconPaperclip></IconPaperclip>
-                                </a>
-                                <!-- Button trigger modal -->
-                                <!-- <button type="button" class="btn btn-success mb-2 me-2" data-bs-toggle="modal" data-bs-target="#sliderModal">Slider</button> -->
-                            </template>
-                            <template #detalle="props">
-                                <a href="javascript:;" class="cancel" @click="view_row(props.row)">
+                             <template #detalle="props">
+                                <a href="javascript:;" class="cancel" @click="verDetalle(props.row)">
+                                    
                                     <button type="button" class="btn btn-primary btn-sm">Ver</button>
                                 </a>
                             </template>
@@ -300,20 +416,37 @@
         </div>
     </div>
 <!-- Slider Modal -->
-<!-- <div class="modal fade" id="sliderModal" tabindex="-1" role="dialog" aria-labelledby="sliderModalLabel" aria-hidden="true">
+ <div class="modal fade" id="sliderModal" tabindex="-1" role="dialog" aria-labelledby="sliderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="modal-body p-0">
-                <PDF src="/root/Documento_prueba_firma.pdf"></PDF>
+                <!-- <PDF src="/src/assets/images/Documento_prueba_firma.pdf"></PDF> -->
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ pathDocumento }}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">cerrar</button>
                 </div>
             </div>
         </div>
     </div>
-</div> -->
+</div>
+<!-- xtra Large modal -->
+<div class="modal fade" id="modalxl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- <PDF src="/src/assets/images/Documento_prueba_firma.pdf"></PDF> -->
+                <PDF :src="pathdocumento"></PDF>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i>Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </template>
 <style>
@@ -329,8 +462,9 @@
     fill: rgba(182,228,235,.19);
 }
 .enFirma svg {
-    color: #71d0c9;
-    fill: rgba(113,208,201,.19);
+    /* color: #71d0c9;
+    fill: rgba(113,208,201,.19); */
+    fill: #71d0c9;
 }
 
 .rechazado svg {
@@ -353,5 +487,9 @@
     color: #f3d63c;
     fill: rgba(255,190,17,.19);
 }
-
+.btn svg {
+    width: 15px;
+    height: 15px;
+    vertical-align: bottom;
+}
 </style>

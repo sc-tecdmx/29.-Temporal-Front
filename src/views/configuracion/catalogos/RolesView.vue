@@ -18,7 +18,7 @@ onMounted(() => {
 <template>
     <div class="row no-gutters justify-content-center">
     <div class="col-12 col-xxl-10">
-      <h3 class="mt-4">Catalogo Roles</h3>
+      <h3 class="mt-4">Catálogo Roles</h3>
       <!-- <ListaAcordion
         title="Catálogo Roles"
         url="http://localhost/j/roles.php"

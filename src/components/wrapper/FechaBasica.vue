@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
     import { defineProps, defineEmits } from 'vue';
 
     //flatpickr
@@ -7,40 +7,56 @@
     import 'flatpickr/dist/flatpickr.css';
     import '@/assets/sass/forms/custom-flatpickr.css';
 
-    const selected_tax_type = ref({ key: 'None', value: null });
-
     const props= defineProps({
         label: String,
-        date: Date
+        date: String,
+        dias: Number,
+        obligatorio: Boolean
     });
 
     const emit = defineEmits(['dateSelected']);
+    let dias = 0;
 
-    const selected = ref('');
-    // const params = ref({
-    //     input_date: '',
-    // });
+    if(props.dias > 0){
+        dias = props.dias;
+    }
+    // console.log("date");
+    // console.log(props.date);
 
+    const config = ref({
+        minDate: new Date().fp_incr(dias),
+        dateFormat: 'Y-m-d',
+        allowInput: true,
+    })
+
+    const selected = ref();
+
+    onMounted(()=>{
+        selected.value = props.date;
+        //console.log(selected);
+    });
+
+    const is_submit_form3 = ref(false);
+    
+    const submit_form3 = () => {
+        is_submit_form3.value = true;
+    };
 
 </script>
 <template>
     <div class="row">
         <div class="form-group mb-1">
             <label class="mb-0">{{ label }}</label>
-            <!-- <flat-pickr v-model="params.input_date" -->
             <flat-pickr v-model="selected"
-                        class="form-control form-control-sm flatpickr active"
-                        placeholder="Seleccionar"
-                        @change="emit('dateSelected', selected)"
+                    class="form-control form-control-sm flatpickr active"
+                    placeholder="Seleccionar"
+                    :class="[props.obligatorio ? (is_submit_form3 ? (selected ? 'is-valid' : 'is-invalid') : ''): '']"
+                    :config="config"
+                    @change="submit_form3(); emit('dateSelected', selected, is_submit_form3)"
             ></flat-pickr>
-        </div>
-        <div class="col-12">
-            <div v-if="selected_tax_type.value !== null" class="form-group mb-0 tax-rate-deducted">
-                <label for="rate">Rate (%)</label>
-                    <input v-model="selected_tax_type.value" type="number" min="0" max="100"
-                    class="input-rate form-control" placeholder="Rate" />
-            </div>
         </div>
     </div>
 
 </template>
+<style>
+</style>

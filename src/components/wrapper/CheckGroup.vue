@@ -7,7 +7,8 @@
 
     const props= defineProps({
             label: String,
-            url: String
+            url: String,
+            picked: String
         });
     const emit = defineEmits(['opcionCheck']);
     const picked = ref("");
@@ -16,7 +17,7 @@
 </script>
 <template>
     <div class="ms-5 mt-3">
-        <p >Prioridad</p>
+        <p>{{ props.label }}</p>
         <div class="form-check form-check-inline ps-0" v-for="opcionCheck in data">
             <div class="custom-control custom-checkbox" >
                 <input class="form-check-input" 

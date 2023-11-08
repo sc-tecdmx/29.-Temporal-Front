@@ -2,8 +2,6 @@
 import { ref } from 'vue';
 import '@/assets/sass/scrollspyNav.scss';
 
-// import { useMeta } from '@/composables/use-meta';
-// useMeta({ title: 'Form Validation' });
 //composable
 import { useGetData } from "@/composables/getData";
 
@@ -13,34 +11,40 @@ import { useGetData } from "@/composables/getData";
         idName: String,
         label: String,
         is_submit_form: Boolean,
-        url: String
+        url: String,
+        opciones: Object
     });
 
     const emit = defineEmits(['opcionSelect']);
 
     const selected = ref('');
+    const catalogo = ref(null);
 
-    getData(props.url);
-    
-    //const form3 = ref({ select: '' });
+    catalogo.value = props.opciones;
+
+    // getData(props.url);
+
     const is_submit_form3 = ref(false);
     const submit_form3 = () => {
         is_submit_form3.value = true;
-        // if (form3.value.select) {
-        //     //form validated success
-        //     //showMessage('Form submitted successfully.');
-        // }
     };
 
     const showMessage = (msg = '', type = 'success') => {
         const toast = window.Swal.mixin({ toast: true, position: 'top', showConfirmButton: false, timer: 3000 });
         toast.fire({ icon: type, title: msg, padding: '10px 20px' });
     };
+
+        console.log("props.opciones");
+        console.log(catalogo.value);
+
+    //    Object.entries(catalogo.value).map(entry =>{
+    //        const [key, value] = entry
+    //        console.log({key, value})
+    //    })
 </script>
 
 <template>
 <div class="panel-body">
-    <!-- <form class="select" novalidate @submit.stop.prevent="submit_form3"> -->
         <div class="row">
             <div class="col-md-12">
                 <div id="select_menu" class="form-group form-group">
@@ -52,16 +56,14 @@ import { useGetData } from "@/composables/getData";
                         @change="submit_form3(); emit('opcionSelect', selected, is_submit_form3)"
                     >
                         <option value="">-- Seleccionar --</option>
-                         <option v-for="opcion in data" :value="opcion.id">{{ opcion.label }}</option> 
-                        <!-- <option v-for="(value,key) in data" :value="key">{{ key }} : {{ value }} </option> -->
+                         <!-- <option v-for="opcion in props.opciones" :value="opcion.id">{{ opcion.destino }}</option>  -->
+                        <option v-for="(value,key) in props.opciones" :value="key">{{ value }} </option>
                     </select>
                     <!-- <div class="valid-feedback">Validado</div> -->
                     <div class="invalid-feedback">Selecciona una opción</div>
                 </div>
             </div>
         </div>
-        <!-- <button class="btn btn-primary mt-2" type="submit">Submit form</button>
-    </form> -->
 </div>
 </template>
 <style>

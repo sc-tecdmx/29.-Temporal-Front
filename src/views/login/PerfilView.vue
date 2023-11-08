@@ -114,7 +114,7 @@ const enviaFirma = () => {
                       data-bs-target="#certificadoModal"
                       id="btn-certificado"
                     >
-                      Actualizar certificado
+                      Vincular certificado
                     </button>
                   </li>
                 </ul>

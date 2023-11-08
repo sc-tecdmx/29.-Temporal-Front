@@ -4,6 +4,7 @@
 
     const props= defineProps({
         label: String,
+        id:String
     });
     const emit = defineEmits(['chkSwitch']);
 
@@ -15,9 +16,9 @@
             class="form-check-input" 
             type="checkbox" 
             role="switch" 
-            id="flexSwitchCheckDefault"
+            :id="'flexSwitchCheckDefault' + props.id"
             @change="emit('chkSwitch', selected)">
-        <label class="form-check-label ps-1 fw-normal" for="flexSwitchCheckDefault">{{ label }}</label>
+        <label class="form-check-label ps-1 fw-normal" :for="'flexSwitchCheckDefault' + props.id">{{ label }}</label>
     </div>
 </template>
 

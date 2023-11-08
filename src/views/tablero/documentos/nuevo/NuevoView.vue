@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import axios from 'axios';
 import "@/assets/sass/apps/invoice-add.scss";
 //-----------------------
 import "@/assets/sass/forms/file-upload-with-preview.min.css";
@@ -22,45 +23,70 @@ import SwitchRounded from "@/components/wrapper/SwitchRounded.vue";
 import SelectValidado from "@/components/wrapper/SelectValidado.vue";
 import InputValidado from "@/components/wrapper/InputValidado.vue";
 import CheckGroup from "@/components/wrapper/CheckGroup.vue";
+
+//Iconos
+import IconPlus from '../../../../components/icons/IconPlus.vue'
 //Firma
 import { getCertificadoData } from "@/firma/main.mjs";
+//Composable
+import { useGetData } from "@/composables/getData";
 
 //useMeta({ title: 'Vue Multiselect' });
 /** ./Multiselect */
 useMeta({ title: "Nuevo documento" });
 
-const inputs = ref({
-  input1: [],
-  input2: [],
-  input3: [],
-  input4: [],
-  input5: [],
-});
+const catalogos = ref(null);
+const catDestino = ref(null);
+const catTipoDocumento = ref(null);
+ const bind_data = () => {
+         //console.log("bind_data");
+          const axiosInstance = axios.create({
+              "Access-Control-Allow-Origin": "*",
+          });
+
+          const datosTabla = async () => {
+              const url = "http://localhost/j/nuevo_documento.php";
+              try {
+                  const { data } = await axiosInstance.get(url);
+                  catalogos.value = data;
+                  //console.log("AXIOS:" + items.value);
+                  // console.log("catalogos");
+                  // console.log(catalogos.value.data);
+                  catDestino.value = catalogos.value.data.catDestino;
+              } catch (error) {
+                  console.log(error);
+              }
+          };
+
+          const obtenerCatalogos = async() =>{
+            const url = 'http://localhost/j/nuevo_documento.php';
+            const url2 = 'https://pokeapi.co/api/v2/pokemon/';
+            //console.log("obtenerCatalogos")
+            try {
+              //console.log("try")
+              const res = await fetch(url);
+               const data = await res.json();
+              //data.results.map(cata => console.log("catalogos map " + cata))
+              catDestino.value = data.data.catDestino;
+              catTipoDocumento.value = data.data.catTipoDocumento;
+            } catch (error) {
+              
+            }
+          }
+          datosTabla();
+          //obtenerCatalogos();
+ };
+
+ bind_data();
+  console.log("catalogos");
+  console.log(catalogos);
 
 /* Variable para Catálogos */
 
-const thFirmantes = ["Nombre", "Firma", "Editar", "Estado", "Obligatorio", ""];
-const thDestinatarios = ["Nombre", "Instrucción", "Editar", "Estado", ""];
+const thFirmantes = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
+const thDestinatarios = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
 
 /* Fin catálogos */
-
-const toggleCode = (name) => {
-  if (code_arr.value.includes(name)) {
-    code_arr.value = code_arr.value.filter((d) => d != name);
-  } else {
-    code_arr.value.push(name);
-  }
-};
-
-const addTag = (newTag) => {
-  options4.value.push(newTag);
-  inputs.value["input4"].push(newTag);
-};
-
-const addTag1 = (tag) => {
-  options5.value.push(newTag);
-  inputs.value["input5"].push(newTag);
-};
 
 /* ..// Select 2 */
 const items = ref([]);
@@ -78,35 +104,29 @@ const certificado = ref({
 
 /* JSON */
 const params = ref({
-  idUso: "",
+  idDestino: "",
   idtipoDocumento: "",
-  idDocumento: "",
-  folio: "",
+  folioEspecial: "",
   folioDocumento: "",
   numeroExpediente: "",
-  nombreExpediente: "",
+  descripcionExpediente: "",
   fechaDocumento: "",
   asunto: "",
   elaboro: "",
   contenido: "",
   firmantes: [
-    {
-      idFirmante: "",
-      firma: "",
-      obligatorio: "",
-      estado: "",
-    },
+     {
+       idFirmante: "",
+       firma: "",
+       secuencia:"",
+       prioridad:''
+     },
   ],
   destinatarios: [
     {
       idDestinatario: "",
       instruccion: "",
-      estado: "",
-    },
-    {
-      idDestinatario: "",
-      instruccion: "",
-      estado: "",
+      prioridad:''
     },
   ],
   notas: "",
@@ -132,6 +152,8 @@ const form = ref({
   inputNombreExpediente: false,
   inputAsuntoDoc: false,
   inputElaboro: false,
+  tablaFirmantes: false,
+  tablaDestinatarios: false,
   txtAreaContenido: false,
   chkPrioridad: false,
   inputPDF: false
@@ -142,7 +164,7 @@ const formFirma = ref({
 const is_submit_form = ref(false);
 
 /* Set params */
-const opcionSelectUso = (idOpcion, campoValido) => {
+const opcionSelectDestino = (idOpcion, campoValido) => {
   params.value.idUso = idOpcion;
   if (idOpcion == 0) {
     form.selectUso = false;
@@ -166,6 +188,7 @@ const opcionInputIdDocumento = (idData, campoValido) => {
     form.inputIdDocumento = campoValido;
   }
 };
+//Folio Especial
 const opcionInputFolio = (idData, campoValido) => {
   params.value.folio = idData;
   if (idData == 0) {
@@ -222,6 +245,24 @@ const opcionInputContenido = (idData, campoValido) => {
     form.txtAreaContenido = campoValido;
   }
 };
+const tablaFirmantes = (data, campoValido) => {
+  params.value.firmantes = data;
+   if (data == 0) {
+     form.tablaFirmantes = false;
+   } else {
+     form.tablaFirmantes = campoValido;
+   }
+};
+const tablaDestinatarios = (data, campoValido) => {
+  console.log("Tabla Destinatarios");
+  console.log(data)
+  params.value.destinatarios = data;
+  if (data == 0) {
+     form.tablaDestinatarios = false;
+   } else {
+     form.tablaDestinatarios = campoValido;
+   }
+};
 const opcionSwitchOrdenFirma = (idData) => {
   params.value.configuracion.ordenFirma = idData;
 };
@@ -265,101 +306,93 @@ let certificadoModal = ref(null);
 let modalCamposRequeridos = ref(null);
 const arrayCampos = ref([]);
 
-const submit_form3 = () => {
+const submit_formulario = () => {
    arrayCampos.value = [];
 
-   if(!selected_file.value != null){
-     is_submit_form_doc.value = true;
-   }
-  
    //verifica que no este vacio
-    if (form.selectUso == undefined) {
-      form.selectUso = false;
-    }
-    if (form.inputFolio == undefined) {
-      form.inputFolio = false;
-    }
-    if (form.selectTipoDocumento == undefined) {
-      form.selectTipoDocumento = false;
-    }
-    if (form.inputIdDocumento == undefined) {
-      form.inputIdDocumento = false;
-    }
-    if (form.inputFolioDocumento == undefined) {
-      form.inputFolioDocumento = false;
-    }
-    if (form.inputfechaCreacion == undefined) {
-      form.inputfechaCreacion = false;
-    }
-    if (form.inputNumExpediente == undefined) {
-      form.inputNumExpediente = false;
-    }
-    if (form.inputNombreExpediente == undefined) {
-      form.inputNombreExpediente = false;
-    }
-    if (form.inputAsuntoDoc == undefined) {
-      form.inputAsuntoDoc = false;
-    }
-    if (form.inputElaboro == undefined) {
-      form.inputElaboro = false;
-    }
-    if (form.txtAreaContenido == undefined) {
-      form.txtAreaContenido = false;
-    }
-   if (form.chkPrioridad == undefined) {
-      form.chkPrioridad = false;
-    }
-    if (form.inputPDF == undefined) {
-      form.inputPDF = false;
-    }
+       if (form.selectUso == undefined) {
+         form.selectUso = false;
+       }
+       if (form.selectTipoDocumento == undefined) {
+         form.selectTipoDocumento = false;
+       }
+       if (form.inputfechaCreacion == undefined) {
+         form.inputfechaCreacion = false;
+       }
+       if (form.inputNumExpediente == undefined) {
+         form.inputNumExpediente = false;
+       }
+       if (form.inputNombreExpediente == undefined) {
+         form.inputNombreExpediente = false;
+       }
+       if (form.inputAsuntoDoc == undefined) {
+         form.inputAsuntoDoc = false;
+       }
+       if (form.inputElaboro == undefined) {
+         form.inputElaboro = false;
+       }
+       if(form.tablaFirmantes == undefined){
+        form.tablaFirmantes =  false;
+       }
+       if(form.tablaDestinatarios == undefined){
+        form.tablaDestinatarios =  false;
+       }
+       if (form.txtAreaContenido == undefined) {
+         form.txtAreaContenido = false;
+       }
+      if (form.chkPrioridad == undefined) {
+         form.chkPrioridad = false;
+       }
+       if (form.inputPDF == undefined) {
+         form.inputPDF = false;
+       }
+       if(!selected_file.value != null){
+         is_submit_form_doc.value = true;
+       }
 
-   //Alerts
-    if (!form.selectUso) {
-      arrayCampos.value.push("Destino de Oficio");
-    }
-    if (!form.inputFolio) {
-      arrayCampos.value.push("Folio");
-    }
-    if (!form.selectTipoDocumento) {
-      arrayCampos.value.push("Tipo de documento");
-    }
-    if (!form.inputIdDocumento) {
-      arrayCampos.value.push("ID del Documento");
-    }
-    if (!form.inputFolioDocumento) {
-      arrayCampos.value.push("Folio del documento");
-    }
-    if (!form.inputfechaCreacion) {
-      arrayCampos.value.push("Fecha de documento");
-    }
-    if (!form.inputNumExpediente) {
-      arrayCampos.value.push("Número de Expediente");
-    }
-    if (!form.inputNombreExpediente) {
-      //descripcion del expediente
-      arrayCampos.value.push("Nombre de Expediente");
-    }
-    if (!form.inputAsuntoDoc) {
-      arrayCampos.value.push("Asunto");
-    }
-    if (!form.inputElaboro) {
-      arrayCampos.value.push("Elaboró");
-    }
-    if (!form.txtAreaContenido) {
-      arrayCampos.value.push("Contenido:");
-    }
-    if (!form.chkPrioridad) {
-      arrayCampos.value.push("Prioridad");
-    }
-    if (!form.inputPDF) {
-      arrayCampos.value.push("Documento(s) a firmar");
-    }
-
-    if (!arrayCampos.value.length == 0) {
-      modalCamposRequeridos.show();
-    } else {
+    //  //Alerts
+       if (!form.selectUso) {
+         arrayCampos.value.push("Destino de Oficio");
+       }
+       if (!form.selectTipoDocumento) {
+         arrayCampos.value.push("Tipo de documento");
+       }
+       if (!form.inputfechaCreacion) {
+         arrayCampos.value.push("Fecha de documento");
+       }
+       if (!form.inputNumExpediente) {
+         arrayCampos.value.push("Número de Expediente");
+       }
+       if (!form.inputNombreExpediente) {
+         //descripcion del expediente
+         arrayCampos.value.push("Nombre de Expediente");
+       }
+       if (!form.inputAsuntoDoc) {
+         arrayCampos.value.push("Asunto");
+       }
+       if (!form.inputElaboro) {
+         arrayCampos.value.push("Elaboró");
+       }
+       if(!form.tablaFirmantes){
+        arrayCampos.value.push("Lista de Firmante(s)");
+       }
+       if(!form.tablaDestinatarios){
+        arrayCampos.value.push("Lista de Destinatario(s)");
+       }
+       if (!form.txtAreaContenido) {
+         arrayCampos.value.push("Contenido:");
+       }
+       if (!form.chkPrioridad) {
+         arrayCampos.value.push("Prioridad");
+       }
+       if (!form.inputPDF) {
+         arrayCampos.value.push("Documento(s) a firmar");
+       }
+       if (!arrayCampos.value.length == 0) {
+         modalCamposRequeridos.show();
+       } else {
      certificadoModal.show();
-    }
+     }
 };
 /* Fecha del documento y fecha limite */
     let dt = new Date();
@@ -367,10 +400,11 @@ const submit_form3 = () => {
 //   dt.setDate(dt.getDate() + 5);
 //   params.value.configuracion.fechaLimite = dt;
 
-onMounted(() => {
+onMounted(async() => {
   initPopup();
+  // bind_data();
+  
 });
-
 /* Obtener documentos */
 const change_file = (event) => {
   //Quitar [0] para cuando pueda firmar mas de 1 documento
@@ -378,11 +412,6 @@ const change_file = (event) => {
   params.value.configuracion.documentos = selected_file.value;
   certificado.value.documento = selected_file.value;
   form.inputPDF = true;
-};
-/* Guarda Capruta */
-const enviaCaptura = () => {
-  console.log("Captura");
-  console.log(params.value);
 };
 
 /* Modal firmar ahora */
@@ -412,8 +441,16 @@ const change_file_key = (event) => {
 const setContrasena = (contrasena) => {
   console.log("constraseña" + contrasena.value);
   certificado.value.contrasenaCer = contrasena.value;
+  is_submit_form_pass.value = true;
+  alertFirma.value = false;
 };
 
+/* Guarda Captura */
+const enviaCaptura = () => {
+  console.log("Captura");
+  console.log(params.value);
+};
+/* Envia documento a firma */
 const enviaFirma = () => {
   console.log("certificado");
   const certFileData = {
@@ -439,37 +476,9 @@ const enviaFirma = () => {
     base64: null,
   };
 
-  getCertificadoData(
-    certFileData,
-    keyFileData,
-    docFileData,
-    certificado.value.contrasenaCer
-  );
+  getCertificadoData( certFileData, keyFileData, docFileData, certificado.value.contrasenaCer );
 };
 /* Termina Modal firmar ahora */
-
-const add_item = () => {
-  let max_id = 0;
-  if (items.value && items.value.length) {
-    max_id = items.value.reduce(
-      (max, character) => (character.id > max ? character.id : max),
-      items.value[0].id
-    );
-  }
-  items.value.push({
-    id: max_id + 1,
-    title: "",
-    description: "",
-    rate: 0,
-    quantity: 0,
-    amount: 0,
-    is_tax: false,
-  });
-};
-
-const remove_item = (item) => {
-  items.value = items.value.filter((d) => d.id != item.id);
-};
 
 //Inicializa Modal
 const initPopup = () => {
@@ -489,45 +498,33 @@ const is_submit_form_doc = ref(false);
 const alertFirma = ref(false);
 
 const submit_formFirma = () => {
-  //Verifica que archivo cer no este vacio
-    if(selected_file_cer.value != null){
-      console.log("Campo cer/pfx lleno");
-      console.log(selected_file_cer.value);
-      //Valida si es el archivo es .cer
-        if(archivoEsCer.value == true){
-          console.log("Es archivo cer");
-          console.log(archivoEsCer.value);
-            //valida que el archivo Key no este vacio
-            if(!selected_file_key.value != null){
-              console.log("El archivo key esta lleno");
-              console.log(selected_file_key.value);
-              //Coloca estilo ok al campo
-                 is_submit_form_key.value = false;
-             }
-        }
-    }else{
-        is_submit_form_cer.value = true;
-    }
-        is_submit_form_pass.value = true;
 
-    if((is_submit_form_cer.value) || 
-      (is_submit_form_cer.value && is_submit_form_key.value)){
-      alertFirma.value = true;
-    }
+  if(archivoEsCer.value){
+    console.log("SI Es CER");
+    is_submit_form_cer.value = true
+    is_submit_form_key.value =true
+    is_submit_form_pass.value = true
+  }else{
+    console.log("NO Es PFX");
+    is_submit_form_cer.value = true
+    is_submit_form_pass.value = true
+  }
+  
+  if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
+      || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
+    console.log("campos llenos");
+    enviaCaptura();
+    enviaFirma();
+  }
+};
+const numExpediente = ref(null);
+const descExpediente = ref(null);
+const addExpediente = () => {
+  console.log("agregar expediente");
+  console.log(numExpediente);
+  console.log(descExpediente);
+};
 
-    console.log("Estados variable");
-    console.log("Cer" + is_submit_form_cer.value);
-    console.log("Key" + is_submit_form_key.value);
-    console.log("Pass" + is_submit_form_pass.value);
-
-    // if(!is_submit_form_cer.value && !is_submit_form_key.value && !is_submit_form_pass.value
-    //   || !is_submit_form_cer.value && !is_submit_form_pass.value){
-    //     alertFirma.value=false;
-    //   console.log("entra a metodo validando todo true")
-    //   enviaFirma();
-    // }
-      
-    };
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -547,43 +544,32 @@ const submit_formFirma = () => {
                       <h3>Nuevo documento a firmar</h3>
                     </div>
                   </div>
-
                   <!-- Título del documento -->
+                  <!-- {{ catalogos }} -->
                   <div class="invoice-detail-total mb-3">
                     <div class="row">
-                      <form class="select" novalidate @submit.stop.prevent="submit_form3" >
-                        <div class="row">
-                          <div class="col-12 col-md-3">
-                            <div
-                              class="alert alert-light-danger alert-dismissible border-0 mb-4"
-                              role="alert"
-                              v-if="form.selectUso"
-                            >
-                              Seleccionar una opción
-                              <button
-                                type="button"
-                                class="close"
-                                data-bs-dismiss="alert"
-                                aria-label="Close"
-                              >
-                                ×
-                              </button>
-                            </div>
+                      <form class="select" novalidate @submit.stop.prevent="submit_formulario" >
+                        <div class="row justify-content-between">
+                          <div class="col-12 col-md-4">
                             <SelectValidado
-                              idName="catUso"
+                              idName="catDestino"
                               label="Destino de oficio:"
                               url="http://localhost/j/documentos/catUso.php"
                               :is_submit_form="is_submit_form"
-                              @opcionSelect="opcionSelectUso"
+                              :opciones="catDestino"
+                              @opcionSelect="opcionSelectDestino"
                             ></SelectValidado>
                           </div>
-                          <div class="col-12 col-md-6 col-lg-3 offset-md-3">
-                            <InputValidado
-                              idName="folio"
-                              label="Folio:"
-                              placeholder="folio"
-                              @inputData="opcionInputFolio"
-                            ></InputValidado>
+                          
+                          <div class="col-12 col-md-6 col-lg-4">
+                            <!-- Verifica que sea del día de hoy en adelante -->
+                            <FechaBasica
+                                label="Fecha de documento:"
+                                :date="params.fechaDocumento"
+                                @dateSelected="opcionDateDocumento"
+                                :dias="0"
+                                :obligatorio="true"
+                            ></FechaBasica>
                           </div>
                         </div>
                         <!-- Datos del documento -->
@@ -599,33 +585,24 @@ const submit_formFirma = () => {
                           </div>
                           <div class="col-12 col-md-6 col-lg-4">
                             <InputValidado
-                              idName="idDocumento"
-                              label="ID del Documento:"
-                              placeholder="id"
-                              @inputData="opcionInputIdDocumento"
-                            ></InputValidado>
-                          </div>
-                          <div class="col-12 col-md-6 col-lg-4">
-                            <InputValidado
                               idName="folioDocumento"
                               label="Folio del documento:"
                               placeholder="get"
                               @inputData="opcionInputFolioDocumento"
                             ></InputValidado>
                           </div>
-                        </div>
-                        <div class="row">
                           <div class="col-12 col-md-6 col-lg-4">
-                            <!-- Verifica que sea del día de hoy en adelante -->
-                            <FechaBasica
-                                label="Fecha de documento:"
-                                :date="params.fechaDocumento"
-                                @dateSelected="opcionDateDocumento"
-                                :dias="0"
-                                :obligatorio="true"
-                            ></FechaBasica>
+                            <InputValidado
+                              idName="folio"
+                              label="Folio especial:"
+                              placeholder="folio"
+                              @inputData="opcionInputFolio"
+                            ></InputValidado>
                           </div>
-                          <div class="col-12 col-md-6 col-lg-4">
+                        </div>
+                        <div class="row align-items-center">
+
+                          <div class="col-12 col-md-6 col-lg-5">
                             <InputValidado
                               idName="numeroExpediente"
                               label="Número de Expediente:"
@@ -633,13 +610,18 @@ const submit_formFirma = () => {
                               @inputData="opcionInputNumeroExpediente"
                             ></InputValidado>
                           </div>
-                          <div class="col-12 col-md-6 col-lg-4">
+                          <div class="col-12 col-md-6 col-lg-5">
                             <InputValidado
                               idName="nombreExpediente"
                               label="Nombre de Expediente:"
                               placeholder="Nombre de expediente"
                               @inputData="opcionInputNombreExpediente"
                             ></InputValidado>
+                          </div>
+                          <div class="col-12 col-md-6 col-lg-2 d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary mb-2 me-2 mt-2" data-bs-toggle="modal" data-bs-target="#modalExpediente">
+                                <IconPlus></IconPlus>
+                            </button>
                           </div>
                         </div>
                         <div class="row">
@@ -655,7 +637,7 @@ const submit_formFirma = () => {
                             <InputValidado
                               idName="elaboro"
                               label="Elaboró:"
-                              placeholder="usuario"
+                              placeholder="usuario de sesión"
                               @inputData="opcionInputElaboro"
                             ></InputValidado>
                           </div>
@@ -676,18 +658,21 @@ const submit_formFirma = () => {
                   <!-- Agregar Firmantes -->
                   <TablaAgregar
                     titulo="Agregar Firmantes"
-                    labelButton="Agregar firmante"
+                    id_tabla="firmantes"
                     url="http://localhost/j/documentos/catFirmantes.php"
                     :thtabla="thFirmantes"
-                    urlInterno="http://localhost/j/cat_tipo_firma.php"
+                    :tbTabla="catalogos"
+                    @tablaFirmantes = "tablaFirmantes"
                   ></TablaAgregar>
 
                   <!-- Agregar Destinatarios -->
-                  <TablaAgregar
+                   <TablaAgregar
                     titulo="Agregar Destinatarios"
-                    labelButton="Agregar Destinatario"
+                    id_tabla="destinatarios"
                     url="http://localhost/j/documentos/catFirmantes.php"
                     :thtabla="thDestinatarios"
+                    :tbTabla="catalogos"
+                    @tablaFirmantes = "tablaDestinatarios"
                   ></TablaAgregar>
 
                   <!-- ./ Agregar Firmantes -->
@@ -708,16 +693,19 @@ const submit_formFirma = () => {
                   <SwitchRounded
                     class="ms-5"
                     label="Firmar en este orden"
+                    id="sw-orden"
                     @chkSwitch="opcionSwitchOrdenFirma"
                   ></SwitchRounded>
                   <SwitchRounded
                     class="ms-5"
                     label="Mantener en modo captura"
+                    id="sw-captura"
                     @chkSwitch="opcionSwitchModoCaptura"
                   ></SwitchRounded>
                   <SwitchRounded
                     class="ms-5"
                     label="Generar número de oficio"
+                    id="sw-oficio"
                     @chkSwitch="opcionSwitchGeneraOficio"
                   ></SwitchRounded>
                   <CheckGroup
@@ -782,16 +770,11 @@ const submit_formFirma = () => {
                       >
                     </div>
                     <div class="col-xl-3 col-md-3">
-                      <!-- <a data-bs-toggle="modal" data-bs-target="#certificadoModal1"
-                                                id="btn-certificado" class="btn btn-secondary btn-send p-3"
-                                                href="javascript:void(0);" @click="submit_form3()">
-                                                Firmar ahora
-                                            </a> -->
                       <a
                         id="btn-certificado"
                         class="btn btn-secondary btn-send p-3"
                         href="javascript:void(0);"
-                        @click="submit_form3()"
+                        @click="submit_formulario()"
                       >
                         Firmar ahora
                       </a>
@@ -801,7 +784,7 @@ const submit_formFirma = () => {
                       <a
                         href="javascript:;"
                         class="btn btn-success btn-download"
-                        @click="submit_form3()"
+                        @click="submit_formulario()"
                       >
                         Firmar y enviar a firmantes</a
                       >
@@ -876,67 +859,10 @@ const submit_formFirma = () => {
                     
                     <div class="row justify-content-end">
                       <div class="col-3">
-                        <!-- <button type="submit" class="btn mt-2 btn-primary">Firmar</button> -->
-                        <a id="btn-modal-firma"
-                          class="btn btn-success btn-send p-3"
-                          href="javascript:void(0);"
-                          @click="enviaFirma()"
-                        >
-                          Firmar
-                        </a>
+                        <button type="submit" class="btn mt-2 btn-success btn-send">Firmar</button>
                       </div>
                     </div>
                 </form>
-              <!--<form>
-                 <div class="row">
-                  <div class="col-md-12">
-                    <div class="mb-3">
-                      <label for="formFileCer" class="form-label">Archivo de certificado (*.cer o .pfx)</label>
-                      <input class="form-control" 
-                            type="file"
-                            id="formFileCer"
-                            @change="change_file_cer"
-                            accept=".cer, .pfx"
-                            required
-                        />
-                    </div>
-                  </div>
-                </div> -->
-
-                <!-- <div class="row">
-                  <div class="col-md-12" v-if="archivoEsCer">
-                    <div class="mb-3">
-                      <label for="formFileKey" class="form-label" >Archivo de certificado (*.key)</label>
-                      <input class="form-control"
-                            type="file"
-                            id="formFileKey"
-                            @change="change_file_key"
-                            accept=".key"
-                            required
-                      />
-                    </div>
-                  </div>
-                </div> -->
-
-                <!-- <div class="form-group row invoice-created-by">
-                  <div class="col-sm-12">
-                    <label
-                      for="contrasenaCer"
-                      class="col-sm-12 col-form-label col-form-label-sm pb-0"
-                      >Contraseña</label
-                    >
-                    <input
-                      type="password"
-                      v-model="certificado.contrasenaCer"
-                      id="contrasenaCer"
-                      class="form-control form-control-sm"
-                      placeholder="Introduzca su contraseña"
-                      required
-                    />
-                  </div>
-                </div> 
-
-              </form>-->
             </div>
           </div>
         </div>
@@ -979,5 +905,37 @@ const submit_formFirma = () => {
       </div>
     </div>
   </div>
+  <!-- Modal Expediente -->
+<div class="modal fade" id="modalExpediente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar nuevo expediente</h5>
+                <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-4">
+                    <label class="col-form-label col-form-label-sm pb-0" for="add_expediente">Número de expediente</label>
+                    <div>
+                        <input v-model="numExpediente" type="text" id="add_expediente" class="form-control form-control-sm" placeholder="número de expediente" />
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="col-form-label col-form-label-sm pb-0" for="add_desc_expediente">Descripción del expediente</label>
+                    <div>
+                        <input v-model="descExpediente" type="text" id="add_desc_expediente" class="form-control form-control-sm" placeholder="Descripción de expediente" />
+                    </div>
+                </div>
+                <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i>Cancelar</button>
+                <button type="button" class="btn btn-primary" @click="addExpediente()">Crear</button>
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 <style></style>

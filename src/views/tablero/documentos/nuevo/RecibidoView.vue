@@ -1,9 +1,11 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import '@/assets/sass/apps/invoice-preview.scss';
+import IconFeatherFileText from '@/components/icons/IconFeatherFileText.vue';
 //composable
-import { useGetData } from "@/composables/getData";
-
+import { useGetData } from "@/composables/getDataN";
+//PDF viewer
+import PDF from 'pdf-vue3';
 import { getCertificadoData } from '@/firma/main.mjs';
 import { useMeta } from '@/composables/use-meta';
 useMeta({ title: 'Detalle Documento' });
@@ -15,17 +17,23 @@ const {data, getData, loading, errorData} = useGetData();
     const columns = ref([]);
     const items2 = ref([]);
     const columns2 = ref([]);
+    const url ="http://127.0.0.1:8083/api/documento/1"
+    const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoib3RpbGlvLmhlcm5hbmRlekB0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwMjkwNTkzfQ.4-0_ZwAK5lrOFoeQpa0NB3hF4374IrUQ1dbrYD1fwKVDfpK6F7ukhAF0KYnFwfS2-ZfnKVdCu5zFvQTlcq6Csw"
 
     onMounted(() => {
         bind_data();
-        getData("http://localhost/j/doc_recibido.php");
+        getData(url,token);
     });
+    const detalleDoc = ref(null);
+    detalleDoc.value = data;
+    console.log(data)
+    console.log(detalleDoc);
 
     const bind_data = () => {
         
         columns.value = [
             { key: 'firmante', label: 'Firmante' },
-            { key: 'obligatorio', label: 'Obligatorio' },
+            { key: 'intruccion', label: 'Instrucción' },
             { key: 'estado', label: 'Estado' },
         ];
         items.value = [
@@ -42,6 +50,7 @@ const {data, getData, loading, errorData} = useGetData();
             { nombre: 'Dora Luz Serrano', instruccion: 'Conocimiento', estado: 'Sin firma' },
         ];
     };
+
 
     const print = () => {
         window.print();
@@ -103,6 +112,11 @@ const motivoRechazo=()=>{
     console.log("motivo rechazo")
 }
 /* Termina Modal Rechazo*/
+
+const pathdocumento = ref("");
+    const pdf_view = (path) =>{
+        pathdocumento.value = path;
+    }
 </script>
 <template>
     <div class="row no-gutters justify-content-center">
@@ -126,22 +140,22 @@ const motivoRechazo=()=>{
                                                         <div class="col-sm-6 col-12 me-auto">
                                                             <div class="d-flex">
                                                                 <!-- <img class="company-logo" src="@/assets/images/cork-logo.png" alt="company" /> -->
-                                                                <h3 class="align-self-center">{{ data?.s_asunto }}</h3>
+                                                                <h3 class="align-self-center">{{ data?.asunto }}</h3>
                                                             </div>
                                                         </div>
 
                                                         <div class="col-sm-6 text-sm-end">
-                                                            <p class="inv-list-number"><span class="inv-title">Folio : </span> <span class="inv-number">{{ data?.folio_documento }}</span></p>
+                                                            <p class="inv-list-number"><span class="inv-title">Folio : </span> <span class="inv-number">{{ data?.folioDocumento }}</span></p>
                                                         </div>
 
                                                         <div class="col-sm-6 align-self-center mt-3">
-                                                            <p class="inv-street-addr">{{ data?.desc_destino_documento }}</p>
-                                                            <p class="inv-email-address">Área destino: {{ data?.s_desc_area }}</p>
-                                                            <p class="inv-email-address">Área copia: </p>
+                                                            <p class="inv-street-addr"><b>Destino:</b> {{ data?.tipoDestino }}</p>
+                                                            <p class="inv-email-address"><b>Prioridad:</b> {{ data?.prioridad }}</p>
+                                                            <!--<p class="inv-email-address">Área copia: </p> -->
                                                         </div>
                                                         <div class="col-sm-6 align-self-center mt-3 text-sm-end">
-                                                            <p class="inv-created-date"><span class="inv-title">Fecha del Documento : </span> <span class="inv-date">{{ data?.creacion_documento_fecha }}</span></p>
-                                                            <p class="inv-due-date"><span class="inv-title">Fecha límite : </span> <span class="inv-date">{{ data?.d_fecha_limite_firma }}</span></p>
+                                                            <p class="inv-created-date"><span class="inv-title">Fecha del Documento : </span> <span class="inv-date">{{ data?.fechaCreacion }}</span></p>
+                                                            <p class="inv-due-date"><span class="inv-title">Fecha límite : </span> <span class="inv-date">{{ data?.fechaLimiteFirma }}</span></p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -156,20 +170,25 @@ const motivoRechazo=()=>{
                                                             <h6 class="inv-title">Payment Info:</h6>
                                                         </div> -->
 
-                                                        <div class="col-xl-8 col-lg-7 col-md-6 col-sm-4">
-                                                            <p class="inv-street-addr">{{ data?.desc_tipo_documento }}</p>
-                                                            <p class="inv-street-addr">Expediente: {{ data?.n_num_expediente }}</p>
-                                                            <p class="inv-email-address">Nombre de expediente: {{ data?.s_descripcion }}</p>
-                                                            <!-- <p class="inv-email-address">(128) 666 070</p> -->
+                                                        <div class="col-xl-7 col-lg-7 col-md-6 col-sm-4">
+                                                            <p class="inv-street-addr">{{ data?.tipoDocumento }}</p>
+                                                            <p class="inv-street-addr"><b>Expediente:</b> {{ data?.numExpediente }}</p>
+                                                            <p class="inv-email-address"><b>Nombre de expediente:</b> {{ data?.s_descripcion }}</p>
+                                                            
                                                         </div>
 
-                                                        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-12 order-sm-0 order-1">
-                                                            <div class="inv--payment-info me-5 pe-5">
-                                                                <p><span class="inv-subtitle">Elaboró:</span> <span>{{ data?.nombre }} {{ data?.apellido1 }} {{ data?.apellido2 }}</span></p>
+                                                        <div class="col-xl-5 col-lg-5 col-md-6 col-sm-8 col-12 order-sm-0 order-1">
+                                                            <div class="pStyle">
+                                                                <p><span class="inv-subtitle"><b>Elaboró:</b></span> <span>{{ data?.nombreEmpleado }} {{ data?.apellido1Empleado }} {{ data?.apellido2Empleado }}</span></p>
                                                                 <!-- <p><span class="inv-subtitle">Account Number: </span> <span>1234567890</span></p>
                                                                 <p><span class="inv-subtitle">SWIFT code:</span> <span>VS70134</span></p>
                                                                 <p><span class="inv-subtitle">Country: </span> <span>United States</span></p> -->
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <p class="inv-email-address"><b>Contenido:</b> {{ data?.contenido }}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -179,21 +198,22 @@ const motivoRechazo=()=>{
                                                         <table class="table table-hover">
                                                             <thead>
                                                                 <tr>
-                                                                    <th v-for="item in columns" :key="item.key" :class="[item.class]">
+                                                                    <th v-for="item in columns
+                                                                    " :key="item.key" :class="[item.class]">
                                                                         {{ item.label }}
                                                                     </th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr v-for="item in items" :key="item.id">
+                                                                <tr v-for="firmante in data?.firmantes" :key="firmante.numEmpleado">
                                                                     <td>
-                                                                        {{ item.nombre }}
+                                                                        {{ firmante.nombre }} {{ firmante.apellido1 }} {{ firmante.apellido2 }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.obligatorio }}
+                                                                        {{ firmante.obligatorio }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.estado }}
+                                                                        {{ firmante.estado }}
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -212,15 +232,15 @@ const motivoRechazo=()=>{
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr v-for="item in items2" :key="item.id">
+                                                                <tr v-for="destinatario in data?.destinatarios" :key="destinatario.numEmpleado">
                                                                     <td>
-                                                                        {{ item.nombre }}
+                                                                        {{ destinatario.nombre }} {{ destinatario.apellido1 }} {{ destinatario.apellido2 }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.instruccion }}
+                                                                        {{ destinatario.instruccion }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.estado }}
+                                                                        {{ destinatario.estado }}
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -232,6 +252,14 @@ const motivoRechazo=()=>{
                                                     <div class="row mt-4">
                                                         <div class="col-sm-12 col-12 order-sm-0 order-1">
                                                             <p>Documento adjunto a firmar (falta agregar el PDF)</p>
+                                                            
+                                                            <a href="javascript:;"
+                                                                class="btn dropdown-toggle btn-icon-only"
+                                                                @click="pdf_view(data.documentosAdjuntos[0].documentoPath)"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#modalPDF">
+                                                                <IconFeatherFileText></IconFeatherFileText>
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -390,7 +418,24 @@ const motivoRechazo=()=>{
             </div>
         </div>
     </div>
-    <!-- Modal Rechazo -->
+    <!-- Termina Modal Rechazo -->
+    <!-- Modal PDF-->
+<div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- <PDF src="/src/assets/images/Documento_prueba_firma.pdf"></PDF> -->
+                <PDF :src="pathdocumento"></PDF>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i>Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
                     </div>
                 </div>
             </div>
@@ -400,5 +445,7 @@ const motivoRechazo=()=>{
     </div>
 </template>
 <style>
-
+.pStyle{
+    font-size: 13px;
+}
 </style>

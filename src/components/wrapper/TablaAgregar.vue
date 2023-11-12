@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import axios from "axios";
 import "@/assets/sass/apps/contacts.scss";
 //Componentes
-import CheckGroup from "../wrapper/CheckGroup.vue";
 import IconFeatherTrash from "../icons/IconFeatherTrash.vue";
 import IconAlertOctagon from "../icons/IconAlertOctagon.vue";
 import IconEdit2 from "../icons/IconEdit2.vue";
@@ -21,23 +21,39 @@ const props = defineProps({
   url: String,
   thtabla: ref([]),
   tbTabla: ref([]),
+  opInstruccion: Object
 });
 const emit = defineEmits(["tablaFirmantes"]);
 
 const { data, getData, loading, errorData } = useGetData();
-
-//URL para opciones de Select principal
-// const defineCatalogo = () => {
-//   getData(props.url);
-//   catSelect.value = data;
-// }
-
+const catEmpleados = ref({});
 //URL para opciones de Select tipo firma o instruccion
 getData(props.url);
 
+const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoib3RpbGlvLmhlcm5hbmRlekB0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwMjkwNTkzfQ.4-0_ZwAK5lrOFoeQpa0NB3hF4374IrUQ1dbrYD1fwKVDfpK6F7ukhAF0KYnFwfS2-ZfnKVdCu5zFvQTlcq6Csw"
+ const bind_data = () => {
+          //  const axiosInstance = axios.create({
+          //      "Access-Control-Allow-Origin": "*",
+          //  });
+
+          const datosTabla = async () => {
+              const url = "http://127.0.0.1:8083/api/get-catalogo/empleados";
+              try {
+                  const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                  //console.log("AXIOS: ", data);
+                  catEmpleados.value = data;
+              } catch (error) {
+                  console.log(error);
+              }
+          };
+          
+          datosTabla();
+ };
+//console.log("PROPS: ", props.opInstruccion);
+const catInstruccion = props.opInstruccion;
 const selected = ref("0");
 const instruccion = ref("");
-const prioridad = ref("");
+//const prioridad = ref("");
 const nuevoUsuario_email = ref("");
 const submit_listado = ref(false);
 let secuencia = 0;
@@ -58,7 +74,7 @@ params = {
     },
   id_instruccion: "",
   instruccion: "",
-  prioridad: "",
+  /*prioridad: "",*/
   secuencia: 0,
   nuevoUsuario_email: "",
 };
@@ -76,12 +92,13 @@ const initPopup = () => {
 
 onMounted(() => {
   initPopup();
+  bind_data();
 });
 
 const usuarioSelected = ref(false);
 const edit_user = (user) => {
-  console.log("edit-user");
-  console.log(user);
+  // console.log("edit-user");
+  // console.log(user);
      
      usuarioSelected.value = false;
      params = {
@@ -96,7 +113,7 @@ const edit_user = (user) => {
              },
          id_instruccion: "",
          instruccion: "",
-         prioridad: "",
+         /*prioridad: "",*/
          secuencia: 0,
          nuevoUsuario_email: "",
          };
@@ -106,7 +123,7 @@ const edit_user = (user) => {
         usuarioSelected.value = false;
         selected.value = "0";
         instruccion.value = "";
-        prioridad.value = "";
+        //prioridad.value = "";
         nuevoUsuario_email.value="";
      }else{
       
@@ -117,13 +134,13 @@ const edit_user = (user) => {
         params.id_tabla = user.id_tabla;
         selected.value = 'otro';
         instruccion.value = user.id_instruccion;
-        prioridad.value = user.prioridad;
+        //prioridad.value = user.prioridad;
         secuencia = user.secuencia;
       }else{
         
         selected.value = user;
         instruccion.value = user.id_instruccion;
-        prioridad.value = user.prioridad;
+        //prioridad.value = user.prioridad;
         nuevoUsuario_email.value="";
         secuencia = user.secuencia;
       }
@@ -134,19 +151,22 @@ const edit_user = (user) => {
 };
 
 //Clase para icono Prioridad
-let titlePrioriodad = "";
-const class_prioridad = (valor) => {
-  for(let i = 0 ; i < catPrioridad.length; i++){
-    if(valor == catPrioridad[i].n_id_prioridad){
-      titlePrioriodad= catPrioridad[i].desc_prioridad;
-      return catPrioridad[i].desc_prioridad;
-    }
-  }
-    };
+// let titlePrioriodad = "";
+// const class_prioridad = (valor) => {
+//   for(let i = 0 ; i < catPrioridad.length; i++){
+//     if(valor == catPrioridad[i].n_id_prioridad){
+//       titlePrioriodad= catPrioridad[i].desc_prioridad;
+//       return catPrioridad[i].desc_prioridad;
+//     }
+//   }
+//     };
+//Clase para instrucción
 const class_instruccion = (valor) =>{
+
   for(let i = 0 ; i < catInstruccion.length; i++){
     if(valor == catInstruccion[i].id){
-      return catInstruccion[i].desc_intr_firmante
+
+      return catInstruccion[i].instruccion
     }
   }
 };
@@ -175,10 +195,10 @@ const save_user = () => {
        alert('Seleccionar instrucción.', 'error');
        return true;
    }
-   if (prioridad.value == '') {
-       alert('Seleccionar prioridad.', 'error');
-       return true;
-   }
+  //  if (prioridad.value == '') {
+  //      alert('Seleccionar prioridad.', 'error');
+  //      return true;
+  //  }
 
   if (selected.value.id_tabla || params.id_tabla) {
     //update user
@@ -187,7 +207,7 @@ const save_user = () => {
         (d) => d.id_tabla == selected.value.id_tabla || d.id_tabla == params.id_tabla
       );
 
-     user.prioridad = prioridad.value;
+     //user.prioridad = prioridad.value;
      user.nuevoUsuario_email = nuevoUsuario_email.value;
      user.id_instruccion = instruccion.value;
      user.instruccion = class_instruccion(user.id_instruccion);
@@ -212,7 +232,7 @@ const save_user = () => {
     params.usuario.puesto = selected.value.puesto;
     params.usuario.area = selected.value.area;
     params.id_instruccion = instruccion.value;
-    params.prioridad = prioridad.value;
+    //params.prioridad = prioridad.value;
     params.secuencia = secuencia;
     params.nuevoUsuario_email = nuevoUsuario_email.value;
     params.instruccion = class_instruccion(params.id_instruccion);
@@ -251,47 +271,11 @@ const delete_row = (item) => {
       }
   }
 };
-const catPrioridad = [
-                {
-                  n_id_prioridad: "1",
-                  desc_prioridad: "Alta"
-                },
-                {
-                  n_id_prioridad: "2",
-                  desc_prioridad: "Media"
-                },
-                {
-                  n_id_prioridad: "3",
-                  desc_prioridad: "Baja"
-                }
-              ];
-const catInstruccion = [
-                {
-                id: 1,
-                desc_intr_firmante: "Firma"
-                },
-                {
-                id: 2,
-                desc_intr_firmante: "Rúbrica"
-                },
-                {
-                id: 3,
-                desc_intr_firmante: "Acuse"
-                }
-              ];
 const verificaArray = () => {
   if (arrayTabla.value.length > 0) {
     submit_listado.value = true;
   }
 };
-
-
-// for(let i = 0 ; i < catInstruccion.length; i++){
-//   const mappedResults = Object.entries(catInstruccion[i]).map(entry => {
-//   const [key, value] = entry;
-//   console.log({key, value});
-// });
-// }
 
 </script>
 <template>
@@ -353,7 +337,7 @@ const verificaArray = () => {
             <td aria-colindex="2" role="cell">
               {{ opcion.instruccion }}
             </td>
-            <td aria-colindex="3" role="cell">
+            <!-- <td aria-colindex="3" role="cell">
                 <div class="priority-dropdown">
                     <div class="dropdown btn-group">
                         <a href="javascript:;"
@@ -367,7 +351,7 @@ const verificaArray = () => {
                         </a>
                     </div>
                 </div>
-            </td>
+            </td> -->
             <td aria-colindex="4" role="cell">
               <span> Ok</span>
             </td>
@@ -409,7 +393,7 @@ const verificaArray = () => {
                       <select v-model="selected" class="form-select form-select-sm" @change="verificaDuplicado(selected)" :disabled="usuarioSelected">
                         <option value="0">--Seleccionar--</option>
                         <option :value="selected" v-if="usuarioSelected && selected != 'otro'">{{ selected.usuario.nombre }} {{ selected.usuario.apellido1 }} {{ selected.usuario.apellido2 }}</option>
-                        <option v-for="opcion in data" :value="opcion" v-if="!usuarioSelected">
+                        <option v-for="opcion in catEmpleados" :value="opcion" v-if="!usuarioSelected">
                           <!-- <option v-for="(value, key) in catSelect.value" :value="key"> -->
                           {{ opcion.nombre }} {{ opcion.apellido1 }} {{ opcion.apellido2 }}
                         </option>
@@ -453,7 +437,7 @@ const verificaArray = () => {
                             </label>
                             <select v-model="instruccion" class="form-select form-select-sm" :id="'selectInst-' + props.id_tabla">
                               <option value="">-- Seleccionar --</option>
-                              <option :value="opInstruccion.id" v-for="opInstruccion in catInstruccion">{{ opInstruccion.desc_intr_firmante }}</option>
+                              <option :value="opInstruccion.id" v-for="opInstruccion in catInstruccion">{{ opInstruccion.instruccion }}</option>
                               <!-- <option value="2">Rúbrica</option>
                               <option value="3">Acuse</option> -->
                             </select>
@@ -467,7 +451,7 @@ const verificaArray = () => {
                     </form>
                   </div>
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                   <div class="col-md-12">
                     <div class="ms-5 mt-3">
                         <p>Prioridad</p>
@@ -487,7 +471,7 @@ const verificaArray = () => {
                         </div>
                     </div>
                   </div>
-                </div>
+                </div> -->
                 <div class="alert alert-light-danger alert-dismissible border-0 mb-4" role="alert" v-if="duplicado">
                     <strong>Este empleado ya ha sido agregado.</strong>
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">×</button>

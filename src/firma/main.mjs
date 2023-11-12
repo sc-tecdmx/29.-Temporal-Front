@@ -73,7 +73,7 @@ function unit8ToBuffer(unit8) {
   return buf;
 }
 
-async function getMimeTypeAndArrayBufferFromFile(file) {
+export async function getMimeTypeAndArrayBufferFromFile(file) {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
 

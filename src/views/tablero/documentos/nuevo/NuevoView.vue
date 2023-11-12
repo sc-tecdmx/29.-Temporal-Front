@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import axios from 'axios';
 import "@/assets/sass/apps/invoice-add.scss";
 //-----------------------
@@ -28,6 +28,7 @@ import CheckGroup from "@/components/wrapper/CheckGroup.vue";
 import IconPlus from '../../../../components/icons/IconPlus.vue'
 //Firma
 import { getCertificadoData } from "@/firma/main.mjs";
+import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
 //Composable
 import { useGetData } from "@/composables/getData";
 
@@ -35,56 +36,67 @@ import { useGetData } from "@/composables/getData";
 /** ./Multiselect */
 useMeta({ title: "Nuevo documento" });
 
-const catalogos = ref(null);
-const catDestino = ref(null);
-const catTipoDocumento = ref(null);
+const catalogos = ref({});
+const catDestino = ref({});
+const catTipoDocumento = ref({});
+const catInstruccion = ref({});
+const catPrioridad = ref({});
+
+const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoib3RpbGlvLmhlcm5hbmRlekB0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwMjkwNTkzfQ.4-0_ZwAK5lrOFoeQpa0NB3hF4374IrUQ1dbrYD1fwKVDfpK6F7ukhAF0KYnFwfS2-ZfnKVdCu5zFvQTlcq6Csw"
  const bind_data = () => {
-         //console.log("bind_data");
-          const axiosInstance = axios.create({
-              "Access-Control-Allow-Origin": "*",
-          });
+           const axiosInstance = axios.create({
+               "Access-Control-Allow-Origin": "*",
+           });
 
           const datosTabla = async () => {
-              const url = "http://localhost/j/nuevo_documento.php";
+              const url = "http://127.0.0.1:8083/api/get-catalogo-pantalla/nuevo-documento";
               try {
-                  const { data } = await axiosInstance.get(url);
-                  catalogos.value = data;
-                  //console.log("AXIOS:" + items.value);
-                  // console.log("catalogos");
-                  // console.log(catalogos.value.data);
-                  catDestino.value = catalogos.value.data.catDestino;
+                  const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                  //catalogos.value = data;
+                  //console.log("AXIOS:" + catalogos.value);
+                  catDestino.value = data.data.catDestino;
+                  catTipoDocumento.value = data.data.catTipoDocumento;
+                  catInstruccion.value = data.data.catInstruccion;
+                  catPrioridad.value = data.data.catPrioridad;
+                  setTimeout(()=>{
+                      catDisponible.value = true;
+                    }, 10);
+              } catch (error) {
+                  console.log(error);
+              }
+          };
+          
+          datosTabla();
+ };
+
+ const getExpediente = async (num_exp) => {
+              const url_exp = "http://127.0.0.1:8083/api/autocompletado?query="+ num_exp;
+              //console.log(url_exp)
+              
+              try {
+                  const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
+                  //console.log(data);
+                  params.value.nombreExpediente = data[0];
+                  //console.log("params",params.value.nombreExpediente)
               } catch (error) {
                   console.log(error);
               }
           };
 
-          const obtenerCatalogos = async() =>{
-            const url = 'http://localhost/j/nuevo_documento.php';
-            const url2 = 'https://pokeapi.co/api/v2/pokemon/';
-            //console.log("obtenerCatalogos")
-            try {
-              //console.log("try")
-              const res = await fetch(url);
-               const data = await res.json();
-              //data.results.map(cata => console.log("catalogos map " + cata))
-              catDestino.value = data.data.catDestino;
-              catTipoDocumento.value = data.data.catTipoDocumento;
-            } catch (error) {
-              
-            }
-          }
-          datosTabla();
-          //obtenerCatalogos();
- };
+ //bind_data();
+  //  console.log("CAT: ", catalogos);
+  //  console.log("CATDEST", catDestino);
+  //  console.log("CATTIPDOC", catTipoDocumento);
+  //  console.log("CATINSTRUC", catInstruccion);
 
- bind_data();
-  console.log("catalogos");
-  console.log(catalogos);
+  
 
 /* Variable para Catálogos */
 
-const thFirmantes = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
-const thDestinatarios = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
+const thFirmantes = ["Nombre", "Instrucción","Estado","Editar", ""];
+//const thFirmantes = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
+const thDestinatarios = ["Nombre", "Instrucción","Estado","Editar", ""];
+//const thDestinatarios = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
 
 /* Fin catálogos */
 
@@ -104,44 +116,80 @@ const certificado = ref({
 
 /* JSON */
 const params = ref({
-  idDestino: "",
-  idtipoDocumento: "",
-  folioEspecial: "",
-  folioDocumento: "",
-  numeroExpediente: "",
-  descripcionExpediente: "",
-  fechaDocumento: "",
+  folio:"",
+  folioEspecial:"",
+  numExpediente: "",
+  nombreExpediente:"",
+  tipoDestino: "",
+  tipoDocumento: "",
+  tipoPrioridad: "",
   asunto: "",
-  elaboro: "",
   contenido: "",
+  fechaLimiteFirma: "",
+  fechaDocumento: "",
+  elaboro: "",
+  notas: "",
+  configuracion: {
+    ordenFirma: "",
+    modoCaptura: "",
+    generaNumeroOficio: "",
+  },
   firmantes: [
      {
        idFirmante: "",
        firma: "",
        secuencia:"",
-       prioridad:''
+       /*prioridad:''*/
      },
   ],
   destinatarios: [
     {
       idDestinatario: "",
       instruccion: "",
-      prioridad:''
+      /*prioridad:''*/
     },
   ],
-  notas: "",
-  configuracion: {
+  documentos: []
+});
+//params enviar
+const paramsEnviar = ref({
+  folio:"",
+  folioEspecial:"",
+  numExpediente: "",
+  tipoDestino: "",
+  tipoDocumento: "",
+  tipoPrioridad: "",
+  asunto: "",
+  contenido: "",
+  fechaLimiteFirma: "",
+  configuraciones: {
     ordenFirma: "",
     modoCaptura: "",
     generaNumeroOficio: "",
-    prioridad: "",
-    fechaLimite: "",
-    documentos: [],
   },
+  notificaciones:[],
+  enOrden: true,
+  firmantes: [
+     {
+      secuencia:"",
+      idEmpleado: "",
+      idUsuario:"",
+      fechaLimite:"2023-10-30T00:17:41.188+00:00",
+      instruccion: "",
+      tipoFirma:"Firma"
+     },
+  ],
+  destinatarios: [
+    {
+      idEmpleado: "",
+      instruccion: "",
+    },
+  ],
+  documentosAdjuntos: []
 });
 
 const form = ref({
-  selectUso: false,
+  selectDestino: false,
   inputFolio: false,
   selectTipoDocumento: false,
   inputFolio: false,
@@ -149,7 +197,7 @@ const form = ref({
   inputFolioDocumento: false,
   inputfechaCreacion: false,
   inputNumExpediente: false,
-  inputNombreExpediente: false,
+  /*inputNombreExpediente: false,*/
   inputAsuntoDoc: false,
   inputElaboro: false,
   tablaFirmantes: false,
@@ -165,32 +213,35 @@ const is_submit_form = ref(false);
 
 /* Set params */
 const opcionSelectDestino = (idOpcion, campoValido) => {
-  params.value.idUso = idOpcion;
+  //params.value.tipoDestino = idOpcion;
+  paramsEnviar.value.tipoDestino = idOpcion;
   if (idOpcion == 0) {
-    form.selectUso = false;
+    form.selectDestino = false;
   } else {
-    form.selectUso = campoValido;
+    form.selectDestino = campoValido;
   }
 };
 const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
-  params.value.idtipoDocumento = idOpcion;
+  //params.value.tipoDocumento = idOpcion;
+  paramsEnviar.value.tipoDocumento = idOpcion;
   if (idOpcion == 0) {
     form.selectTipoDocumento = false;
   } else {
     form.selectTipoDocumento = campoValido;
   }
 };
-const opcionInputIdDocumento = (idData, campoValido) => {
-  params.value.idDocumento = idData;
-  if (idData == 0) {
-    form.inputIdDocumento = false;
-  } else {
-    form.inputIdDocumento = campoValido;
-  }
-};
+// const opcionInputIdDocumento = (idData, campoValido) => {
+//   params.value.idDocumento = idData;
+//   if (idData == 0) {
+//     form.inputIdDocumento = false;
+//   } else {
+//     form.inputIdDocumento = campoValido;
+//   }
+// };
 //Folio Especial
 const opcionInputFolio = (idData, campoValido) => {
-  params.value.folio = idData;
+  //params.value.folio = idData;
+  paramsEnviar.value.folioEspecial = idData;
   if (idData == 0) {
     form.inputFolio = false;
   } else {
@@ -198,7 +249,8 @@ const opcionInputFolio = (idData, campoValido) => {
   }
 };
 const opcionInputFolioDocumento = (idData, campoValido) => {
-  params.value.folioDocumento = idData;
+  //params.value.folio = idData;
+  paramsEnviar.value.folio = idData;
   if (idData == 0) {
     form.inputFolioDocumento = false;
   } else {
@@ -206,7 +258,9 @@ const opcionInputFolioDocumento = (idData, campoValido) => {
   }
 };
 const opcionInputNumeroExpediente = (idData, campoValido) => {
-  params.value.numeroExpediente = idData;
+  //params.value.numExpediente = idData;
+  paramsEnviar.value.numExpediente = idData;
+  getExpediente(idData);
   if (idData == 0) {
     form.inputNumExpediente = false;
   } else {
@@ -215,14 +269,15 @@ const opcionInputNumeroExpediente = (idData, campoValido) => {
 };
 const opcionInputNombreExpediente = (idData, campoValido) => {
   params.value.nombreExpediente = idData;
-  if (idData == 0) {
-    form.inputNombreExpediente = false;
-  } else {
-    form.inputNombreExpediente = campoValido;
-  }
+  // if (idData == 0) {
+  //   form.inputNombreExpediente = false;
+  // } else {
+  //   form.inputNombreExpediente = campoValido;
+  // }
 };
 const opcionInputAsunto = (idData, campoValido) => {
-  params.value.asunto = idData;
+  //params.value.asunto = idData;
+  paramsEnviar.value.asunto = idData;
   if (idData == 0) {
     form.inputAsuntoDoc = false;
   } else {
@@ -238,7 +293,8 @@ const opcionInputElaboro = (idData, campoValido) => {
   }
 };
 const opcionInputContenido = (idData, campoValido) => {
-  params.value.contenido = idData;
+  //params.value.contenido = idData;
+  paramsEnviar.value.contenido = idData;
   if (idData == 0) {
     form.txtAreaContenido = false;
   } else {
@@ -246,7 +302,8 @@ const opcionInputContenido = (idData, campoValido) => {
   }
 };
 const tablaFirmantes = (data, campoValido) => {
-  params.value.firmantes = data;
+  //params.value.firmantes = data;
+  paramsEnviar.value.firmantes = data;
    if (data == 0) {
      form.tablaFirmantes = false;
    } else {
@@ -254,9 +311,8 @@ const tablaFirmantes = (data, campoValido) => {
    }
 };
 const tablaDestinatarios = (data, campoValido) => {
-  console.log("Tabla Destinatarios");
-  console.log(data)
-  params.value.destinatarios = data;
+  //params.value.destinatarios = data;
+  paramsEnviar.value.destinatarios = data;
   if (data == 0) {
      form.tablaDestinatarios = false;
    } else {
@@ -264,13 +320,16 @@ const tablaDestinatarios = (data, campoValido) => {
    }
 };
 const opcionSwitchOrdenFirma = (idData) => {
-  params.value.configuracion.ordenFirma = idData;
+  //params.value.configuracion.ordenFirma = idData;
+  paramsEnviar.value.configuraciones.ordenFirma
 };
 const opcionSwitchModoCaptura = (idData) => {
-  params.value.configuracion.modoCaptura = idData;
+  //params.value.configuracion.modoCaptura = idData;
+  paramsEnviar.value.configuraciones.modoCaptura = idData;
 };
 const opcionSwitchGeneraOficio = (idData) => {
-  params.value.configuracion.generaNumeroOficio = idData;
+  //params.value.configuracion.generaNumeroOficio = idData;
+  paramsEnviar.value.configuraciones.generaNumeroOficio =idData;
 };
 const opcionTxtAreaNotas = (idData) => {
   params.value.notas = idData;
@@ -284,7 +343,8 @@ const opcionDateDocumento = (date, campoValido) => {
   }
 };
 const opcionCheckPrioridad = (opcionCheck) => {
-  params.value.configuracion.prioridad = opcionCheck;
+  //params.value.tipoPrioridad = opcionCheck;
+  paramsEnviar.value.tipoPrioridad = opcionCheck;
   if (opcionCheck == 0) {
     form.chkPrioridad = false;
   } else {
@@ -292,7 +352,8 @@ const opcionCheckPrioridad = (opcionCheck) => {
   }
 };
 const opcionDateLimiteFirma = (date, campoValido) => {
-    params.value.configuracion.fechaLimite = date;
+    //params.value.fechaLimiteFirma = date;
+    paramsEnviar.value.fechaLimiteFirma = date;
 //   if (date == 0) {
 //     form.inputfechaCreacion = false;
 //   } else {
@@ -304,14 +365,15 @@ const opcionDateLimiteFirma = (date, campoValido) => {
 
 let certificadoModal = ref(null);
 let modalCamposRequeridos = ref(null);
+let addExpedienteModal = ref(null);
 const arrayCampos = ref([]);
 
 const submit_formulario = () => {
    arrayCampos.value = [];
 
    //verifica que no este vacio
-       if (form.selectUso == undefined) {
-         form.selectUso = false;
+       if (form.selectDestino == undefined) {
+         form.selectDestino = false;
        }
        if (form.selectTipoDocumento == undefined) {
          form.selectTipoDocumento = false;
@@ -322,9 +384,9 @@ const submit_formulario = () => {
        if (form.inputNumExpediente == undefined) {
          form.inputNumExpediente = false;
        }
-       if (form.inputNombreExpediente == undefined) {
-         form.inputNombreExpediente = false;
-       }
+      //  if (form.inputNombreExpediente == undefined) {
+      //    form.inputNombreExpediente = false;
+      //  }
        if (form.inputAsuntoDoc == undefined) {
          form.inputAsuntoDoc = false;
        }
@@ -351,7 +413,7 @@ const submit_formulario = () => {
        }
 
     //  //Alerts
-       if (!form.selectUso) {
+       if (!form.selectDestino) {
          arrayCampos.value.push("Destino de Oficio");
        }
        if (!form.selectTipoDocumento) {
@@ -363,10 +425,10 @@ const submit_formulario = () => {
        if (!form.inputNumExpediente) {
          arrayCampos.value.push("Número de Expediente");
        }
-       if (!form.inputNombreExpediente) {
-         //descripcion del expediente
-         arrayCampos.value.push("Nombre de Expediente");
-       }
+      //  if (!form.inputNombreExpediente) {
+      //    //descripcion del expediente
+      //    arrayCampos.value.push("Nombre de Expediente");
+      //  }
        if (!form.inputAsuntoDoc) {
          arrayCampos.value.push("Asunto");
        }
@@ -399,17 +461,28 @@ const submit_formulario = () => {
     params.value.fechaDocumento = JSON.parse(JSON.stringify(dt));
 //   dt.setDate(dt.getDate() + 5);
 //   params.value.configuracion.fechaLimite = dt;
-
+const catDisponible = ref(false);
 onMounted(async() => {
   initPopup();
-  // bind_data();
-  
+  bind_data();
 });
+
 /* Obtener documentos */
-const change_file = (event) => {
-  //Quitar [0] para cuando pueda firmar mas de 1 documento
-  selected_file.value = event.target.files[0];
-  params.value.configuracion.documentos = selected_file.value;
+const change_file = async(event) => {
+  //selected_file.value = event.target.files[0];
+  //params.value.documentos = selected_file.value;
+  selected_file.value = event.target.files;
+  //console.log(selected_file)
+
+  for (let i = 0; i < selected_file.value.length; i++) {
+    //console.log(selected_file.value[i]);
+    const docFileObj = await getMimeTypeAndArrayBufferFromFile(selected_file.value[i]);
+    let objeto = {
+      fileType: 'PDF',
+      docBase64: docFileObj.base64
+    }
+    params.value.documentos.push(objeto);
+  }
   certificado.value.documento = selected_file.value;
   form.inputPDF = true;
 };
@@ -439,7 +512,7 @@ const change_file_key = (event) => {
 };
 
 const setContrasena = (contrasena) => {
-  console.log("constraseña" + contrasena.value);
+  //console.log("constraseña" + contrasena.value);
   certificado.value.contrasenaCer = contrasena.value;
   is_submit_form_pass.value = true;
   alertFirma.value = false;
@@ -448,36 +521,118 @@ const setContrasena = (contrasena) => {
 /* Guarda Captura */
 const enviaCaptura = () => {
   console.log("Captura");
-  console.log(params.value);
+  console.log("PARAM", params.value);
+  console.log("ENVIAR", paramsEnviar.value);
+
+  let urlAltaDoc = "http://localhost:8081/api/documento/alta-documento";
+  // const post= {
+  //   folio: paramsEnviar.value.folio,
+  //   folioEspecial: paramsEnviar.value.folioEspecial,
+  //   numExpediente: paramsEnviar.value.numExpediente,
+  //   tipoDestino: paramsEnviar.value.tipoDestino,
+  //   tipoDocumento: paramsEnviar.value.tipoDocumento,
+  //   tipoPrioridad: paramsEnviar.value.tipoPrioridad,
+  //   asunto: paramsEnviar.value.asunto,
+  //   contenido: paramsEnviar.value.contenido,
+  //   fechaLimiteFirma: paramsEnviar.value.fechaLimiteFirma,
+  //   configuraciones: paramsEnviar.value.configuraciones,
+  //   notificaciones:[],
+  //   enOrden: true,
+  //   firmantes: [{
+  //     secuencia: paramsEnviar.value.firmantes[0].secuencia,
+  //     idEmpleado:paramsEnviar.value.firmantes[0].id_empleado,
+  //     idUsuario:"",
+  //     fechaLimite:paramsEnviar.value.fechaLimiteFirma,
+  //     instruccion:paramsEnviar.value.firmantes[0].instruccion,
+  //     tipoFirma: "Firma"
+  //   },],
+  //   destinatarios: [{
+  //     idEmpleado:paramsEnviar.value.destinatarios[0].id_empleado,
+  //     instruccion:paramsEnviar.value.destinatarios[0].instruccion
+  //   }],
+  //   documentosAdjuntos: params.value.documentos
+  // };
+  const post = {
+    "folio": paramsEnviar.value.folio,
+    "folioEspecial": paramsEnviar.value.folioEspecial,
+    "numExpediente": paramsEnviar.value.numExpediente,
+    "tipoDestino": paramsEnviar.value.tipoDestino,
+    "tipoDocumento": paramsEnviar.value.tipoDocumento,
+    "tipoPrioridad": paramsEnviar.value.tipoPrioridad,
+    "asunto": paramsEnviar.value.asunto,
+    "contenido": paramsEnviar.value.contenido,
+    "fechaLimiteFirma": paramsEnviar.value.fechaLimiteFirma,
+    "configuraciones":[{
+        "generaNumeroOficio": paramsEnviar.value.configuraciones.generaNumeroOficio,
+        "modoCaptura": paramsEnviar.value.configuraciones.modoCaptura,
+        "ordenFirma": paramsEnviar.value.configuraciones.ordenFirma
+    }],
+    "notificaciones":[],
+    "enOrden": true,
+    "firmantes":[
+        {
+            "secuencia": paramsEnviar.value.firmantes[0].secuencia,
+            "idEmpleado": paramsEnviar.value.firmantes[0].id_empleado,
+            "idUsuario": "",
+            "fechaLimite": paramsEnviar.value.fechaLimiteFirma,
+            "instruccion": paramsEnviar.value.firmantes[0].instruccion,
+            "tipoFirma": "Firma"
+        }
+    ],
+    "destinatarios":[
+        {
+            "idEmpleado": paramsEnviar.value.destinatarios[0].id_empleado,
+            "instruccion": paramsEnviar.value.destinatarios[0].instruccion
+        }
+    ],
+    "documentosAdjuntos":[
+        {
+            "fileType": "PDF",
+            "docBase64": params.value.documentos[0].docBase64
+        }
+    ]
+}
+  console.log(post)
+           try {
+               axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+                 console.log(response)
+               });
+            
+           } catch (error) {
+             console.log(error)
+           }
 };
 /* Envia documento a firma */
 const enviaFirma = () => {
   console.log("certificado");
   const certFileData = {
-    file: certificado.value.archivoCer,
-    buffer: null,
-    base64: null,
-    iscer: archivoEsCer.value,
-  };
+                        file: certificado.value.archivoCer,
+                        buffer: null,
+                        base64: null,
+                        iscer: archivoEsCer.value,
+                      };
   const pfxFileData = {
-    file: certificado.value.archivoCer,
-    buffer: null,
-    base64: null,
-    iscer: archivoEsCer.value,
-  };
+                        file: certificado.value.archivoCer,
+                        buffer: null,
+                        base64: null,
+                        iscer: archivoEsCer.value,
+                      };
   const keyFileData = {
-    file: certificado.value.archivoKey,
-    buffer: null,
-    base64: null,
-  };
+                        file: certificado.value.archivoKey,
+                        buffer: null,
+                        base64: null,
+                      };
   const docFileData = {
-    file: certificado.value.documento,
-    buffer: null,
-    base64: null,
-  };
+                        file: certificado.value.documento,
+                        buffer: null,
+                        base64: null,
+                      };
 
   getCertificadoData( certFileData, keyFileData, docFileData, certificado.value.contrasenaCer );
+
 };
+
+
 /* Termina Modal firmar ahora */
 
 //Inicializa Modal
@@ -487,6 +642,9 @@ const initPopup = () => {
   );
   modalCamposRequeridos = new window.bootstrap.Modal(
     document.getElementById("modalCamposRequeridos")
+  );
+  addExpedienteModal = new window.bootstrap.Modal(
+    document.getElementById("addExpedienteModal")
   );
 };
 
@@ -519,10 +677,27 @@ const submit_formFirma = () => {
 };
 const numExpediente = ref(null);
 const descExpediente = ref(null);
-const addExpediente = () => {
-  console.log("agregar expediente");
-  console.log(numExpediente);
-  console.log(descExpediente);
+
+const addExpediente = async()=>{
+  //console.log("agregar expediente");
+  let urlExpediente = "http://127.0.0.1:8083/api/agregar-item-catalogo/expedientes";
+  const post={
+            numExpediente: numExpediente.value,
+            descripcion: descExpediente.value
+          };
+  
+          try {
+            axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+              console.log(response)
+              if (confirm(response.data.mensaje)) {
+              addExpedienteModal.hide();
+            }
+            });
+            
+          } catch (error) {
+            console.log(error)
+          }
+  
 };
 
 </script>
@@ -557,6 +732,7 @@ const addExpediente = () => {
                               url="http://localhost/j/documentos/catUso.php"
                               :is_submit_form="is_submit_form"
                               :opciones="catDestino"
+                              v-if="catDisponible"
                               @opcionSelect="opcionSelectDestino"
                             ></SelectValidado>
                           </div>
@@ -580,7 +756,9 @@ const addExpediente = () => {
                               label="Tipo de documento:"
                               url="http://localhost/j/documentos/catTipoDocumento.php"
                               :is_submit_form="is_submit_form"
+                              :opciones="catTipoDocumento"
                               @opcionSelect="opcionSelectTipoDocumento"
+                              v-if="catDisponible"
                             ></SelectValidado>
                           </div>
                           <div class="col-12 col-md-6 col-lg-4">
@@ -588,6 +766,7 @@ const addExpediente = () => {
                               idName="folioDocumento"
                               label="Folio del documento:"
                               placeholder="get"
+                              :disabled="true"
                               @inputData="opcionInputFolioDocumento"
                             ></InputValidado>
                           </div>
@@ -614,12 +793,13 @@ const addExpediente = () => {
                             <InputValidado
                               idName="nombreExpediente"
                               label="Nombre de Expediente:"
-                              placeholder="Nombre de expediente"
+                              :placeholder="params.nombreExpediente"
+                              :disabled="true"
                               @inputData="opcionInputNombreExpediente"
                             ></InputValidado>
                           </div>
                           <div class="col-12 col-md-6 col-lg-2 d-flex justify-content-center">
-                            <button type="button" class="btn btn-primary mb-2 me-2 mt-2" data-bs-toggle="modal" data-bs-target="#modalExpediente">
+                            <button type="button" class="btn btn-primary mb-2 me-2 mt-2" data-bs-toggle="modal" data-bs-target="#addExpedienteModal">
                                 <IconPlus></IconPlus>
                             </button>
                           </div>
@@ -637,7 +817,8 @@ const addExpediente = () => {
                             <InputValidado
                               idName="elaboro"
                               label="Elaboró:"
-                              placeholder="usuario de sesión"
+                              placeholder="Otilio Esteban Hernández Pérez"
+                              :disabled="true"
                               @inputData="opcionInputElaboro"
                             ></InputValidado>
                           </div>
@@ -662,6 +843,8 @@ const addExpediente = () => {
                     url="http://localhost/j/documentos/catFirmantes.php"
                     :thtabla="thFirmantes"
                     :tbTabla="catalogos"
+                    :opInstruccion="catInstruccion"
+                    v-if="catDisponible"
                     @tablaFirmantes = "tablaFirmantes"
                   ></TablaAgregar>
 
@@ -672,6 +855,8 @@ const addExpediente = () => {
                     url="http://localhost/j/documentos/catFirmantes.php"
                     :thtabla="thDestinatarios"
                     :tbTabla="catalogos"
+                    :opInstruccion="catInstruccion"
+                    v-if="catDisponible"
                     @tablaFirmantes = "tablaDestinatarios"
                   ></TablaAgregar>
 
@@ -711,6 +896,8 @@ const addExpediente = () => {
                   <CheckGroup
                     label="Prioridad"
                     url="http://localhost/j/cat_prioridad.php"
+                    :opPrioridad="catPrioridad"
+                    v-if="catDisponible"
                     @opcionCheck="opcionCheckPrioridad"
                   ></CheckGroup>
                 </div>
@@ -906,7 +1093,7 @@ const addExpediente = () => {
     </div>
   </div>
   <!-- Modal Expediente -->
-<div class="modal fade" id="modalExpediente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addExpedienteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

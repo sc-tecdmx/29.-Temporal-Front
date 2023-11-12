@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+//import { defineProps } from 'vue';
 import '@/assets/sass/scrollspyNav.scss';
 
 //composable
@@ -18,9 +19,10 @@ import { useGetData } from "@/composables/getData";
     const emit = defineEmits(['opcionSelect']);
 
     const selected = ref('');
-    const catalogo = ref(null);
+    const catalogo = ref({});
 
     catalogo.value = props.opciones;
+    //console.log("PROPS: ", props.opciones);
 
     // getData(props.url);
 
@@ -34,13 +36,43 @@ import { useGetData } from "@/composables/getData";
         toast.fire({ icon: type, title: msg, padding: '10px 20px' });
     };
 
-        console.log("props.opciones");
-        console.log(catalogo.value);
+const arrayOpciones = ref([]);
 
-    //    Object.entries(catalogo.value).map(entry =>{
-    //        const [key, value] = entry
-    //        console.log({key, value})
-    //    })
+// class mapOpciones{
+//     constructor(id,label){
+//         this.id = id;
+//         this.label = label;
+//     }
+// }
+
+for (let i = 0; i < catalogo.value.length; i++) {
+    let id ='';
+    let label ='';
+    Object.entries(catalogo.value[i]).map(entry =>{
+            const [key, value] = entry
+            //console.log({key, value})
+            //console.log(key.includes("id"))
+            
+            if(key.includes("id")){
+                //console.log(key)
+                 id = value;
+            }else{
+                label = value;
+            }
+            
+        })
+        //let objeto= new mapOpciones(id,label);
+        let objeto= {
+            id: id,
+            label: label
+        };
+        //   console.log("mapOpciones --- ")
+        //   console.log( objeto)
+          arrayOpciones.value.push(objeto);
+            // console.log("arrayOpciones");     
+            // console.log(arrayOpciones);     
+}
+   
 </script>
 
 <template>
@@ -56,8 +88,8 @@ import { useGetData } from "@/composables/getData";
                         @change="submit_form3(); emit('opcionSelect', selected, is_submit_form3)"
                     >
                         <option value="">-- Seleccionar --</option>
-                         <!-- <option v-for="opcion in props.opciones" :value="opcion.id">{{ opcion.destino }}</option>  -->
-                        <option v-for="(value,key) in props.opciones" :value="key">{{ value }} </option>
+                         <!-- <option v-for="opcion in arrayOpciones" :value="opcion.id">{{ opcion.label }}</option>  -->
+                         <option v-for="opcion in arrayOpciones" :value="opcion.label">{{ opcion.label }}</option> 
                     </select>
                     <!-- <div class="valid-feedback">Validado</div> -->
                     <div class="invalid-feedback">Selecciona una opción</div>

@@ -7,6 +7,7 @@
          idName: String,
          label: String,
          placeholder: String,
+         disabled: Boolean
      });
     
     const emit = defineEmits(['inputData'])
@@ -41,6 +42,7 @@
                     class="form-control form-control-sm" 
                     :class="[is_submit_form1 ? (selected ? 'is-valid' : 'is-invalid') : '']" 
                     :placeholder=" placeholder "
+                    :disabled="props.disabled"
                     @change="submit_form1(); emit('inputData', selected, is_submit_form1)"
                     />
                 <!-- <div class="valid-feedback">Validado</div> -->

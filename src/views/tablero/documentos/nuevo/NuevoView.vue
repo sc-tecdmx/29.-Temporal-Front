@@ -22,6 +22,7 @@ import FechaBasica from "@/components/wrapper/FechaBasica.vue";
 import SwitchRounded from "@/components/wrapper/SwitchRounded.vue";
 import SelectValidado from "@/components/wrapper/SelectValidado.vue";
 import InputValidado from "@/components/wrapper/InputValidado.vue";
+import InputAutocompletable from "@/components/wrapper/InputAutocompletable.vue";
 import CheckGroup from "@/components/wrapper/CheckGroup.vue";
 
 //Iconos
@@ -42,14 +43,16 @@ const catTipoDocumento = ref({});
 const catInstruccion = ref({});
 const catPrioridad = ref({});
 
-const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoib3RpbGlvLmhlcm5hbmRlekB0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwMjkwNTkzfQ.4-0_ZwAK5lrOFoeQpa0NB3hF4374IrUQ1dbrYD1fwKVDfpK6F7ukhAF0KYnFwfS2-ZfnKVdCu5zFvQTlcq6Csw"
+const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4MDk5MTksImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoicGFvbGEubW9udGVyb0B0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwNjczOTE5fQ.Q5t9yP2BR0RiTe7nStW0ocNcA4xprZkdeBThzD8dnoNvPph10G_y_x6-gzRpyjRmt6q21UkZqFGXkL7tDDp_vg"
+const urlBase = "http://127.0.0.1:8083"
+const urlPKI = "http://127.0.0.1:8083"
  const bind_data = () => {
            const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
            });
 
           const datosTabla = async () => {
-              const url = "http://127.0.0.1:8083/api/get-catalogo-pantalla/nuevo-documento";
+              const url = urlBase + "/api/get-catalogo-pantalla/nuevo-documento";
               try {
                   const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
                   //catalogos.value = data;
@@ -68,16 +71,16 @@ const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8v
           
           datosTabla();
  };
-
+const catExpedientes = ref([])
  const getExpediente = async (num_exp) => {
-              const url_exp = "http://127.0.0.1:8083/api/autocompletado?query="+ num_exp;
-              //console.log(url_exp)
-              
+              const url_exp = urlBase + "/api/autocompletado?query=" + num_exp;
               try {
                   const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
                   //console.log(data);
-                  params.value.nombreExpediente = data[0];
-                  //console.log("params",params.value.nombreExpediente)
+                  params.value.nombreExpediente = data[0].s_descripcion;
+                  catExpedientes.value = data;
+                  //console.log("params",params.value.nombreExpediente);
+                  //console.log(catExpedientes)
               } catch (error) {
                   console.log(error);
               }
@@ -206,9 +209,9 @@ const form = ref({
   chkPrioridad: false,
   inputPDF: false
 });
-const formFirma = ref({
-    name:''
-});
+// const formFirma = ref({
+//     name:''
+// });
 const is_submit_form = ref(false);
 
 /* Set params */
@@ -230,14 +233,6 @@ const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
     form.selectTipoDocumento = campoValido;
   }
 };
-// const opcionInputIdDocumento = (idData, campoValido) => {
-//   params.value.idDocumento = idData;
-//   if (idData == 0) {
-//     form.inputIdDocumento = false;
-//   } else {
-//     form.inputIdDocumento = campoValido;
-//   }
-// };
 //Folio Especial
 const opcionInputFolio = (idData, campoValido) => {
   //params.value.folio = idData;
@@ -520,38 +515,8 @@ const setContrasena = (contrasena) => {
 
 /* Guarda Captura */
 const enviaCaptura = () => {
-  console.log("Captura");
-  console.log("PARAM", params.value);
-  console.log("ENVIAR", paramsEnviar.value);
 
-  let urlAltaDoc = "http://localhost:8081/api/documento/alta-documento";
-  // const post= {
-  //   folio: paramsEnviar.value.folio,
-  //   folioEspecial: paramsEnviar.value.folioEspecial,
-  //   numExpediente: paramsEnviar.value.numExpediente,
-  //   tipoDestino: paramsEnviar.value.tipoDestino,
-  //   tipoDocumento: paramsEnviar.value.tipoDocumento,
-  //   tipoPrioridad: paramsEnviar.value.tipoPrioridad,
-  //   asunto: paramsEnviar.value.asunto,
-  //   contenido: paramsEnviar.value.contenido,
-  //   fechaLimiteFirma: paramsEnviar.value.fechaLimiteFirma,
-  //   configuraciones: paramsEnviar.value.configuraciones,
-  //   notificaciones:[],
-  //   enOrden: true,
-  //   firmantes: [{
-  //     secuencia: paramsEnviar.value.firmantes[0].secuencia,
-  //     idEmpleado:paramsEnviar.value.firmantes[0].id_empleado,
-  //     idUsuario:"",
-  //     fechaLimite:paramsEnviar.value.fechaLimiteFirma,
-  //     instruccion:paramsEnviar.value.firmantes[0].instruccion,
-  //     tipoFirma: "Firma"
-  //   },],
-  //   destinatarios: [{
-  //     idEmpleado:paramsEnviar.value.destinatarios[0].id_empleado,
-  //     instruccion:paramsEnviar.value.destinatarios[0].instruccion
-  //   }],
-  //   documentosAdjuntos: params.value.documentos
-  // };
+  let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
   const post = {
     "folio": paramsEnviar.value.folio,
     "folioEspecial": paramsEnviar.value.folioEspecial,
@@ -562,41 +527,18 @@ const enviaCaptura = () => {
     "asunto": paramsEnviar.value.asunto,
     "contenido": paramsEnviar.value.contenido,
     "fechaLimiteFirma": paramsEnviar.value.fechaLimiteFirma,
-    "configuraciones":[{
-        "generaNumeroOficio": paramsEnviar.value.configuraciones.generaNumeroOficio,
-        "modoCaptura": paramsEnviar.value.configuraciones.modoCaptura,
-        "ordenFirma": paramsEnviar.value.configuraciones.ordenFirma
-    }],
+    "configuraciones":[],
     "notificaciones":[],
     "enOrden": true,
-    "firmantes":[
-        {
-            "secuencia": paramsEnviar.value.firmantes[0].secuencia,
-            "idEmpleado": paramsEnviar.value.firmantes[0].id_empleado,
-            "idUsuario": "",
-            "fechaLimite": paramsEnviar.value.fechaLimiteFirma,
-            "instruccion": paramsEnviar.value.firmantes[0].instruccion,
-            "tipoFirma": "Firma"
-        }
-    ],
-    "destinatarios":[
-        {
-            "idEmpleado": paramsEnviar.value.destinatarios[0].id_empleado,
-            "instruccion": paramsEnviar.value.destinatarios[0].instruccion
-        }
-    ],
-    "documentosAdjuntos":[
-        {
-            "fileType": "PDF",
-            "docBase64": params.value.documentos[0].docBase64
-        }
-    ]
+    "firmantes": paramsEnviar.value.firmantes,
+    "destinatarios":paramsEnviar.value.destinatarios,
+    "documentosAdjuntos":params.value.documentos
 }
-  console.log(post)
+  console.log(post);
            try {
-               axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-                 console.log(response)
-               });
+                axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+                  alert(response.data.message);
+                });
             
            } catch (error) {
              console.log(error)
@@ -680,7 +622,7 @@ const descExpediente = ref(null);
 
 const addExpediente = async()=>{
   //console.log("agregar expediente");
-  let urlExpediente = "http://127.0.0.1:8083/api/agregar-item-catalogo/expedientes";
+  let urlExpediente = urlBase + "/api/agregar-item-catalogo/expedientes";
   const post={
             numExpediente: numExpediente.value,
             descripcion: descExpediente.value
@@ -699,7 +641,8 @@ const addExpediente = async()=>{
           }
   
 };
-
+// Estado del input
+const inputValue = ref('');
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -782,12 +725,12 @@ const addExpediente = async()=>{
                         <div class="row align-items-center">
 
                           <div class="col-12 col-md-6 col-lg-5">
-                            <InputValidado
+                            <InputAutocompletable
                               idName="numeroExpediente"
                               label="Número de Expediente:"
                               placeholder="Expediente"
                               @inputData="opcionInputNumeroExpediente"
-                            ></InputValidado>
+                            ></InputAutocompletable>
                           </div>
                           <div class="col-12 col-md-6 col-lg-5">
                             <InputValidado

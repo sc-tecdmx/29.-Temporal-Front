@@ -287,7 +287,7 @@
                                     class="btn dropdown-toggle btn-icon-only ms-2"
                                     data-bs-toggle="tooltip"
                                     title="Detalle"
-                                    @click="router.push(`/documento/recibido/${props.row.folio_documento}`)">
+                                    @click="router.push(`/documento/recibido/${props.row.n_id_documento}`)">
                                     <IconEye></IconEye>
                                 </a>
                                 <a href="javascript:;"

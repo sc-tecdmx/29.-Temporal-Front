@@ -6,18 +6,20 @@ import IconFeatherFileText from '@/components/icons/IconFeatherFileText.vue';
 import { useGetData } from "@/composables/getDataN";
 //PDF viewer
 import PDF from 'pdf-vue3';
+import { useRoute, useRouter } from 'vue-router';
 import { getCertificadoData } from '@/firma/main.mjs';
 import { useMeta } from '@/composables/use-meta';
 useMeta({ title: 'Detalle Documento' });
 
 const {data, getData, loading, errorData} = useGetData();
+const route = useRoute();
 
 
     const items = ref([]);
     const columns = ref([]);
     const items2 = ref([]);
     const columns2 = ref([]);
-    const url ="http://127.0.0.1:8083/api/documento/1"
+    const url = `http://127.0.0.1:8083/api/documento/${route.params.id}`;
     const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoib3RpbGlvLmhlcm5hbmRlekB0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwMjkwNTkzfQ.4-0_ZwAK5lrOFoeQpa0NB3hF4374IrUQ1dbrYD1fwKVDfpK6F7ukhAF0KYnFwfS2-ZfnKVdCu5zFvQTlcq6Csw"
 
     onMounted(() => {

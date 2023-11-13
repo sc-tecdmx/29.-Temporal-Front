@@ -28,8 +28,8 @@ const emit = defineEmits(["tablaFirmantes"]);
 const { data, getData, loading, errorData } = useGetData();
 const catEmpleados = ref({});
 //URL para opciones de Select tipo firma o instruccion
-getData(props.url);
-
+//getData(props.url);
+const urlBase="http://127.0.0.1:8083"
 const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoib3RpbGlvLmhlcm5hbmRlekB0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwMjkwNTkzfQ.4-0_ZwAK5lrOFoeQpa0NB3hF4374IrUQ1dbrYD1fwKVDfpK6F7ukhAF0KYnFwfS2-ZfnKVdCu5zFvQTlcq6Csw"
  const bind_data = () => {
           //  const axiosInstance = axios.create({
@@ -37,10 +37,11 @@ const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8v
           //  });
 
           const datosTabla = async () => {
-              const url = "http://127.0.0.1:8083/api/get-catalogo/empleados";
+              const url = urlBase + "/api/get-catalogo/empleados";
               try {
                   const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-                  //console.log("AXIOS: ", data);
+                  // console.log("AXIOS: ");
+                  // console.log(data)
                   catEmpleados.value = data;
               } catch (error) {
                   console.log(error);
@@ -49,6 +50,8 @@ const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8v
           
           datosTabla();
  };
+
+ //console.log(data)
 //console.log("PROPS: ", props.opInstruccion);
 const catInstruccion = props.opInstruccion;
 const selected = ref("0");
@@ -64,7 +67,10 @@ const arrayTabla = ref([]);
 var params = new Object;
 params = {
   id_tabla: null,
-  id_empleado: null,
+  idEmpleado: null,
+  idUsuario:"",
+  fechaLimite:"",
+  tipoFirma:"Firma",
   usuario: {
         nombre: "",
         apellido1: "",
@@ -103,7 +109,7 @@ const edit_user = (user) => {
      usuarioSelected.value = false;
      params = {
          id_tabla: null,
-         id_empleado: null,
+         idEmpleado: null,
          usuario: {
                  nombre: "",
                  apellido1: "",
@@ -172,7 +178,6 @@ const class_instruccion = (valor) =>{
 };
 
 const save_user = () => {
-
    email_valido.value = true;
 
    if (selected.value == '0') {
@@ -225,7 +230,7 @@ const save_user = () => {
     }
 
     params.id_tabla = max_user_id + 1;
-    params.id_empleado = selected.value.id;
+    params.idEmpleado = selected.value.id;
     params.usuario.nombre = selected.value.nombre;
     params.usuario.apellido1 = selected.value.apellido1;
     params.usuario.apellido2 = selected.value.apellido2;
@@ -236,7 +241,10 @@ const save_user = () => {
     params.secuencia = secuencia;
     params.nuevoUsuario_email = nuevoUsuario_email.value;
     params.instruccion = class_instruccion(params.id_instruccion);
-    
+    params.tipoFirma = "Firma";
+    params.idUsuario = "";
+    params.fechaLimite = "";
+    console.log("PARAMS Firman",params)
     arrayTabla.value.push(params);
 
   }
@@ -257,7 +265,7 @@ const verificaDuplicado= (data) => {
     duplicado.value = false;
   }else{
     duplicado.value = false;
-    duplicado.value = arrayTabla.value.find((empleado) => empleado.id_empleado === data.id);
+    duplicado.value = arrayTabla.value.find((empleado) => empleado.idEmpleado === data.id);
     return duplicado;
   }
 }

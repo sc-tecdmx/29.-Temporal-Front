@@ -23,7 +23,6 @@ import IconPortapapeles from "@/components/icons/IconPortapapeles.vue";
 import IconPlus from "@/components/icons/IconPlus.vue";
 //import IconDropdown from "@/components/icons/IconDropdown.vue";
 
-
 //---------------------------
 const is_show_task_menu = ref(false);
 const params = ref({ task_id: null, title: "", description: "" });
@@ -33,6 +32,7 @@ const filtered_task_list = ref([]);
 const search_task = ref("");
 const selected_tab = ref("");
 const selected_task = ref(null);
+const urlBase = import.meta.env.VITE_API_PKIURL;
 
 const editor_options = ref({
   modules: {
@@ -262,7 +262,7 @@ const showMessage = (msg = "", type = "success") => {
           <!-- Content Tablero -->
           <div id="todo-inbox" class="accordion todo-inbox">
             <TableroTablaListado
-              url="http://localhost/j/tablero_principal.php"
+              :url= "urlBase + '/api/documento/documentos-usuario'"
             ></TableroTablaListado>
           </div>
           <!-- ./Content Tablero -->

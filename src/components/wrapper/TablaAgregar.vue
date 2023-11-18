@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, inject } from "vue";
 import { defineProps, defineEmits } from "vue";
 import axios from "axios";
 import "@/assets/sass/apps/contacts.scss";
@@ -14,30 +14,30 @@ import { useGetData } from "@/composables/getData";
 import "@/assets/sass/scrollspyNav.scss";
 //  import Multiselect from '@suadelabs/vue3-multiselect';
 import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
-
+import { useAuthStore } from '@/stores/authStore.js';
+    const authStore = useAuthStore();
+    const token = authStore.state.user.token;
 const props = defineProps({
   titulo: String,
   id_tabla:String,
-  url: String,
   thtabla: ref([]),
   tbTabla: ref([]),
   opInstruccion: Object
 });
 const emit = defineEmits(["tablaFirmantes"]);
-
+//const config = inject('config');
 const { data, getData, loading, errorData } = useGetData();
 const catEmpleados = ref({});
-//URL para opciones de Select tipo firma o instruccion
+
 //getData(props.url);
-const urlBase="http://127.0.0.1:8083"
-const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk0MjY1OTMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoib3RpbGlvLmhlcm5hbmRlekB0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwMjkwNTkzfQ.4-0_ZwAK5lrOFoeQpa0NB3hF4374IrUQ1dbrYD1fwKVDfpK6F7ukhAF0KYnFwfS2-ZfnKVdCu5zFvQTlcq6Csw"
+//const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
  const bind_data = () => {
           //  const axiosInstance = axios.create({
           //      "Access-Control-Allow-Origin": "*",
           //  });
 
           const datosTabla = async () => {
-              const url = urlBase + "/api/get-catalogo/empleados";
+              const url = import.meta.env.VITE_API_LARURL + "/api/get-catalogo/empleados";
               try {
                   const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
                   // console.log("AXIOS: ");
@@ -241,10 +241,10 @@ const save_user = () => {
     params.secuencia = secuencia;
     params.nuevoUsuario_email = nuevoUsuario_email.value;
     params.instruccion = class_instruccion(params.id_instruccion);
-    params.tipoFirma = "Firma";
+    params.tipoFirma = "Múltiple";
     params.idUsuario = "";
     params.fechaLimite = "";
-    console.log("PARAMS Firman",params)
+    //console.log("PARAMS Firman",params)
     arrayTabla.value.push(params);
 
   }

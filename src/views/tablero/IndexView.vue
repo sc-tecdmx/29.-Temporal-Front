@@ -3,7 +3,11 @@
     import TableroLayoutFirmas    from './documentos/TableroLayoutFirmas.vue';
     import { useMeta }      from '@/composables/use-meta';
     import IconDropDown from '../../components/icons/IconDropDown.vue';
+
+    import { useAuthStore } from '../../stores/authStore.js'
     useMeta({ title: "TECDMX - Firmas Electrónicas." });
+
+    const authStore = useAuthStore();
 
 </script>
 <template>

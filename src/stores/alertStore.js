@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
-export const useAlertStore = defineStore('appAlertStore', {
+export const useAlertStore = defineStore("alertStore",{
 
     id: 'alert',
      state: () => ({

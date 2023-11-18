@@ -21,6 +21,8 @@ import { createHead } from '@vueuse/head';
 // datatables
 import { ClientTable } from 'v-tables-3';
 
+//config Servicios
+import config from './config';
 
 //-- Establecer configuración inicial por default
 /*import appInit from './app-init';
@@ -34,5 +36,6 @@ app.use(router)
 /* IFR Agregado */
 app.use(PerfectScrollbar)
 app.use(createHead())
+app.provide('config', config)
 app.mount('#app')
 app.use(ClientTable)

@@ -12,7 +12,6 @@ import { useGetData } from "@/composables/getData";
         idName: String,
         label: String,
         is_submit_form: Boolean,
-        url: String,
         opciones: Object
     });
 

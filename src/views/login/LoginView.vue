@@ -1,14 +1,20 @@
 <script setup>
     import { ref } from 'vue';
     import '@/assets/sass/authentication/auth-boxed.scss';
-    import IconFeatherUser from '../../components/icons/IconFeatherUser.vue'
-    import IconFeatherLock from '../../components/icons/IconFeatherLock.vue'
-    import IconLogoGoogle from '../../components/icons/IconLogoGoogle.vue';
-    import IconMicrosoftLogo from '../../components/icons/IconMicrosoftLogo.vue';
-    import authLayout from '../../layouts/authLayout.vue';
+    import IconFeatherUser from '@/components/icons/IconFeatherUser.vue'
+    import IconFeatherLock from '@/components/icons/IconFeatherLock.vue'
+    import IconLogoGoogle from '@/components/icons/IconLogoGoogle.vue';
+    import IconMicrosoftLogo from '@/components/icons/IconMicrosoftLogo.vue';
+    import authLayout from '@/layouts/authLayout.vue';
+
+    import { useAuthStore } from '../../stores/authStore.js'
 
     import { useMeta } from '@/composables/use-meta';
     useMeta({ title: 'Login' });
+
+    const authStore = useAuthStore();
+    const email = ref('');
+    const password = ref('');
 
     const pwd_type = ref('password');
 
@@ -19,6 +25,13 @@
             pwd_type.value = 'password';
         }
     };
+const loginSubmit = async() =>{
+     if(!email.value || password.value.length < 6){
+             return alert("llena los campos");
+     }
+    await authStore.loginUser(email.value, password.value);
+}
+    
 </script>
 
 <template>
@@ -32,12 +45,12 @@
                             <h1 class="">Iniciar sesión</h1>
                             <p class="">Ingresar usuario y contraseña para continuar.</p>
 
-                            <form class="text-start">
+                            <form class="text-start" @submit.prevent="loginSubmit">
                                 <div class="form">
                                     <div id="username-field" class="field-wrapper input">
                                         <label for="username">USUARIO</label>
                                         <IconFeatherUser></IconFeatherUser>
-                                        <input type="text" class="form-control" placeholder="usuario" />
+                                        <input v-model="email" type="text" class="form-control" placeholder="usuario" />
                                     </div>
 
                                     <div id="password-field" class="field-wrapper input mb-2">
@@ -46,7 +59,7 @@
                                             <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
                                         </div>
                                         <IconFeatherLock></IconFeatherLock>
-                                        <input :type="pwd_type" class="form-control" placeholder="Password" />
+                                        <input v-model="password" :type="pwd_type" class="form-control" placeholder="Password" />
                                         <svg
                                             @click="set_pwd_type"
                                             xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +80,7 @@
                                     </div>
                                     <div class="d-sm-flex justify-content-between">
                                         <div class="field-wrapper">
-                                            <button type="submit" class="btn btn-primary">Ingresar</button>
+                                            <button type="submit" :disabled="authStore.loadingUser" class="btn btn-primary">Ingresar</button>
                                         </div>
                                     </div>
 

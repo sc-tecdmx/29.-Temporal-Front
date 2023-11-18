@@ -4,6 +4,9 @@ import IconFeatherInbox from '../icons/IconFeatherInbox.vue';
 import IconFeatherLogout from '../icons/IconFeatherLogout.vue';
 import IconFeatherLock from '../icons/IconFeatherLock.vue'
 import IconFeatherSettings from '../icons/IconFeatherSettings.vue';
+import { useAuthStore } from '../../stores/authStore.js';
+
+const authStore = useAuthStore();
 </script>
 <template>
             <div class="dropdown nav-item user-profile-dropdown btn-group">
@@ -39,7 +42,7 @@ import IconFeatherSettings from '../icons/IconFeatherSettings.vue';
               </router-link>
             </li>
             <li role="presentation">
-              <router-link to="#" class="dropdown-item">
+              <router-link to="#" class="dropdown-item" @click="authStore.logoutUser()">
                 <IconFeatherLogout></IconFeatherLogout>
                 Salir
               </router-link>

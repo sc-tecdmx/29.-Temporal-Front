@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, inject, ref } from "vue";
 import axios from 'axios';
 import "@/assets/sass/apps/invoice-add.scss";
 //-----------------------
@@ -13,7 +13,7 @@ import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import "@/assets/sass/forms/custom-flatpickr.css";
-
+import { useAuthStore } from '@/stores/authStore.js';
 //Componentes
 import TablaAgregar from "@/components/wrapper/TablaAgregar.vue";
 import TextAreaValidado from "@/components/wrapper/TextAreaValidado.vue";
@@ -36,31 +36,38 @@ import { useGetData } from "@/composables/getData";
 //useMeta({ title: 'Vue Multiselect' });
 /** ./Multiselect */
 useMeta({ title: "Nuevo documento" });
-
+//Config URLs
+const urlPKI = import.meta.env.VITE_API_PKIURL;
+const urlLAR = import.meta.env.VITE_API_LARURL;
+//const config = inject('config');
 const catalogos = ref({});
 const catDestino = ref({});
 const catTipoDocumento = ref({});
 const catInstruccion = ref({});
-const catPrioridad = ref({});
+const catInstruccionDest = ref({});
 
-const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4MDk5MTksImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoicGFvbGEubW9udGVyb0B0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwNjczOTE5fQ.Q5t9yP2BR0RiTe7nStW0ocNcA4xprZkdeBThzD8dnoNvPph10G_y_x6-gzRpyjRmt6q21UkZqFGXkL7tDDp_vg"
-const urlBase = "http://127.0.0.1:8083"
-const urlPKI = "http://127.0.0.1:8083"
+const catPrioridad = ref({});
+const authStore = useAuthStore();
+
+const token = authStore.state.user.token;
+//const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
+// const urlBase = "http://127.0.0.1:8083"
+// const urlPKI = "http://localhost:8081"
  const bind_data = () => {
            const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
            });
 
           const datosTabla = async () => {
-              const url = urlBase + "/api/get-catalogo-pantalla/nuevo-documento";
+              const url = urlLAR + "/api/get-catalogo-pantalla/nuevo-documento";
               try {
+                
                   const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-                  //catalogos.value = data;
-                  //console.log("AXIOS:" + catalogos.value);
                   catDestino.value = data.data.catDestino;
                   catTipoDocumento.value = data.data.catTipoDocumento;
-                  catInstruccion.value = data.data.catInstruccion;
+                  catInstruccion.value = data.data.catInstruccionFirmantes;
                   catPrioridad.value = data.data.catPrioridad;
+                  catInstruccionDest.value =  data.data.catInstruccionDestinatarios;
                   setTimeout(()=>{
                       catDisponible.value = true;
                     }, 10);
@@ -73,26 +80,16 @@ const urlPKI = "http://127.0.0.1:8083"
  };
 const catExpedientes = ref([])
  const getExpediente = async (num_exp) => {
-              const url_exp = urlBase + "/api/autocompletado?query=" + num_exp;
+              const url_exp = urlLAR + "/api/autocompletado?query=" + num_exp;
               try {
                   const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
                   //console.log(data);
                   params.value.nombreExpediente = data[0].s_descripcion;
                   catExpedientes.value = data;
-                  //console.log("params",params.value.nombreExpediente);
-                  //console.log(catExpedientes)
               } catch (error) {
                   console.log(error);
               }
           };
-
- //bind_data();
-  //  console.log("CAT: ", catalogos);
-  //  console.log("CATDEST", catDestino);
-  //  console.log("CATTIPDOC", catTipoDocumento);
-  //  console.log("CATINSTRUC", catInstruccion);
-
-  
 
 /* Variable para Catálogos */
 
@@ -385,9 +382,9 @@ const submit_formulario = () => {
        if (form.inputAsuntoDoc == undefined) {
          form.inputAsuntoDoc = false;
        }
-       if (form.inputElaboro == undefined) {
-         form.inputElaboro = false;
-       }
+      //  if (form.inputElaboro == undefined) {
+      //    form.inputElaboro = false;
+      //  }
        if(form.tablaFirmantes == undefined){
         form.tablaFirmantes =  false;
        }
@@ -427,9 +424,9 @@ const submit_formulario = () => {
        if (!form.inputAsuntoDoc) {
          arrayCampos.value.push("Asunto");
        }
-       if (!form.inputElaboro) {
-         arrayCampos.value.push("Elaboró");
-       }
+      //  if (!form.inputElaboro) {
+      //    arrayCampos.value.push("Elaboró");
+      //  }
        if(!form.tablaFirmantes){
         arrayCampos.value.push("Lista de Firmante(s)");
        }
@@ -461,24 +458,27 @@ onMounted(async() => {
   initPopup();
   bind_data();
 });
-
+const documentos = ref([]);
 /* Obtener documentos */
 const change_file = async(event) => {
   //selected_file.value = event.target.files[0];
   //params.value.documentos = selected_file.value;
+  documentos.value = [];
   selected_file.value = event.target.files;
   //console.log(selected_file)
 
   for (let i = 0; i < selected_file.value.length; i++) {
-    //console.log(selected_file.value[i]);
+    console.log(selected_file.value[i].name);
+    documentos.value.push(selected_file.value[i].name);
     const docFileObj = await getMimeTypeAndArrayBufferFromFile(selected_file.value[i]);
+    //console.log(docFileObj)
     let objeto = {
       fileType: 'PDF',
       docBase64: docFileObj.base64
     }
     params.value.documentos.push(objeto);
   }
-  certificado.value.documento = selected_file.value;
+  certificado.value.documento = event.target.files[0];
   form.inputPDF = true;
 };
 
@@ -514,11 +514,12 @@ const setContrasena = (contrasena) => {
 };
 
 /* Guarda Captura */
-const enviaCaptura = () => {
+const enviaCaptura = async() => {
 
-  let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
+  //let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
+  let urlAltaDoc = urlPKI + "/api/documento/alta-documento-v2";
   const post = {
-    "folio": paramsEnviar.value.folio,
+    /*"folio": paramsEnviar.value.folio,*/
     "folioEspecial": paramsEnviar.value.folioEspecial,
     "numExpediente": paramsEnviar.value.numExpediente,
     "tipoDestino": paramsEnviar.value.tipoDestino,
@@ -534,9 +535,9 @@ const enviaCaptura = () => {
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":params.value.documentos
 }
-  console.log(post);
+  //console.log(post);
            try {
-                axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
                   alert(response.data.message);
                 });
             
@@ -622,15 +623,17 @@ const descExpediente = ref(null);
 
 const addExpediente = async()=>{
   //console.log("agregar expediente");
-  let urlExpediente = urlBase + "/api/agregar-item-catalogo/expedientes";
+  let urlExpediente = urlLAR + "/api/agregar-item-catalogo/expedientes";
   const post={
             numExpediente: numExpediente.value,
             descripcion: descExpediente.value
           };
   
           try {
-            axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-              console.log(response)
+              
+            //await axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${authStore.userData}`}}).then((response) => {
+            await axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+              //console.log(response)
               if (confirm(response.data.mensaje)) {
               addExpedienteModal.hide();
             }
@@ -641,8 +644,34 @@ const addExpediente = async()=>{
           }
   
 };
-// Estado del input
-const inputValue = ref('');
+// Listado de archivos
+//const inputValue = ref('');
+
+// // Ref para almacenar la lista de archivos
+// const archivos = ref([]);
+// // Ref para acceder al input de tipo file
+// const inputFile = ref(null);
+// Método para mostrar los archivos seleccionados
+// const mostrarArchivos = () => {
+//       const archivosSeleccionados = inputFile.value.files;
+
+//       // Limpiar la lista de archivos antes de mostrar la nueva selección
+//       archivos.value = [];
+
+//       // Iterar sobre los archivos seleccionados y agregarlos a la lista
+//       for (let i = 0; i < archivosSeleccionados.length; i++) {
+//         const archivo = {
+//           nombre: archivosSeleccionados[i].name,
+//           // Puedes agregar más propiedades según tus necesidades
+//         };
+//         archivos.value.push(archivo);
+//       }
+//     };
+
+    // Método para eliminar un archivo de la lista
+    // const eliminarArchivo = (index) => {
+    //   archivos.value.splice(index, 1);
+    // };
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -663,7 +692,6 @@ const inputValue = ref('');
                     </div>
                   </div>
                   <!-- Título del documento -->
-                  <!-- {{ catalogos }} -->
                   <div class="invoice-detail-total mb-3">
                     <div class="row">
                       <form class="select" novalidate @submit.stop.prevent="submit_formulario" >
@@ -672,7 +700,6 @@ const inputValue = ref('');
                             <SelectValidado
                               idName="catDestino"
                               label="Destino de oficio:"
-                              url="http://localhost/j/documentos/catUso.php"
                               :is_submit_form="is_submit_form"
                               :opciones="catDestino"
                               v-if="catDisponible"
@@ -697,7 +724,6 @@ const inputValue = ref('');
                             <SelectValidado
                               idName="catTipoDocumento"
                               label="Tipo de documento:"
-                              url="http://localhost/j/documentos/catTipoDocumento.php"
                               :is_submit_form="is_submit_form"
                               :opciones="catTipoDocumento"
                               @opcionSelect="opcionSelectTipoDocumento"
@@ -783,7 +809,6 @@ const inputValue = ref('');
                   <TablaAgregar
                     titulo="Agregar Firmantes"
                     id_tabla="firmantes"
-                    url="http://localhost/j/documentos/catFirmantes.php"
                     :thtabla="thFirmantes"
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccion"
@@ -795,10 +820,9 @@ const inputValue = ref('');
                    <TablaAgregar
                     titulo="Agregar Destinatarios"
                     id_tabla="destinatarios"
-                    url="http://localhost/j/documentos/catFirmantes.php"
                     :thtabla="thDestinatarios"
                     :tbTabla="catalogos"
-                    :opInstruccion="catInstruccion"
+                    :opInstruccion="catInstruccionDest"
                     v-if="catDisponible"
                     @tablaFirmantes = "tablaDestinatarios"
                   ></TablaAgregar>
@@ -838,7 +862,6 @@ const inputValue = ref('');
                   ></SwitchRounded>
                   <CheckGroup
                     label="Prioridad"
-                    url="http://localhost/j/cat_prioridad.php"
                     :opPrioridad="catPrioridad"
                     v-if="catDisponible"
                     @opcionCheck="opcionCheckPrioridad"
@@ -861,7 +884,6 @@ const inputValue = ref('');
                     </div>
                   </div>
                 </div>
-                <!-- {{ params }} -->
 
                 <div class="invoice-action-discount ms-5">
                   <h4>Documento(s) a firmar</h4>
@@ -878,6 +900,9 @@ const inputValue = ref('');
                               multiple
                         />
                       </div>
+                      <ul>
+                        <li v-for="doc in documentos"> {{ doc }}</li>
+                      </ul>
                     </div>
                   </div>
                 </div>

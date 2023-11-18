@@ -3,7 +3,7 @@
   import { useMeta } from "@/composables/use-meta.js";
   import { useLiveStore } from "@/stores/appLiveStore.js";
   import "@/assets/sass/app.scss"; /* IFR */
-  // import appLayout from "./layouts/appLayout.vue";
+  // import appLayout from "./layouts/applayout.vue";
   // import authLayout from "./layouts/auth-layout.vue";
   
   
@@ -18,21 +18,6 @@
   //------------
   //const app = appLayout
 </script>
-<script>
-// layouts
-  import appLayout from './layouts/appLayout.vue';
-  import authLayout from './layouts/authLayout.vue';
-
-    export default {
-        components: {
-            app: appLayout,
-            auth: authLayout,
-        },
-    };
-</script>
-
 <template>
-    <div :class="[appLiveStore.state.layout_style, appLiveStore.state.menu_style]">
-        <component v-bind:is="layout"></component>
-    </div>
+    <router-view />
 </template>

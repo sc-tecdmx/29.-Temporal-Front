@@ -1,8 +1,11 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, inject } from 'vue';
     import { defineProps, defineEmits } from 'vue'
     import '@/assets/sass/scrollspyNav.scss';
     import axios from 'axios';
+    import { useAuthStore } from '@/stores/authStore.js';
+    const authStore = useAuthStore();
+    const token = authStore.state.user.token;
 
     const props= defineProps({
          idName: String,
@@ -10,8 +13,10 @@
          placeholder: String,
          disabled: Boolean
      });
-     const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4MDk5MTksImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoicGFvbGEubW9udGVyb0B0ZWNkbXgub3JnLm14IiwiZXhwIjoxNzAwNjczOTE5fQ.Q5t9yP2BR0RiTe7nStW0ocNcA4xprZkdeBThzD8dnoNvPph10G_y_x6-gzRpyjRmt6q21UkZqFGXkL7tDDp_vg"
-    const urlBase = "http://127.0.0.1:8083"
+    //const config = inject('config');
+    
+    //const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
+    //const urlBase = "http://127.0.0.1:8083"
     const emit = defineEmits(['inputData'])
 
     const selected = ref('');
@@ -34,7 +39,7 @@
     };
     const catExpedientes = ref([]);
     const getExpediente = async (num_exp) => {
-              const url_exp = urlBase + "/api/autocompletado?query=" + num_exp;
+              const url_exp = import.meta.env.VITE_API_LARURL + "/api/autocompletado?query=" + num_exp;
               try {
                   const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
                 //   console.log("data");

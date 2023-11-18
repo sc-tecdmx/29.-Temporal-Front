@@ -2,7 +2,8 @@
     import { onMounted, ref } from 'vue';
     import axios from 'axios';
     import { useRouter } from 'vue-router';
-    
+
+    import { useAuthStore } from '@/stores/authStore.js';
     //flatpickr para Fecha
     import flatPickr from 'vue-flatpickr-component';
     import 'flatpickr/dist/flatpickr.css';
@@ -30,11 +31,14 @@
 
     const router = useRouter();
 
+    const authStore = useAuthStore();
+
     /* inicia getData */
     //const columns = ['acciones','e','p','d','folio','asunto','fecha','firmantes','destinatarios', 'detalle'];
     const columns = ['acciones','p','d','folio','asunto','fecha','firmantes','destinatarios'];
     const items = ref([]);
-    
+    //const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
+    const token = authStore.state.user.token;
     const bind_data = () => {
         //console.log("bind_data");
         const axiosInstance = axios.create({
@@ -44,8 +48,9 @@
         const datosTabla = async () => {
             const url = props.url;
             try {
-                const { data } = await axiosInstance.get(url);
-                items.value = data;
+                const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${authStore.userData}`}});
+                items.value = data.data;
                 //console.log("AXIOS:" + items.value);
             } catch (error) {
                 console.log(error);
@@ -54,7 +59,7 @@
         datosTabla();
     };
     /* fin getData */
-
+//console.log("items: ", items)
     //Configuración de tabla
     const table_option = ref({
         perPage: 10,
@@ -87,9 +92,23 @@
     //     alert("Detalle" + item.folio_documento);
     // };
     //Archivo adjunto
-    const pathdocumento = ref("");
-    const pdf_view = (path) =>{
-        pathdocumento.value = path;
+    const pathdocumento = ref("")
+    const documentosAdjuntos = ref([]);
+    const pdf_view = (adjuntos) =>{
+
+        documentosAdjuntos.value= [];
+        for(let i = 0; i< adjuntos.length; i++){
+            let pathAdjunto = adjuntos[i];
+            let ultimaDiagonal = pathAdjunto.filePath.lastIndexOf("/");
+            const nomArchivo = pathAdjunto.filePath.substring(ultimaDiagonal +1);
+            //console.log(pathAdjunto.filePath)
+            let objeto = {
+                path:  pathAdjunto,
+                //path: "file:///C:/Users/viole/Documents/docs-firma-electronica/pdf/13-11-2023-015404_Oficio_2.pdf",
+                nombre: nomArchivo
+            }
+            documentosAdjuntos.value.push(objeto);
+        }
     }
     //Botón ocultar columnas
     const show_hide_columns = (column, value) => {
@@ -151,46 +170,48 @@
 
     //Clase para icono Estado
     const class_estado = (estado) => {
-        if (estado == '1') {
-            titulo = "Creado";
-            docCreado = true;
-            docEnviado = false;
-            docFirma = false;
-            docRechazado = false;
-            docTerminado = false;
-            return 'creado';
-        } else if (estado == '2') {
-            titulo = "Enviado";
-            docCreado = false;
-            docEnviado = true;
-            docFirma = false;
-            docRechazado = false;
-            docTerminado = false;
-            return 'enviado';
-        } else if (estado == '3') {
-            titulo = "En Firma";
-            docCreado = false;
-            docEnviado = false;
-            docFirma = true;
-            docRechazado = false;
-            docTerminado = false;
-            return 'enFirma';
-        } else if (estado == '4') {
-            titulo = "Rechazado";
-            docCreado = false;
-            docEnviado = false;
-            docFirma = false;
-            docRechazado = true;
-            docTerminado = false;
-            return 'rechazado';
-        } else if (estado == '5') {
-            titulo = "Terminado";
-            docCreado = false;
-            docEnviado = false;
-            docFirma = false;
-            docRechazado = false;
-            docTerminado = true;
-            return 'terminado';
+        switch(estado){
+            case 'Creado':
+                titulo = "Creado"
+                docCreado = true;
+                docEnviado = false;
+                docFirma = false;
+                docRechazado = false;
+                docTerminado = false;
+                return 'creado';
+                break;
+            case 'Enviado':
+                docCreado = false;
+                docEnviado = true;
+                docFirma = false;
+                docRechazado = false;
+                docTerminado = false;
+                return 'enviado';
+                break;
+            case 'En Firma':
+                docCreado = false;
+                docEnviado = false;
+                docFirma = true;
+                docRechazado = false;
+                docTerminado = false;
+                return 'enFirma';
+                break;
+            case 'Rechazado':
+                docCreado = false;
+                docEnviado = false;
+                docFirma = false;
+                docRechazado = true;
+                docTerminado = false;
+                return 'rechazado';
+                break;
+            case 'Terminado':
+                docCreado = false;
+                docEnviado = false;
+                docFirma = false;
+                docRechazado = false;
+                docTerminado = true;
+                return 'terminado';
+                break;
         }
     };
 
@@ -198,15 +219,19 @@
 
     //Clase para icono Prioridad
     const class_prioridad = (prioridad) => {
-        if (prioridad == 'alta') {
-            titlePrioriodad= "Alta";
-            return 'alta';
-        } else if (prioridad == 'media') {
-            titlePrioriodad= "Media";
-            return 'media';
-        } else if (prioridad == 'baja') {
-            titlePrioriodad= "Baja";
-            return 'baja';
+        switch(prioridad){
+            case 'Alta':
+                titlePrioriodad= "Alta";
+                return 'alta';
+                break;
+            case 'Media':
+                titlePrioriodad= "Media";
+                return 'media';
+                break;
+            case 'Baja':
+                titlePrioriodad= "Baja";
+                return 'baja';
+                break;
         }
     };
     
@@ -220,6 +245,15 @@
         console.log("rechazar documento");
         console.log(documento);
     };
+
+    const formatDate = (date) => {
+
+        return new Date(date).toLocaleDateString('es-US', {
+            day: '2-digit',
+            month:'2-digit',
+            year: 'numeric',
+        });
+    }
 </script>
 <template>
     <div class="layout-px-spacing">
@@ -287,13 +321,13 @@
                                     class="btn dropdown-toggle btn-icon-only ms-2"
                                     data-bs-toggle="tooltip"
                                     title="Detalle"
-                                    @click="router.push(`/documento/recibido/${props.row.n_id_documento}`)">
+                                    @click="router.push(`/documento/recibido/${props.row.idDocumento}`)">
                                     <IconEye></IconEye>
                                 </a>
                                 <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
-                                    :class="[class_estado(props.row.id_etapa_documento)]"
+                                    :class="[class_estado(props.row.etapa)]"
                                     data-bs-toggle="tooltip"
                                     :title="titulo"
                                 >
@@ -310,7 +344,7 @@
                                         <a href="javascript:;"
                                             id="ddlPriority"
                                             class="btn dropdown-toggle btn-icon-only"
-                                            :class="[class_prioridad(props.row.desc_prioridad)]"
+                                            :class="[class_prioridad(props.row.prioridad)]"
                                             data-bs-toggle="tooltip"
                                             :title="titlePrioriodad"
                                         >
@@ -336,18 +370,37 @@
                                 </div>
                             </template> -->
                             <template #d="props">
-                                <a href="javascript:;"
+                                <!-- <a href="javascript:;"
                                     class="btn dropdown-toggle btn-icon-only"
-                                    @click="pdf_view(props.row.documento_path)"
-                                    v-if="props.row.documento_path && props.row.documento_path.length"
+                                    @click="pdf_view(props.row.documentosAdjuntos)"
+                                    v-if="props.row.documentosAdjuntos.length > 0"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalxl">
                                     <IconFeatherFileText></IconFeatherFileText>
+                                </a> -->
+                                <a class="btn dropdown-toggle btn-icon-only text-truncate" 
+                                    href="#" role="button" 
+                                    id="pendingTask" 
+                                    data-bs-toggle="dropdown" 
+                                    aria-haspopup="true" 
+                                    aria-expanded="false" 
+                                    @click="pdf_view(props.row.documentosAdjuntos)"
+                                    style="font-size: 12px;">
+                                    <IconFeatherFileText></IconFeatherFileText>
                                 </a>
-                                <!-- Button trigger modal -->
-                                <!-- <button type="button" class="btn btn-success mb-2 me-2" data-bs-toggle="modal" data-bs-target="#sliderModal">Slider</button> -->
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li class="font-list" v-for="doc in documentosAdjuntos">
+                                            <a href="javascript:;"
+                                                class="btn dropdown-toggle btn-icon-only"
+                                                @click="pathdocumento = doc.path"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modaPDF">
+                                                {{ doc.nombre }}
+                                            </a>
+                                        </li>
+                                    </ul>
                             </template>
-                            <template #folio="props">{{ props.row.folio_documento }}</template>
+                            <template #folio="props">{{ props.row.folioDocumento }}</template>
                             
                             <template #asunto="props">
                                 <!-- <div :title="props.row.s_asunto" class="">
@@ -357,18 +410,18 @@
                                 </div> -->
                                 <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
                                     <span class="d-inline-block text-truncate" style="max-width: 200px;">
-                                        {{ props.row.s_asunto }}
+                                        {{ props.row.asunto }}
                                     </span>
                                 </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li class="font-list">
-                                            {{ props.row.s_asunto }}
+                                            {{ props.row.asunto }}
                                         </li>
 
                                     </ul>
                             </template>
                             <template #fecha="props">
-                                {{ props.row.creacion_documento_fecha }}
+                                {{ formatDate(props.row.creacionDocumentoFecha) }}
                             </template>
                             <template #firmantes="props">
                                 <div class="me-2 custom-dropdown dropdown btn-group">
@@ -431,7 +484,7 @@
     </div>
 </div>
 <!-- Modal PDF-->
-<div class="modal fade" id="modalxl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modaPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">

@@ -7,15 +7,12 @@
 
     const props= defineProps({
             label: String,
-            url: String,
             picked: String,
             opPrioridad: Object
         });
     const emit = defineEmits(['opcionCheck']);
     const picked = ref("");
-    //console.log(props.opPrioridad)
 
-    getData(props.url);
 </script>
 <template>
     <div class="ms-5 mt-3">
@@ -34,7 +31,6 @@
                     {{ opcionCheck.prioridad }}
                 </label>
             </div>
-            <!-- <span>Eligió: {{ picked }}</span> -->
         </div>
     </div>
 </template>

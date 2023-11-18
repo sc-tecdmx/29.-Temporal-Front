@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
    });
 
    export async function testapi() {
-    const url = 'http://localhost:8080/firmaocsp/api/v'
+    const url = 'http://localhost:8082/firmaocsp/api/v'
     //const url = 'http://52.206.121.172:8080/firmaocsp/api/v'
     axios.get()
   .then(response => {
@@ -19,7 +19,7 @@ const axiosInstance = axios.create({
 }
 
 export async function veryfyOCSP(certificate, fileName) {
-    const url = 'http://localhost:8080/api/oscpi-verification/';//Local
+    const url = 'http://localhost:8082/api/oscpi-verification/';//Local
     //const url = 'http://52.206.121.172:8080/firmaocsp/api/oscpi-verification/';//Production
     const data = {
         certificate: certificate,
@@ -37,7 +37,7 @@ export async function veryfyOCSP(certificate, fileName) {
 }
 
 export async function getTimeStamp(certificate, message) {
-    const url = 'http://localhost:8080/api/tsa-tsp/';//Local
+    const url = 'http://localhost:8082/api/tsa-tsp/';//Local
     //const url = 'http://52.206.121.172:8080/firmaocsp/api/tsa-tsp/';//Production
     const data = {
         certificate: certificate,

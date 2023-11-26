@@ -1,0 +1,107 @@
+import forge from 'node-forge';
+import axios from 'axios'
+
+const axiosInstance = axios.create({
+    "Access-Control-Allow-Origin": "*"
+   });
+
+export class CertificateCer {
+    constructor(cerBase64, keyBase64, password) {
+        this.x509Cert;
+        this.publicKey;//Es el mismo que: rsaPublicKeyParameters
+        this.privateKey;//Es el mismo que: rsaPrivateKeyParameters
+        this.p12;
+        this.pfx;
+
+        this.notBeforeDate;
+        this.notAfterDate;
+
+        this.numeroSerie;
+        this.indicador;
+
+        this.cerBase64 = cerBase64;
+        this.keyBase64 = keyBase64;
+        this.password = password;
+        this.loadData();
+    }
+
+    loadData() {
+        //Certificado y llave pública
+        const pemCertificate = `-----BEGIN CERTIFICATE-----\n${this.cerBase64}\n-----END CERTIFICATE-----\n`;
+        this.x509Cert = forge.pki.certificateFromPem(pemCertificate);
+        this.publicKey = this.x509Cert.publicKey;
+
+        //LLave privada
+        const pemEncryptedPrivateKey = `-----BEGIN ENCRYPTED PRIVATE KEY-----\n${this.keyBase64}\n-----END ENCRYPTED PRIVATE KEY-----\n`;
+        this.privateKey = forge.pki.decryptRsaPrivateKey(pemEncryptedPrivateKey, this.password); //rsaPrivateKeyParameters
+
+        //Generación de pfx
+        const keypem = forge.pki.privateKeyToPem(this.privateKey);
+        const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
+        this.p12 = forge.pkcs12.toPkcs12Asn1(privateKeyDecrypted, this.x509Cert, this.password,
+            { generateLocalKeyId: true, friendlyName: 'test', algorithm: '3des' }
+        );
+        const p12Der = forge.asn1.toDer(this.p12).getBytes();
+        this.pfx = new Uint8Array(p12Der).buffer;
+    }
+
+    isCertificadoVigente(responseBody) {
+        this.notBeforeDate = this.x509Cert.validity.notBefore
+        this.notAfterDate = this.x509Cert.validity.notAfter;
+        const currentDate = new Date();
+        if (currentDate >= this.notBeforeDate) {
+            if (currentDate <= this.notAfterDate) {
+                //console.log('El certificado es vigente')
+                return true;
+            }
+        }
+        responseBody.status = "fail";
+        responseBody.message = 'El certificado no es vigente';
+        return false;
+    }
+
+    ValidateMatchCerKey(responseBody) {
+        if (this.x509Cert != null) {
+            if (
+                (this.privateKey.n.toString(16) === this.publicKey.n.toString(16))
+                && (this.privateKey.e.toString(16) === this.publicKey.e.toString(16))) {
+                //console.log('La contraseña es correcta y la llave privada SI coincide con el certificado');
+                return true;
+            } else {
+                responseBody.status = "fail";
+                responseBody.message = 'La contraseña es correcta pero la llave privada NO coincide con el certificado';
+            }
+        } else {
+            responseBody.status = "fail";
+            responseBody.message = 'No se obtuvo el certificado';
+        }
+        return false;
+    }
+
+    async validateOCSP(idTransaccion, url, token, responseBody) {
+        const headers = {
+            'Authorization': 'Bearer '+token, // Reemplaza 'tuTokenAquí' con tu token real
+            'Content-Type': 'application/json'
+        };
+        const data = {
+            idTransaccion: idTransaccion,
+            certificado: this.cerBase64,
+        }
+        try {
+            const response = await axiosInstance.post(url, data, { headers: headers });
+            //console.log(response.data);
+            this.numeroSerie = response.data.data.numeroSerie;
+            this.indicador = response.data.data.indicador;
+            if (this.indicador != 'GOOD') {
+                responseBody.status = "fail";
+                responseBody.message = response.message;
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+}

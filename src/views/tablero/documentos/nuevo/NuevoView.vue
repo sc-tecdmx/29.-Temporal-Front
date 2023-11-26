@@ -31,6 +31,8 @@ import IconPlus from '../../../../components/icons/IconPlus.vue'
 //Firma
 import { getCertificadoData } from "@/firma/main.mjs";
 import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
+import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
+
 //Composable
 import { useGetData } from "@/composables/getData";
 
@@ -517,10 +519,42 @@ const setContrasena = (contrasena) => {
   alertFirma.value = false;
 };
 
+const enviaModoFirma = async() => {
+  console.log('enviar enviaModoFirma---------');
+  //let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
+  let urlAltaDoc = urlPKI + "/api/documento/alta-documento-modo-firmar-ahora";
+  const post = {
+    /*"folio": paramsEnviar.value.folio,*/
+    "folioEspecial": paramsEnviar.value.folioEspecial,
+    "numExpediente": paramsEnviar.value.numExpediente,
+    "tipoDestino": paramsEnviar.value.tipoDestino,
+    "tipoDocumento": paramsEnviar.value.tipoDocumento,
+    "tipoPrioridad": paramsEnviar.value.tipoPrioridad,
+    "asunto": paramsEnviar.value.asunto,
+    "contenido": paramsEnviar.value.contenido,
+    "fechaLimiteFirma": paramsEnviar.value.fechaLimiteFirma,
+    "configuraciones":[],
+    "notificaciones":[],
+    "enOrden": true,
+    "firmantes": paramsEnviar.value.firmantes,
+    "destinatarios":paramsEnviar.value.destinatarios,
+    "documentosAdjuntos":params.value.documentos
+}
+  //console.log(post);
+           try {
+            await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+                  alert(response.data.message);
+                });
+            
+           } catch (error) {
+             console.log(error)
+           }
+};
+
 /* Guarda Captura */
 const enviaCaptura = async() => {
 
-  let urlAltaDoc = urlPKI + "/api/documento/alta-documento-v2";
+  let urlAltaDoc = urlPKI + "/api/documento/alta-documento-modo-captura";
   const post = {
     /*"folio": paramsEnviar.value.folio,*/
     "folioEspecial": paramsEnviar.value.folioEspecial,
@@ -564,7 +598,7 @@ const enviaCaptura = async() => {
            }
 };
 /* Envia documento a firma */
-const enviaFirma = () => {
+const enviaFirma = async () => {
   console.log("certificado");
   const certFileData = {
                         file: certificado.value.archivoCer,
@@ -589,9 +623,68 @@ const enviaFirma = () => {
                         base64: null,
                       };
 
-  getCertificadoData( certFileData, keyFileData, docFileData, certificado.value.contrasenaCer );
+  //getCertificadoData( certFileData, keyFileData, docFileData, certificado.value.contrasenaCer );
+  
+  console.log(certFileData.file);
+  if(certFileData.file!=null){
+    const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+    const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
+    const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
+    const codigoFirmaAplicada = 'Firmado';
+    //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
+    console.log(certificado.value.contrasenaCer);
+    console.log(token);
+    main_cer(certFileObj.base64, keyFileObj.base64, 'geia9769', pdfFileObj.base64, codigoFirmaAplicada, token);
+
+  }else if(pfxFileData.file!=null){
+    const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+    const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
+    const codigoFirmaAplicada = 'Firmado';
+    //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
+    console.log(certificado.value.contrasenaCer);
+    console.log(token);
+    main_pfx(pfxFileObj.base64, '08011269Ee', pdfFileObj.base64, codigoFirmaAplicada, token);
+    
+  }
+
+  
 
 };
+
+function arrayBufferToBase64(arrayBuffer) {
+  const binary = new Uint8Array(arrayBuffer);
+  let base64 = '';
+  binary.forEach((byte) => {
+    base64 += String.fromCharCode(byte);
+  });
+  return btoa(base64);
+}
+
+async function getMimeTypeAndArrayBufferFromFile_v2(file) {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+
+    fileReader.onload = () => {
+      const arrayBuffer = fileReader.result;
+      const base64 = arrayBufferToBase64(arrayBuffer);
+      const uint8 = new Uint8Array(arrayBuffer);
+      //const blob = new Blob([arrayBuffer]);
+      //console.log(base64);
+      resolve({
+        //mimeType: blob.type,
+        arrayBuffer: arrayBuffer,
+        base64: base64,
+        uint8: uint8
+      });
+    };
+
+    fileReader.onerror = () => {
+      reject(new Error('No se pudo leer el archivo.'));
+    };
+
+    fileReader.readAsArrayBuffer(file);
+  });
+}
 
 
 /* Termina Modal firmar ahora */
@@ -616,7 +709,7 @@ const is_submit_form_doc = ref(false);
 
 const alertFirma = ref(false);
 
-const submit_formFirma = () => {
+const submit_formFirma = async () => {
 
   if(archivoEsCer.value){
     console.log("SI Es CER");
@@ -632,8 +725,8 @@ const submit_formFirma = () => {
   if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
       || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
     console.log("campos llenos");
-    enviaCaptura();
-    enviaFirma();
+    await enviaModoFirma();//here 
+    await enviaFirma();//here
   }
 };
 const numExpediente = ref(null);

@@ -26,9 +26,10 @@
         }
     };
 const loginSubmit = async() =>{
-     if(!email.value || password.value.length < 6){
-             return alert("llena los campos");
-     }
+    //  if(!email.value || password.value.length < 6){
+    //          return alert("llena los campos");
+    //  }
+     //ERR_BAD_RESPONSE
     await authStore.loginUser(email.value, password.value);
 }
     

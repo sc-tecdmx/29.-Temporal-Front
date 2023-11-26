@@ -17,13 +17,12 @@ useMeta({ title: "Detalle Documento" });
 //const config = inject('config');
 const { data, getData, loading, errorData } = useGetData();
 const route = useRoute();
-
+console.log(data)
 const items = ref([]);
 const columns = ref([]);
 const items2 = ref([]);
 const columns2 = ref([]);
 const url = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
-//const token ="eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg";
 
 onMounted(() => {
   bind_data();
@@ -40,36 +39,36 @@ const bind_data = () => {
     { key: "intruccion", label: "Instrucción" },
     { key: "estado", label: "Estado" },
   ];
-  items.value = [
-    {
-      nombre: "Lic. Otilio Esteban Hernández Pérez",
-      obligatorio: "si",
-      estado: "Firmado",
-    },
-    { nombre: "Lic. Nallely", obligatorio: "si", estado: "En proceso" },
-  ];
+  // items.value = [
+  //   {
+  //     nombre: "Lic. Otilio Esteban Hernández Pérez",
+  //     obligatorio: "si",
+  //     estado: "Firmado",
+  //   },
+  //   { nombre: "Lic. Nallely", obligatorio: "si", estado: "En proceso" },
+  // ];
   columns2.value = [
     { key: "destinatario", label: "Destinatario" },
     { key: "instruccion", label: "Instrucción" },
     { key: "estado", label: "Estado" },
   ];
-  items2.value = [
-    {
-      nombre: "Francisco Antonio Hernández González",
-      instruccion: "Atención",
-      estado: "Sin Firma",
-    },
-    {
-      nombre: "Dora Luz Serrano",
-      instruccion: "Conocimiento",
-      estado: "Sin firma",
-    },
-  ];
+  // items2.value = [
+  //   {
+  //     nombre: "Francisco Antonio Hernández González",
+  //     instruccion: "Atención",
+  //     estado: "Sin Firma",
+  //   },
+  //   {
+  //     nombre: "Dora Luz Serrano",
+  //     instruccion: "Conocimiento",
+  //     estado: "Sin firma",
+  //   },
+  // ];
 };
 
-const print = () => {
-  window.print();
-};
+// const print = () => {
+//   window.print();
+// };
 
 /* Modal firmar ahora */
 const contrasenaCer = ref(null);
@@ -148,8 +147,9 @@ const motivoRechazo = () => {
 /* Termina Modal Rechazo*/
 
 const pathdocumento = ref("");
-const pdf_view = (path) => {
-  pathdocumento.value = path;
+const pdf_view = (adjuntos) => {
+  console.log(adjuntos)
+  //pathdocumento.value = path;
 };
 </script>
 <template>
@@ -220,22 +220,22 @@ const pdf_view = (path) => {
                               <div class="row">
                                 <div class="col-xl-7 col-lg-7 col-md-6 col-sm-4">
                                   <p class="inv-street-addr">
-                                    {{ data?.tipoDocumento }}
+                                    <b>Tipo de documento:</b> {{ data?.tipoDocumento }}
                                   </p>
                                   <p class="inv-street-addr">
                                     <b>Expediente:</b> {{ data?.numExpediente }}
                                   </p>
-                                  <p class="inv-email-address">
+                                  <!-- <p class="inv-email-address">
                                     <b>Nombre de expediente:</b>
                                     {{ data?.s_descripcion }}
-                                  </p>
+                                  </p> -->
                                 </div>
 
                                 <div class="col-xl-5 col-lg-5 col-md-6 col-sm-8 col-12 order-sm-0 order-1" >
                                   <div class="pStyle">
                                     <p>
                                       <span class="inv-subtitle"
-                                        ><b>Elaboró:</b></span
+                                        ><b>Elaboró: </b></span
                                       >
                                       <span
                                         >{{ data?.nombreEmpleado }}
@@ -246,10 +246,17 @@ const pdf_view = (path) => {
                                   </div>
                                 </div>
                               </div>
-                              <div class="row">
+                              <div class="row mt-3">
                                 <div class="col-sm-12">
                                   <p class="inv-email-address">
                                     <b>Contenido:</b> {{ data?.contenido }}
+                                  </p>
+                                </div>
+                              </div>
+                              <div class="row mt-3">
+                                <div class="col-sm-12">
+                                  <p class="inv-email-address">
+                                    <b>Notas:</b> {{ data?.notas }}
                                   </p>
                                 </div>
                               </div>
@@ -260,27 +267,20 @@ const pdf_view = (path) => {
                                 <table class="table table-hover">
                                   <thead>
                                     <tr>
-                                      <th
-                                        v-for="item in columns"
-                                        :key="item.key"
-                                        :class="[item.class]"
-                                      >
+                                      <th v-for="item in columns" :key="item.key" :class="[item.class]" >
                                         {{ item.label }}
                                       </th>
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <tr
-                                      v-for="firmante in data?.firmantes"
-                                      :key="firmante.numEmpleado"
-                                    >
+                                    <tr v-for="firmante in data?.firmantes" :key="firmante.numEmpleado" >
                                       <td>
-                                        {{ firmante.nombre }}
-                                        {{ firmante.apellido1 }}
-                                        {{ firmante.apellido2 }}
+                                        <div class="fw-bold">{{ firmante.nombre }} {{ firmante.apellido1 }} {{ firmante.apellido2 }}</div>
+                                        <div class="ms-2">{{ firmante.area }}</div>
+                                        <div class="ms-2">{{ firmante.puesto }}</div>
                                       </td>
                                       <td>
-                                        {{ firmante.obligatorio }}
+                                        {{ firmante.instruccion }}
                                       </td>
                                       <td>
                                         {{ firmante.estado }}
@@ -311,9 +311,9 @@ const pdf_view = (path) => {
                                       :key="destinatario.numEmpleado"
                                     >
                                       <td>
-                                        {{ destinatario.nombre }}
-                                        {{ destinatario.apellido1 }}
-                                        {{ destinatario.apellido2 }}
+                                        <div class="fw-bold">{{ destinatario.nombre }} {{ destinatario.apellido1 }} {{ destinatario.apellido2 }}</div>
+                                        <div class="ms-2">{{ destinatario.area }}</div>
+                                        <div class="ms-2">{{ destinatario.puesto }}</div>
                                       </td>
                                       <td>
                                         {{ destinatario.instruccion }}
@@ -336,11 +336,10 @@ const pdf_view = (path) => {
                                     Documento adjunto a firmar (falta agregar el
                                     PDF)
                                   </p>
-
                                   <a
                                     href="javascript:;"
                                     class="btn dropdown-toggle btn-icon-only"
-                                    @click=" pdf_view( data.documentosAdjuntos[0].documentoPath ) "
+                                    @click=" pdf_view( data.documentosAdjuntos) "
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalPDF"
                                   >

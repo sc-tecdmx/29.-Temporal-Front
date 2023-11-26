@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, inject, ref } from "vue";
 import axios from 'axios';
+import jwtDecode from "vue-jwt-decode";
 import "@/assets/sass/apps/invoice-add.scss";
 //-----------------------
 import "@/assets/sass/forms/file-upload-with-preview.min.css";
@@ -49,10 +50,9 @@ const catInstruccionDest = ref({});
 const catPrioridad = ref({});
 const authStore = useAuthStore();
 
+
 const token = authStore.state.user.token;
-//const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
-// const urlBase = "http://127.0.0.1:8083"
-// const urlPKI = "http://localhost:8081"
+
  const bind_data = () => {
            const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
@@ -161,11 +161,12 @@ const paramsEnviar = ref({
   tipoPrioridad: "",
   asunto: "",
   contenido: "",
+  notas:"",
   fechaLimiteFirma: "",
   configuraciones: {
-    ordenFirma: "",
-    modoCaptura: "",
-    generaNumeroOficio: "",
+    ordenFirma: false,
+    modoCaptura: false,
+    generaNumeroOficio: false,
   },
   notificaciones:[],
   enOrden: true,
@@ -311,9 +312,10 @@ const tablaDestinatarios = (data, campoValido) => {
      form.tablaDestinatarios = campoValido;
    }
 };
+const arrConfig= ref([]);
 const opcionSwitchOrdenFirma = (idData) => {
   //params.value.configuracion.ordenFirma = idData;
-  paramsEnviar.value.configuraciones.ordenFirma
+  paramsEnviar.value.configuraciones.ordenFirma = idData;
 };
 const opcionSwitchModoCaptura = (idData) => {
   //params.value.configuracion.modoCaptura = idData;
@@ -325,6 +327,7 @@ const opcionSwitchGeneraOficio = (idData) => {
 };
 const opcionTxtAreaNotas = (idData) => {
   params.value.notas = idData;
+  paramsEnviar.value.notas = idData;
 };
 const opcionDateDocumento = (date, campoValido) => {
   params.value.fechaDocumento = date;
@@ -476,7 +479,8 @@ const change_file = async(event) => {
       fileType: 'PDF',
       docBase64: docFileObj.base64
     }
-    params.value.documentos.push(objeto);
+    //params.value.documentos.push(objeto);
+    paramsEnviar.value.documentosAdjuntos.push(objeto);
   }
   certificado.value.documento = event.target.files[0];
   form.inputPDF = true;
@@ -516,7 +520,6 @@ const setContrasena = (contrasena) => {
 /* Guarda Captura */
 const enviaCaptura = async() => {
 
-  //let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
   let urlAltaDoc = urlPKI + "/api/documento/alta-documento-v2";
   const post = {
     /*"folio": paramsEnviar.value.folio,*/
@@ -527,19 +530,34 @@ const enviaCaptura = async() => {
     "tipoPrioridad": paramsEnviar.value.tipoPrioridad,
     "asunto": paramsEnviar.value.asunto,
     "contenido": paramsEnviar.value.contenido,
+    "notas": paramsEnviar.value.notas,
     "fechaLimiteFirma": paramsEnviar.value.fechaLimiteFirma,
-    "configuraciones":[],
+    "configuraciones":[
+        {
+            "config": paramsEnviar.value.configuraciones.ordenFirma,
+            "atributo": "FIRM"
+        },
+        {
+            "config": paramsEnviar.value.configuraciones.modoCaptura,
+            "atributo":"MODCAP"
+        },
+        {
+            "config": paramsEnviar.value.configuraciones.generaNumeroOficio,
+            "atributo":"GNUMOF"
+        }
+    ],
     "notificaciones":[],
     "enOrden": true,
     "firmantes": paramsEnviar.value.firmantes,
     "destinatarios":paramsEnviar.value.destinatarios,
-    "documentosAdjuntos":params.value.documentos
+    "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-  //console.log(post);
+  console.log(post);
            try {
-            await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-                  alert(response.data.message);
-                });
+             await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+               console.log(response)    
+               alert(response.data.message);
+               });
             
            } catch (error) {
              console.log(error)
@@ -672,6 +690,10 @@ const addExpediente = async()=>{
     // const eliminarArchivo = (index) => {
     //   archivos.value.splice(index, 1);
     // };
+
+    const usuarioSesion = ref(null);
+    usuarioSesion.value = jwtDecode.decode(token);
+
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -734,7 +756,7 @@ const addExpediente = async()=>{
                             <InputValidado
                               idName="folioDocumento"
                               label="Folio del documento:"
-                              placeholder="get"
+                              placeholder="folio del documento"
                               :disabled="true"
                               @inputData="opcionInputFolioDocumento"
                             ></InputValidado>
@@ -786,7 +808,7 @@ const addExpediente = async()=>{
                             <InputValidado
                               idName="elaboro"
                               label="Elaboró:"
-                              placeholder="Otilio Esteban Hernández Pérez"
+                              :placeholder="usuarioSesion.sub"
                               :disabled="true"
                               @inputData="opcionInputElaboro"
                             ></InputValidado>
@@ -1026,14 +1048,7 @@ const addExpediente = async()=>{
   </div>
   <!-- Fin Modal Frimar -->
   <!-- Modal campos requeridos -->
-  <div
-    class="modal fade"
-    id="modalCamposRequeridos"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="modalCamposRequeridos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">

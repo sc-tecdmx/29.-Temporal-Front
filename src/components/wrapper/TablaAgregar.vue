@@ -63,6 +63,7 @@ let secuencia = 0;
 
 const thtabla = props.thtabla;
 const arrayTabla = ref([]);
+const arrayEnviado = ref([]);
 
 var params = new Object;
 params = {
@@ -241,11 +242,17 @@ const save_user = () => {
     params.secuencia = secuencia;
     params.nuevoUsuario_email = nuevoUsuario_email.value;
     params.instruccion = class_instruccion(params.id_instruccion);
-    params.tipoFirma = "Múltiple";
+    //params.tipoFirma = "Múltiple";
     params.idUsuario = "";
-    params.fechaLimite = "";
+    //params.fechaLimite = "";
     //console.log("PARAMS Firman",params)
+    let empleado={
+      "secuencia": secuencia,
+      "idEmpleado": selected.value.id,
+      "instruccion": params.instruccion
+    }
     arrayTabla.value.push(params);
+    arrayEnviado.value.push(empleado);
 
   }
 
@@ -492,7 +499,7 @@ const verificaArray = () => {
           <button type="button" class="btn btn-default" data-dismiss="modal" data-bs-dismiss="modal">
             <i class="flaticon-cancel-12"></i> Cancelar
           </button>
-          <button type="button" class="btn btn-primary" @click="save_user(); verificaArray(); emit('tablaFirmantes', arrayTabla, submit_listado);" :disabled="duplicado">
+          <button type="button" class="btn btn-primary" @click="save_user(); verificaArray(); emit('tablaFirmantes', arrayEnviado, submit_listado);" :disabled="duplicado">
             {{ selected.id_tabla || params.id_tabla ? "Editar" : "Agregar" }}
           </button>
         </div>

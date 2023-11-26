@@ -58,6 +58,7 @@ for (let i = 0; i < catalogo.value.length; i++) {
             }else{
                 label = value;
             }
+
             
         })
         //let objeto= new mapOpciones(id,label);

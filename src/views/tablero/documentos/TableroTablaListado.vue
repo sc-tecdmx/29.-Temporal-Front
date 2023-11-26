@@ -36,8 +36,7 @@
     /* inicia getData */
     //const columns = ['acciones','e','p','d','folio','asunto','fecha','firmantes','destinatarios', 'detalle'];
     const columns = ['acciones','p','d','folio','asunto','fecha','firmantes','destinatarios'];
-    const items = ref([]);
-    //const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
+    const items = ref([]);    
     const token = authStore.state.user.token;
     const bind_data = () => {
         //console.log("bind_data");
@@ -49,7 +48,7 @@
             const url = props.url;
             try {
                 const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-                //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${authStore.userData}`}});
+                //console.log(data.data)
                 items.value = data.data;
                 //console.log("AXIOS:" + items.value);
             } catch (error) {
@@ -95,16 +94,13 @@
     const pathdocumento = ref("")
     const documentosAdjuntos = ref([]);
     const pdf_view = (adjuntos) =>{
-
         documentosAdjuntos.value= [];
         for(let i = 0; i< adjuntos.length; i++){
             let pathAdjunto = adjuntos[i];
             let ultimaDiagonal = pathAdjunto.filePath.lastIndexOf("/");
             const nomArchivo = pathAdjunto.filePath.substring(ultimaDiagonal +1);
-            //console.log(pathAdjunto.filePath)
             let objeto = {
                 path:  pathAdjunto,
-                //path: "file:///C:/Users/viole/Documents/docs-firma-electronica/pdf/13-11-2023-015404_Oficio_2.pdf",
                 nombre: nomArchivo
             }
             documentosAdjuntos.value.push(objeto);
@@ -381,6 +377,7 @@
                                 <a class="btn dropdown-toggle btn-icon-only text-truncate" 
                                     href="#" role="button" 
                                     id="pendingTask" 
+                                    v-if="props.row.documentosAdjuntos.length > 0"
                                     data-bs-toggle="dropdown" 
                                     aria-haspopup="true" 
                                     aria-expanded="false" 
@@ -394,7 +391,7 @@
                                                 class="btn dropdown-toggle btn-icon-only"
                                                 @click="pathdocumento = doc.path"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#modaPDF">
+                                                data-bs-target="#modalPDF">
                                                 {{ doc.nombre }}
                                             </a>
                                         </li>
@@ -475,7 +472,6 @@
             <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="modal-body p-0">
                 <!-- <PDF src="/src/assets/images/Documento_prueba_firma.pdf"></PDF> -->
-                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">cerrar</button>
                 </div>
@@ -484,15 +480,15 @@
     </div>
 </div>
 <!-- Modal PDF-->
-<div class="modal fade" id="modaPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
             </div>
             <div class="modal-body">
-                <!-- <PDF src="/src/assets/images/Documento_prueba_firma.pdf"></PDF> -->
-                <PDF :src="pathdocumento"></PDF>
+                <p v-if="pathdocumento.docBase64 == null">base64 null</p>
+                <PDF :src="pathdocumento.docBase64" v-else></PDF>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i>Cerrar</button>

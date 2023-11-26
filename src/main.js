@@ -20,6 +20,8 @@ import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
 import { createHead } from '@vueuse/head';
 // datatables
 import { ClientTable } from 'v-tables-3';
+// vue input mask
+import Maska from 'maska';
 
 //config Servicios
 import config from './config';
@@ -36,6 +38,7 @@ app.use(router)
 /* IFR Agregado */
 app.use(PerfectScrollbar)
 app.use(createHead())
+app.use(Maska)
 app.provide('config', config)
 app.mount('#app')
 app.use(ClientTable)

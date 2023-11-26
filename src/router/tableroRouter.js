@@ -9,6 +9,7 @@ import AreasAdscripcionView from '../views/configuracion/catalogos/AreasAdscripc
 import PersonalView from '../views/configuracion/catalogos/PersonalView.vue';
 import RolesView from '../views/configuracion/catalogos/RolesView.vue';
 import TiposDocumentoView from '../views/configuracion/catalogos/TiposDocumentoView.vue';
+import RegistroEmpleadoView from '../views/login/RegistroEmpleadoView.vue';
 
 
 export default {
@@ -21,6 +22,7 @@ export default {
         // Administración del sistema
         { path: '/account/perfil', name: 'perfil', component: PerfilViewVue},
         { path: '/account/cambiar_contrasena', name:'cambiarContrasena', component:CambiarContrasenaView },
+        { path: '/account/registroEmpleado', name: 'registroEmpleado', component: RegistroEmpleadoView },
         { path: '/config/adminRolPersonaApp', name: 'rolPersona', component: PersonalRolAppViewVue },
         //Catálogos
         { path: '/config/catalogo/areas', name:'catalogoAreas', component:AreasAdscripcionView },

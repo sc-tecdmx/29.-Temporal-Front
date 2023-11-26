@@ -79,6 +79,9 @@ onMounted(() => {
                     </a>
                     <ul id="configuracion" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
+                            <router-link to="/account/registroEmpleado" @click="toggleMobileMenu">Agregar empleado</router-link>
+                        </li>
+                        <li>
                             <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administración Roles</router-link>
                         </li>
                     </ul>

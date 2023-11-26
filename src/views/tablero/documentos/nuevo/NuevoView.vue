@@ -532,19 +532,34 @@ const enviaModoFirma = async() => {
     "tipoPrioridad": paramsEnviar.value.tipoPrioridad,
     "asunto": paramsEnviar.value.asunto,
     "contenido": paramsEnviar.value.contenido,
+    "notas": paramsEnviar.value.notas,
     "fechaLimiteFirma": paramsEnviar.value.fechaLimiteFirma,
-    "configuraciones":[],
+    "configuraciones":[
+        {
+            "config": paramsEnviar.value.configuraciones.ordenFirma,
+            "atributo": "FIRM"
+        },
+        {
+            "config": paramsEnviar.value.configuraciones.modoCaptura,
+            "atributo":"MODCAP"
+        },
+        {
+            "config": paramsEnviar.value.configuraciones.generaNumeroOficio,
+            "atributo":"GNUMOF"
+        }
+    ],
     "notificaciones":[],
     "enOrden": true,
     "firmantes": paramsEnviar.value.firmantes,
     "destinatarios":paramsEnviar.value.destinatarios,
-    "documentosAdjuntos":params.value.documentos
+    "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-  //console.log(post);
+  console.log(post);
            try {
-            await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-                  alert(response.data.message);
-                });
+             await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+               console.log(response)    
+               alert(response.data.message);
+               });
             
            } catch (error) {
              console.log(error)

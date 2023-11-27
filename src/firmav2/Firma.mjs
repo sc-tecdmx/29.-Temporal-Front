@@ -102,12 +102,24 @@ export class Firma {
                 },
             ],
         });
-        p7.sign({ detached: true });
+       /*p7.sign({ detached: true });
         const rawSignedData = forge.asn1.toDer(p7.toAsn1()).getBytes();
         this.firmaSize = rawSignedData.length;
         console.log("Tamaño contenido", this.firmaSize);
         const hash = CryptoJS.SHA256(rawSignedData).toString();
         this.signatureBase64 = Buffer.from(hash, 'binary').toString('base64');
+        */
+
+        p7.sign({ detached: true });
+        const rawSignedData = forge.asn1.toDer(p7.toAsn1()).getBytes();
+        this.firmaSize = rawSignedData.length;
+        console.log("Tamaño contenido", this.firmaSize);
+        //const hash = createHash('sha256');
+        //hash.update(rawSignedData);
+        this.signatureBase64 = Buffer.from(rawSignedData, 'binary').toString('base64');
+
+        // Conversión a Base64 usando funciones nativas del navegador
+        //signatureBase64.value = btoa(rawSignedData);
     }
 
     async buildAndSavePDF(codigoFirmaAplicada, hashDocumento, certificado, documento, url, token, responseBody) {

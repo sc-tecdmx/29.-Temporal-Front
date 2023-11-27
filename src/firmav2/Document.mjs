@@ -1,5 +1,6 @@
 import { PDFDocument, rgb, degrees } from 'pdf-lib';
 import crypto from 'crypto';
+import CryptoJS from 'crypto-js';
 
 export class Document {
     constructor(pdfBase64) {
@@ -7,13 +8,12 @@ export class Document {
     }
 
     async initialize() {
-        console.log('se inicializa')
+        console.log('se inicializa');
         this.pdfBase64StamppedHash;
         this.bufferPDF =  await this.obtenerBufferPDF(this.pdfBase64);
-        this.hash = await this.calculateSHA256(this.pdfBase64);
-        this.calculateSHA256(this.pdfBase64).then(hash => this.hash = hash);
         
-        console.log(this.hash)
+        this.hash = await CryptoJS.SHA256(this.pdfBase64).toString(CryptoJS.enc.Hex);
+        console.log('this.hash: ',this.hash);
         await this.pdfStamperHash();
     }
 
@@ -39,33 +39,6 @@ export class Document {
       
         return new Blob([byteArray], { type: mimeType });
       }
-      /*
-    calcularSHA256() {
-        const hash = CryptoJS.SHA256(this.pdfBase64);
-        console.log('hash', hash);
-        hash = hash.toString(CryptoJS.enc.Hex);
-        console.log(hash);
-        return hash;
-    }
-    */
-
-    async calculateSHA256(base64String) {
-        // Convierte el base64 a una cadena binaria
-        const binaryString = window.atob(base64String);
-    
-        // Convierte la cadena binaria a un ArrayBuffer
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-    
-        // Calcula el hash SHA256 usando la Web Crypto API
-        const hashBuffer = await window.crypto.subtle.digest('SHA-256', bytes);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        console.log('hashHex',hashHex);
-        return hashHex;
-    }
 
     arrayBufferToBase64(buffer) {
         let binary = '';

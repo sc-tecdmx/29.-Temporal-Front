@@ -21,7 +21,7 @@ router.beforeEach(async(to) =>{
   const alertStore = useAlertStore();
   alertStore.clear();
 
-  const publicPages = ['/account/login', '/account/registro', '/account/recupera_contrasena'];
+  const publicPages = ['/account/login', '/account/registro', '/account/recupera_contrasena', '/account/restablecer-contrasenia'];
   const authRequired = !publicPages.includes(to.path);
   const authStore = useAuthStore();
 

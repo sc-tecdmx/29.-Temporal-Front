@@ -279,7 +279,7 @@ const verificaDuplicado= (data) => {
 const email_valido = ref(false);
 
 const delete_row = (item) => {
-  if (confirm('Are you sure want to delete selected row ?')) {
+  if (confirm('¿Desea eliminar este registro?')) {
     arrayTabla.value = arrayTabla.value.filter((d) => d.id_tabla != item.id_tabla);
       if (arrayTabla.value.length == 0) {
         submit_listado.value = false;

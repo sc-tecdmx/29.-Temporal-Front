@@ -69,7 +69,12 @@ export const useAuthStore = defineStore('authStore',()=>{
           try {
            await axios.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
                 //console.log(response)    
-                alert(response.data.message);
+                //alert(response.data.message);
+
+                if (confirm(response.data.message)) {
+                    //console.log("IF de confirm")
+                    window.location.reload();
+                  }
             });
           
           } catch (error) {
@@ -93,5 +98,40 @@ export const useAuthStore = defineStore('authStore',()=>{
               console.log(error)
             }
     }
-    return { loginUser, logoutUser, registerUser, registerEmpleado, cambiarPass, state, loadingUser }
+    const restablecerPass = async(email) => {
+        let urlRestPass = import.meta.env.VITE_API_SEGURL + "/api/email/solicitud-reset-password?email=" + email;
+        
+            try {
+              const response = await axios.post(urlRestPass);
+              //console.log(response.data);
+              if (confirm(response.data.message)) {
+                router.push('/account/login');
+              }
+          
+            } catch (error) {
+                alert('Error al solicitar reset de contraseña')
+                console.log('Error al solicitar reset de contraseña:',error)
+            }
+    }
+    const resetPass = async(token, password) => {
+      let urlRestPass = import.meta.env.VITE_API_SEGURL + "/api/email/reset-password";
+      let post={
+          "token": token,
+          "password": password
+      };
+            try {
+              const response = await axios.post(urlRestPass, post);
+              //console.log(response.data);
+                if(response.data.status === "Success"){
+                    if (confirm(response.data.message)) {
+                        router.push('/account/login');
+                      }
+                }
+          
+            } catch (error) {
+                alert('Error al solicitar reset de contraseña')
+                console.log('Error al solicitar reset de contraseña:',error)
+            }
+    }
+    return { loginUser, logoutUser, registerUser, registerEmpleado, cambiarPass, restablecerPass, resetPass, state, loadingUser }
 })

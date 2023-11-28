@@ -23,7 +23,8 @@
     // console.log(props.date);
 
     const config = ref({
-        dateFormat: 'Y-m-d',
+        enableTime: true,
+        dateFormat: 'Y-m-d H:i:S',
         allowInput: true,
     })
 

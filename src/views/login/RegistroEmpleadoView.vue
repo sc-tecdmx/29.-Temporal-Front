@@ -320,12 +320,30 @@ const submit_formulario = () => {
   if (!form.fechaAltaEmpleado) {
     arrayCampos.value.push("Fecha de alta");
   }
-  
-  //console.log(arrayCampos)
   if (!arrayCampos.value.length == 0) {
     modalCamposRequeridos.show();
   } else {
-    authStore.registerEmpleado(params);
+    console.log(params)
+    let empleado = {
+      "idNumEmpleado": params.idNumEmpleado,
+      "nombre": params.nombre,
+      "apellido1": params.apellido1,
+      "apellido2": params.apellido2,
+      "codigoSexo": params.codigoSexo,
+      "emailPers": params.emailPers,
+      "emailInst": params.emailInst,
+      "telPers": params.telPers,
+      "telInst": params.telInst,
+      "curp": params.curp,
+      "rfc":params.rfc,
+      "pathFotografia": params.pathFotografia,
+      "codigoArea": params.codigoArea,
+      "codigoPuesto": params.codigoPuesto,
+      "fechaAltaEmpleado": params.fechaAltaEmpleado,
+      "esTitular": params.esTitular,
+      "fechainicioTitular": params.fechainicioTitular
+    }
+    authStore.registerEmpleado(empleado);
   }
 };
 

@@ -29,7 +29,6 @@ const loginSubmit = async() =>{
     //  if(!email.value || password.value.length < 6){
     //          return alert("llena los campos");
     //  }
-     //ERR_BAD_RESPONSE
     await authStore.loginUser(email.value, password.value);
 }
     
@@ -49,7 +48,7 @@ const loginSubmit = async() =>{
                             <form class="text-start" @submit.prevent="loginSubmit">
                                 <div class="form">
                                     <div id="username-field" class="field-wrapper input">
-                                        <label for="username">USUARIO</label>
+                                        <label for="username">CORREO</label>
                                         <IconFeatherUser></IconFeatherUser>
                                         <input v-model="email" type="text" class="form-control" placeholder="usuario" />
                                     </div>

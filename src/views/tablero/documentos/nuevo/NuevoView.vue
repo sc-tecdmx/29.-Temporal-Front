@@ -3,6 +3,7 @@ import { onMounted, inject, ref } from "vue";
 import axios from 'axios';
 import jwtDecode from "vue-jwt-decode";
 import "@/assets/sass/apps/invoice-add.scss";
+import router from "@/router";
 //-----------------------
 import "@/assets/sass/forms/file-upload-with-preview.min.css";
 import "@/assets/sass/forms/custom-flatpickr.css";
@@ -27,7 +28,7 @@ import InputAutocompletable from "@/components/wrapper/InputAutocompletable.vue"
 import CheckGroup from "@/components/wrapper/CheckGroup.vue";
 
 //Iconos
-import IconPlus from '../../../../components/icons/IconPlus.vue'
+import IconPlus from '@/components/icons/IconPlus.vue'
 //Firma
 import { getCertificadoData } from "@/firma/main.mjs";
 import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
@@ -473,7 +474,7 @@ const change_file = async(event) => {
   //console.log(selected_file)
 
   for (let i = 0; i < selected_file.value.length; i++) {
-    console.log(selected_file.value[i].name);
+    //console.log(selected_file.value[i].name);
     documentos.value.push(selected_file.value[i].name);
     const docFileObj = await getMimeTypeAndArrayBufferFromFile(selected_file.value[i]);
     //console.log(docFileObj)
@@ -554,12 +555,19 @@ const enviaModoFirma = async() => {
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-  console.log(post);
+  //console.log(post);
            try {
              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-               console.log(response)    
+               //console.log(response)    
                alert(response.data.message);
-               });
+               //  if(response.data.status){}
+               if (confirm(response.data.message)) {
+                    //console.log("IF de confirm")
+                    certificadoModal.hide();
+                    //window.location.reload();
+                    //router.push('/');
+                  }
+              });
             
            } catch (error) {
              console.log(error)
@@ -601,10 +609,10 @@ const enviaCaptura = async() => {
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-  console.log(post);
+  //console.log(post);
            try {
              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-               console.log(response)    
+               //console.log(response)    
                alert(response.data.message);
                });
             
@@ -647,8 +655,8 @@ const enviaFirma = async () => {
     const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
     const codigoFirmaAplicada = 'Firmado';
     //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
-    console.log(certificado.value.contrasenaCer);
-    console.log(token);
+    // console.log(certificado.value.contrasenaCer);
+    // console.log(token);
     main_cer(certFileObj.base64, keyFileObj.base64, 'geia9769', pdfFileObj.base64, codigoFirmaAplicada, token);
 
   }else if(pfxFileData.file!=null){
@@ -761,8 +769,8 @@ const addExpediente = async()=>{
             await axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
               //console.log(response)
               if (confirm(response.data.mensaje)) {
-              addExpedienteModal.hide();
-            }
+                addExpedienteModal.hide();
+              }
             });
             
           } catch (error) {

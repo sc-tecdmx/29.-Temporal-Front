@@ -30,7 +30,7 @@ onMounted(() => {
 
     const toggleMobileMenu = () => {
         if (window.innerWidth < 991) {
-            appLiveStore.toggleSideBar(!store.state.is_show_sidebar);
+            appLiveStore.toggleSideBar(!appLiveStore.state.is_show_sidebar); 
         }
     };
 

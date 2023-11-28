@@ -17,10 +17,12 @@ useMeta({ title: "Detalle Documento" });
 //const config = inject('config');
 const { data, getData, loading, errorData } = useGetData();
 const route = useRoute();
-console.log(data)
-const items = ref([]);
+const documento = ref(null);
+
+//console.log(data)
+//const items = ref([]);
 const columns = ref([]);
-const items2 = ref([]);
+//const items2 = ref([]);
 const columns2 = ref([]);
 const url = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
 
@@ -30,45 +32,21 @@ onMounted(() => {
 });
 const detalleDoc = ref(null);
 detalleDoc.value = data;
-// console.log(data)
-// console.log(detalleDoc);
+
 
 const bind_data = () => {
   columns.value = [
     { key: "firmante", label: "Firmante" },
     { key: "intruccion", label: "Instrucción" },
-    { key: "estado", label: "Estado" },
+    //{ key: "estado", label: "Estado" },
   ];
-  // items.value = [
-  //   {
-  //     nombre: "Lic. Otilio Esteban Hernández Pérez",
-  //     obligatorio: "si",
-  //     estado: "Firmado",
-  //   },
-  //   { nombre: "Lic. Nallely", obligatorio: "si", estado: "En proceso" },
-  // ];
+
   columns2.value = [
     { key: "destinatario", label: "Destinatario" },
     { key: "instruccion", label: "Instrucción" },
-    { key: "estado", label: "Estado" },
+    //{ key: "estado", label: "Estado" },
   ];
-  // items2.value = [
-  //   {
-  //     nombre: "Francisco Antonio Hernández González",
-  //     instruccion: "Atención",
-  //     estado: "Sin Firma",
-  //   },
-  //   {
-  //     nombre: "Dora Luz Serrano",
-  //     instruccion: "Conocimiento",
-  //     estado: "Sin firma",
-  //   },
-  // ];
 };
-
-// const print = () => {
-//   window.print();
-// };
 
 /* Modal firmar ahora */
 const contrasenaCer = ref(null);
@@ -150,6 +128,15 @@ const pathdocumento = ref("");
 const pdf_view = (adjuntos) => {
   console.log(adjuntos)
   //pathdocumento.value = path;
+};
+const getNombre = (path) => {
+  const parts = path.split('/');
+  const fileName = parts[parts.length - 1];
+  return fileName;
+};
+const closeModal = () => {
+  // Liberar el objeto PDF asignándole null
+  pathdocumento.value = null;
 };
 </script>
 <template>
@@ -282,9 +269,9 @@ const pdf_view = (adjuntos) => {
                                       <td>
                                         {{ firmante.instruccion }}
                                       </td>
-                                      <td>
+                                      <!-- <td>
                                         {{ firmante.estado }}
-                                      </td>
+                                      </td> -->
                                     </tr>
                                   </tbody>
                                 </table>
@@ -318,9 +305,9 @@ const pdf_view = (adjuntos) => {
                                       <td>
                                         {{ destinatario.instruccion }}
                                       </td>
-                                      <td>
+                                      <!-- <td>
                                         {{ destinatario.estado }}
-                                      </td>
+                                      </td> -->
                                     </tr>
                                   </tbody>
                                 </table>
@@ -333,18 +320,30 @@ const pdf_view = (adjuntos) => {
                                   class="col-sm-12 col-12 order-sm-0 order-1"
                                 >
                                   <p>
-                                    Documento adjunto a firmar (falta agregar el
-                                    PDF)
+                                    Documento adjunto a firmar
                                   </p>
-                                  <a
+                                  <div v-for="doc in data?.documentosAdjuntos">
+                                    <a
+                                      href="javascript:;"
+                                      class="btn dropdown-toggle btn-icon-only"
+                                      @click="pathdocumento = doc.docBase64"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#modalPDF"
+                                    >
+                                      <IconFeatherFileText class="me-2"></IconFeatherFileText>
+                                      {{ getNombre(doc.documentoPath) }}
+                                    </a>
+                                    <!-- <PDF :src="doc.docBase64"></PDF> -->
+                                  </div>
+                                  <!-- <a
                                     href="javascript:;"
                                     class="btn dropdown-toggle btn-icon-only"
-                                    @click=" pdf_view( data.documentosAdjuntos) "
+                                    @click=" pdf_view( data?.documentosAdjuntos) "
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalPDF"
                                   >
                                     <IconFeatherFileText></IconFeatherFileText>
-                                  </a>
+                                  </a> -->
                                 </div>
                               </div>
                             </div>
@@ -366,9 +365,6 @@ const pdf_view = (adjuntos) => {
                             >Enviar/Transferir</a
                           >
                         </div>
-                        <!-- <div class="col-xl-12 col-md-3 col-sm-6">
-                                            <a href="javascript:;" class="btn btn-secondary btn-print action-print" @click="print()">Print</a>
-                                        </div> -->
                         <div class="col-xl-12 col-md-3 col-sm-6">
                           <a
                             data-bs-toggle="modal"
@@ -422,11 +418,6 @@ const pdf_view = (adjuntos) => {
                         <div class="compose-box">
                           <div class="compose-content">
                             <form>
-                              <!--       <div class="alert alert-arrow-right alert-icon-right alert-light-danger alert-dismissible mb-4" role="alert">
-                                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">×</button>
-                                    <svg></svg>
-                                    <strong>Certificado inválido!</strong> Su certificado no esta vigente.
-                                </div>-->
                               <div class="row">
                                 <div class="col-md-12">
                                   <div class="mb-3">
@@ -596,14 +587,7 @@ const pdf_view = (adjuntos) => {
                 </div>
                 <!-- Termina Modal Rechazo -->
                 <!-- Modal PDF-->
-                <div
-                  class="modal fade"
-                  id="modalPDF"
-                  tabindex="-1"
-                  role="dialog"
-                  aria-labelledby="exampleModalLabel"
-                  aria-hidden="true"
-                >
+                <div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
                   <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -616,16 +600,10 @@ const pdf_view = (adjuntos) => {
                         ></button>
                       </div>
                       <div class="modal-body">
-                        <!-- <PDF src="/src/assets/images/Documento_prueba_firma.pdf"></PDF> -->
                         <PDF :src="pathdocumento"></PDF>
                       </div>
                       <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn"
-                          data-dismiss="modal"
-                          data-bs-dismiss="modal"
-                        >
+                        <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal" @click="closeModal">
                           <i class="flaticon-cancel-12"></i>Cerrar
                         </button>
                       </div>

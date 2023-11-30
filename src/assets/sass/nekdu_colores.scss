@@ -1,4 +1,7 @@
 /* Colores semanticos del tema light, falta degradado */
+/* $paleta_app_a : #690061;
+$paleta_app_b : #b840ac;
+$paleta_app_c : #FF8200; */
 $paleta_app_a : #690061;
 $paleta_app_b : #b840ac;
 $paleta_app_c : #FF8200;
@@ -19,25 +22,25 @@ $paleta_light: #fff;
     body, head, nav, aside, main, footer
 */
 
-$color_lg_body_fg :  #9A278F;
+$color_lg_body_fg :  #194891;
 $color_lg_body_bg :  #fff;
 
 $color_lg_head_fg :  #fff;
-$color_lg_head_bg :  #9A278F;
+$color_lg_head_bg :  #194891;
 
 $color_lg_nav_fg :  #fff;
-$color_lg_nav_bg :  #9A278F;
+$color_lg_nav_bg :  #194891;
 
 $color_lg_aside_fg :  #fff;
-$color_lg_aside_bg :  #9A278F;
+$color_lg_aside_bg :  #194891;
 $color_lg_aside_bg_start :#ffffff; /* #9A278F;*/
 $color_lg_aside_bg_end :#ffffff; /* #690061;*/
 
 $color_lg_main_fg :  #fff;
-$color_lg_main_bg :  #9A278F;
+$color_lg_main_bg :  #194891;
 
 $color_lg_footer_fg :  #fff;
-$color_lg_footer_bg :  #9A278F;
+$color_lg_footer_bg :  #194891;
 
 
 /* Colores del tema dark */
@@ -46,7 +49,7 @@ $color_dark_app :  #fff;
 $white: #fff;
 $black: #000;
 
-$primary: #9A278F;
+$primary: #194891; /* RENE */
 $info: #2196f3;
 $success: #1abc9c;
 $warning: #e2a03f;

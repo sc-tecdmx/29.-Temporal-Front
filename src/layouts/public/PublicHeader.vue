@@ -1,7 +1,8 @@
 <script setup>
   import { useLiveStore } from "@/stores/appLiveStore.js";
   import BrandLogo        from '@/components/header/BrandLogo.vue'
-  const srcLogoA = "/src/assets/images/tecdmx/logo_tecdmx_inv.png"
+  /* const srcLogoA = "/src/assets/images/tecdmx/logo_tecdmx_inv.png" */
+  const srcLogoA = "/src/assets/images/tecdmx/logo_tecdmx_azul.png"
   const classLogo= "theme-logo"
   const classBgLogo= "bg-white"
 </script>

@@ -47,12 +47,13 @@
         const datosTabla = async () => {
             const url = props.url;
             try {
-                const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                const { data } = await axiosInstance.get(url, {headers:{"Authorization": `Bearer ${token}`}});
                 //console.log(data.data)
                 items.value = data.data;
                 //console.log("AXIOS:" + items.value);
             } catch (error) {
                 console.log(error);
+                alert(error);
             }
         };
         datosTabla();
@@ -72,7 +73,7 @@
             filterPlaceholder: 'Buscar...',
             limit: 'Resultados:',
         },
-        sortable: ['name', 'position', 'office', 'age', 'start_date', 'salary'],
+        sortable: ['folio','asunto','fecha','firmantes','destinatarios'],
         sortIcon: {
             base: 'sort-icon-none',
             up: 'sort-icon-asc',

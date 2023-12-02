@@ -78,9 +78,14 @@ const loginSubmit = async() =>{
                                             <circle cx="12" cy="12" r="3"></circle>
                                         </svg>
                                     </div>
-                                    <div class="d-sm-flex justify-content-between">
-                                        <div class="field-wrapper">
-                                            <button type="submit" :disabled="authStore.loadingUser" class="btn btn-primary">Ingresar</button>
+                                    <div class="d-sm-flex justify-content-center">
+                                        <div class="field-wrapper row">
+                                            <div class="col-6">
+                                                <button type="submit" :disabled="authStore.loadingUser" class="btn btn-primary">Judicial</button>
+                                            </div>
+                                            <div class="col-6">
+                                                <button type="submit" :disabled="authStore.loadingUser" class="btn btn-primary">Administrativo</button>
+                                            </div>
                                         </div>
                                     </div>
 

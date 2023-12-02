@@ -808,7 +808,7 @@ select.form-control.form-custom {
 
     .dropdown-menu {
         border: none;
-        border: 1px solid #690061; //PAO #e0e6ed
+        border: 1px solid #0a2241; //PAO #e0e6ed
         z-index: 1028;
         box-shadow: none;
         padding: 0.35rem 0.35rem; //PAO 0.35rem 0
@@ -1686,11 +1686,11 @@ select.form-control.form-custom {
             box-shadow: none;
 
             &.btn-primary {
-                border-left: 1px solid #690061 //PAO - rgb(68, 104, 253); 
+                border-left: 1px solid #0a2241 //PAO - rgb(68, 104, 253); 
             }
 
             &.btn-success {
-                border-left: 1px solid #FF8200 // PAO - rgb(163, 198, 111);
+                border-left: 1px solid #7b8c90 // PAO - rgb(163, 198, 111);
             }
 
             &.btn-info {
@@ -1710,7 +1710,7 @@ select.form-control.form-custom {
             }
 
             &.btn-secondary {
-                border-left: 1px solid #9A278F //PAO - rgb(131, 83, 220);
+                border-left: 1px solid #194891 //PAO - rgb(131, 83, 220);
             }
         }
     }

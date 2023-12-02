@@ -55,6 +55,7 @@ const authStore = useAuthStore();
 
 
 const token = authStore.state.user.token;
+//console.log("token", token)
 
  const bind_data = () => {
            const axiosInstance = axios.create({
@@ -63,9 +64,13 @@ const token = authStore.state.user.token;
 
           const datosTabla = async () => {
               const url = urlLAR + "/api/get-catalogo-pantalla/nuevo-documento";
+              //const url = "https://nekdu.com/j/nuevo_documento.php";
               try {
                 
                   const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                  //const { data } = await axiosInstance.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+
+                  //console.log(data)
                   catDestino.value = data.data.catDestino;
                   catTipoDocumento.value = data.data.catTipoDocumento;
                   catInstruccion.value = data.data.catInstruccionFirmantes;
@@ -76,6 +81,7 @@ const token = authStore.state.user.token;
                     }, 10);
               } catch (error) {
                   console.log(error);
+                  alert(error.response.data.message)
               }
           };
           
@@ -557,6 +563,9 @@ const enviaModoFirma = async() => {
 }
   //console.log(post);
            try {
+            const axiosInstance = axios.create({
+               "Access-Control-Allow-Origin": "*",
+           });
              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
                //console.log(response)    
                alert(response.data.message);
@@ -565,7 +574,7 @@ const enviaModoFirma = async() => {
                     //console.log("IF de confirm")
                     certificadoModal.hide();
                     //window.location.reload();
-                    //router.push('/');
+                    router.push('/');
                   }
               });
             
@@ -609,13 +618,13 @@ const enviaCaptura = async() => {
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-  //console.log(post);
+  // console.log(urlAltaDoc)
+  // console.log(post);
            try {
-             await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-               //console.log(response)    
-               alert(response.data.message);
-               });
-            
+              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+                console.log(response)    
+                alert(response.data.message);
+              });
            } catch (error) {
              console.log(error)
            }
@@ -809,13 +818,12 @@ const addExpediente = async()=>{
 
     const usuarioSesion = ref(null);
     usuarioSesion.value = jwtDecode.decode(token);
+    //console.log(usuarioSesion)
 
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
-    <div
-      class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center"
-    >
+    <div class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center">
       <!--PAO -->
       <div class="col-xxl-10 col-12">
         <!--PAO -->

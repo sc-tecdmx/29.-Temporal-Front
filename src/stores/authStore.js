@@ -20,17 +20,17 @@ export const useAuthStore = defineStore('authStore',()=>{
              }
              try {
                 const usuario = ref({})
-                     await axios.post(urlLogin, post).then((response) => {
-                        console.log("*** Login ***")
-                        //console.log("response",response)
-                        usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
-                        state.value.user = JSON.parse(localStorage.getItem('user'));
-                        if(response.data.status === "failed" || response.data.token == null){
-                            alert("Usuario o contraseña incorrecta")
-                        }else{
-                            router.push('/');
-                        }
-                      });
+                await axios.post(urlLogin, post).then((response) => {
+                  //console.log("*** Login ***")
+                  //console.log("response",response)
+                  usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
+                  state.value.user = JSON.parse(localStorage.getItem('user'));
+                  if(response.data.status === "failed" || response.data.token == null){
+                      alert("Usuario o contraseña incorrecta")
+                  }else{
+                      router.push('/');
+                  }
+                });
              } catch (error) {
                  console.log(error);
              }finally{
@@ -64,10 +64,13 @@ export const useAuthStore = defineStore('authStore',()=>{
           }
     }
     const registerEmpleado = async(user) => {
+      const axiosInstance = axios.create({
+        "Access-Control-Allow-Origin": "*",
+    });
         let urlRegUser = import.meta.env.VITE_API_SEGURL + "/api/seguridad/create-empleado";
         const token = state.value.user.token;
           try {
-           await axios.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+           await axiosInstance.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
                 //console.log(response)    
                 //alert(response.data.message);
 

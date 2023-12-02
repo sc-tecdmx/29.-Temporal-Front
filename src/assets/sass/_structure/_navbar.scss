@@ -6,7 +6,7 @@
 
 .header-container {
     z-index: 1030;
-    border-bottom: 1px  solid #690061;/* IFR . */
+    border-bottom: 1px  solid #0a2241;/* IFR . */
     .navbar {
         padding: 0px 0;
         height: 80px; /* IFR . */
@@ -531,7 +531,7 @@
     form.form-inline input.search-form-control {
         width: 100%;
         font-size: 14px;
-        background-color: #f8e7f2; /* IFR. */
+        background-color: #eef5f5; /* IFR. */
         border: none;
         -webkit-border-radius: 6px;
         -moz-border-radius: 6px;
@@ -543,7 +543,7 @@
         font-weight: 600;
 
         &:focus {
-            border: 1px solid #690061;
+            border: 1px solid #0a2241;
             box-shadow: none;
         }
     }

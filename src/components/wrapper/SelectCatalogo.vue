@@ -8,9 +8,11 @@ import { useGetData } from "@/composables/getData";
     const props= defineProps({
         idName: String,
         label: String,
-        url: String
+        url: String,
+        opciones: Object
     });
 
+    //console.log("PROPS---- ", props)
     const emit = defineEmits(['opcionSelect']);
 
     const selected = ref('0');

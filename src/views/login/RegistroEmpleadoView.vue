@@ -323,7 +323,7 @@ const submit_formulario = () => {
   if (!arrayCampos.value.length == 0) {
     modalCamposRequeridos.show();
   } else {
-    console.log(params)
+    //console.log(params)
     let empleado = {
       "idNumEmpleado": params.idNumEmpleado,
       "nombre": params.nombre,
@@ -343,6 +343,7 @@ const submit_formulario = () => {
       "esTitular": params.esTitular,
       "fechainicioTitular": params.fechainicioTitular
     }
+
     authStore.registerEmpleado(empleado);
   }
 };

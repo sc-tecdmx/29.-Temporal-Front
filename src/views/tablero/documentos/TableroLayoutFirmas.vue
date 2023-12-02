@@ -60,9 +60,12 @@ const bind_task_list = async () => {
   try {
     const { data } = await axiosInstance.get("https://nekdu.com/j/d.php");
     task_list.value = data;
+
+    //console.log(data)
     //console.log("AXIOS:" + task_list.value);
   } catch (error) {
     console.log(error);
+    alert(error)
   }
   //console.log("bind_task_list")
 

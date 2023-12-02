@@ -24,8 +24,8 @@
 
 <style>
 .form-check-input:checked {
-    background-color: #690061 !important;
-    border-color: #690061 !important;
+    background-color: #0a2241 !important;
+    border-color: #0a2241 !important;
 }
 .form-check-input:focus {
     border-color: #9a4d94;

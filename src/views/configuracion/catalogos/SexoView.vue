@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 //Componentes
-import SelectCatalogo from "../../../components/wrapper/SelectCatalogo.vue";
+import TablaCatalogo from "../../../components/wrapper/TablaCatalogo.vue";
 //Stores
 import { useAuthStore } from "@/stores/authStore.js";
 import { useCatalogoStore } from "@/stores/catalogoStore";
@@ -10,18 +10,18 @@ import IconEdit2 from "@/components/icons/IconEdit2.vue";
 import IconFeatherTrashVue from "@/components/icons/IconFeatherTrash.vue";
 import { useMeta } from "@/composables/use-meta";
 
-useMeta({ title: "Catálogo expediente" });
+useMeta({ title: "Catálogo sexo" });
 
 //Variables
 const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
 const token = authStore.state.user.token;
-const catalogo = ref(null);
-const catArea = ref(null);
+const errorAb = ref(false);
+const catSexo = ref(null);
 const catDisponible = ref(false);
-const headers = ["id", "area", "tipoDocumento", "acciones"];
+const headers = ["id", "sexo", "abreviatura", "acciones"];
 let addContactModal = ref(null);
-const params = ref({ id: null, descripcion: "",area:"", areaId: "" });
+const params = ref({ id: null, sexo: "", abreviatura: "" });
 const items = ref([]);
 
 //Configuración de tabla
@@ -35,6 +35,7 @@ const table_option2 = ref({
   perPageValues: [5, 10, 20, 50],
   skin: "table table-hover",
   columnsClasses: { actions: "actions text-center" },
+  //sortable: ["sexo", "abreviatura","acciones"],
   sortable: headers,
   sortIcon: {
     base: "sort-icon-none",
@@ -56,6 +57,9 @@ const initPopup = () => {
     document.getElementById("addContactModal")
   );
 };
+// const bind_data = () => {
+//   items.value = catSexo.value;
+// };
 const initTooltip = () => {
   var tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -69,56 +73,56 @@ async function obtenerCatalogo(url) {
 }
 const delete_row = (item) => {
   if (confirm("¿Desea borrar este registro?")) {
-    let urlCat = import.meta.env.VITE_CAT_DEL_TIPDOC + item.id;
+    let urlCat = import.meta.env.VITE_CAT_DEL_SEXO + item.id;
+
     catalogoStore.deleteCatalogo(urlCat, token);
+    //items.value = items.value.filter((d) => d.id != item.id);
   }
 };
 const edit_user = (item) => {
   //console.log(item);
-  params.value = { id: null,  descripcion: "", area:"", areaId: ""  };
+  params.value = { id: null, sexo: "", abreviatura: "" };
   if (item) {
-    //params.value = JSON.parse(JSON.stringify(item));
-    params.value = { 
-      id: item.id,  
-      descripcion: item.tipoDocumento,
-      area: item.area,
-      areaId: item.id
-    };
+    errorAb.value = false;
+    params.value = JSON.parse(JSON.stringify(item));
   }
   addContactModal.show();
 };
+const validarAbreviatura = () => {
+  const regex = /^[a-zA-Z]$/;
+  errorAb.value = !regex.test(params.value.abreviatura);
+};
 const guardar_item = () => {
-  //console.log("SAVE-PARAMS -- ", params);
-  if (!params.value.descripcion) {
-    alert("Ingresar número de expediente");
+  console.log("SAVE-PARAMS -- ", params);
+  if (!params.value.sexo) {
+    alert("Ingresar descripción");
     //showMessage('Name is required.', 'error');
     return true;
   }
-  if (!params.value.areaId) {
-    alert("Ingresar descripción");
+  if (!params.value.abreviatura) {
+    alert("Ingresar abreviatura");
     //showMessage('Email is required.', 'error');
     return true;
   }
 
   if (params.value.id) {
-    //console.log("edit");
+    console.log("edit");
     //update user
     let editItem = {
-      descripcion: params.value.descripcion,
-      areaId: params.value.areaId,
+      nombreItem: params.value.sexo,
+      abreviatura: params.value.abreviatura,
     };
-    console.log(editItem)
-    const urlCat = import.meta.env.VITE_CAT_EDIT_TIPDOC + params.value.id;
+    const urlCat = import.meta.env.VITE_CAT_EDIT_SEXO + params.value.id;
     catalogoStore.editCatalogo(urlCat, editItem, token);
+    errorAb.value = false;
   } else {
     //add user
-    //console.log("add");
-    const urlCat = import.meta.env.VITE_CAT_ADD_TIPDOC;
+    console.log("add");
+    const urlCat = import.meta.env.VITE_CAT_ADD_SEXO;
     let saveItem = {
-        descripcion: params.value.descripcion,
-        areaId: params.value.areaId,
+      descripcion: params.value.sexo,
+      abreviatura: params.value.abreviatura,
     };
-    console.log(saveItem)
     catalogoStore.saveCatalogo(urlCat, saveItem, token);
   }
 
@@ -127,10 +131,8 @@ const guardar_item = () => {
 };
 onMounted(async () => {
   try {
-    catalogo.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_TIPDOC);
+    catSexo.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_SEXO);
     catDisponible.value = true;
-    catArea.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_AREA);
-    console.log(catArea)
   } catch (error) {
     console.log(error);
   }
@@ -144,7 +146,9 @@ onMounted(async () => {
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
-    <div class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center">
+    <div
+      class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center"
+    >
       <div class="col-xxl-10 col-12">
         <div class="doc-container">
           <div class="row">
@@ -153,41 +157,34 @@ onMounted(async () => {
                 <div class="invoice-detail-body">
                   <div class="invoice-detail-title mb-0">
                     <div class="col-xl-5 invoice-address-company">
-                      <h3>Catálogo tipo de documento</h3>
+                      <h3>Catálogo Sexo</h3>
                     </div>
                   </div>
                   <div class="layout-px-spacing">
                     <div class="row d-flex justify-content-center">
                       <div class="col-lg-10 col-sm-12 layout-spacing">
-                        <div class="d-flex justify-content-sm-end justify-content-end mb-3">
-                              <a href="javascript:;" @click="edit_user">
-                                <svg
-                                  id="btn-add-contact"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-width="2"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  class="feather feather-plus"
-                                >
-                                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                              </a>
-                            </div>
-                        <!-- <div class="row">
-                          <div class="col-6">
-                            <SelectCatalogo></SelectCatalogo>
-                          </div>
-                          <div class="col-6">
-                            
-                          </div>
-                        </div> -->
-                        
+                        <div
+                          class="d-flex justify-content-sm-end justify-content-end mb-3"
+                        >
+                          <a href="javascript:;" @click="edit_user">
+                            <svg
+                              id="btn-add-contact"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="feather feather-plus"
+                            >
+                              <line x1="12" y1="5" x2="12" y2="19"></line>
+                              <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                          </a>
+                        </div>
                         <div class="panel p-0">
                           <div class="custom-table custom-table-cat">
                             <div class="d-flex justify-content-center m-5" v-if="!catDisponible">
@@ -196,7 +193,7 @@ onMounted(async () => {
                                 </div>
                             </div>
                             
-                            <v-client-table :data="catalogo" :columns="headers" :options="table_option2" v-if="catDisponible">
+                            <v-client-table :data="catSexo" :columns="headers" :options="table_option2" v-if="catDisponible">
                               <template #id="props">
                                 <div class="checkbox-outline-primary custom-control custom-checkbox">
                                   <input
@@ -241,14 +238,27 @@ onMounted(async () => {
                         </div>
 
                         <!-- Modal -->
-                        <div id="addContactModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog modal-md modal-dialog-centered">
+                        <div
+                          id="addContactModal"
+                          class="modal fade"
+                          aria-labelledby="exampleModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div
+                            class="modal-dialog modal-md modal-dialog-centered"
+                          >
                             <div class="modal-content mailbox-popup">
                               <div class="modal-header">
                                 <h5 class="modal-title">
                                   {{ params.id ? "Editar" : "Agregar" }}
                                 </h5>
-                                <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
+                                <button
+                                  type="button"
+                                  data-dismiss="modal"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                  class="btn-close"
+                                ></button>
                               </div>
                               <div class="modal-body">
                                 <div class="add-contact-box">
@@ -257,24 +267,29 @@ onMounted(async () => {
                                       <div class="row">
                                         <div class="col-md-6">
                                           <div class="form-group mb-4">
-                                            <label>Tipo de documento</label>
+                                            <label>Descripción</label>
                                             <input
                                               type="text"
-                                              v-model="params.descripcion"
+                                              v-model="params.sexo"
                                               class="form-control form-control-sm"
-                                              placeholder="Ingrese número de expediente"
+                                              placeholder="Ingrese la decripción"
                                             />
                                           </div>
                                         </div>
                                         <div class="col-md-6">
                                           <div class="form-group mb-4">
-                                            <label>Área</label>
+                                            <label>Abreviatura</label>
                                             <input
                                               type="text"
-                                              v-model="params.area"
-                                              class="form-control form-control-sm"
-                                              placeholder="Ingrese la decripción"
+                                              v-model="params.abreviatura"
+                                              class="form-control form-control-sm text-uppercase"
+                                              placeholder="Abreviatura"
+                                              maxlength="1"
+                                              @input="validarAbreviatura"
                                             />
+                                            <p v-if="errorAb">
+                                              Requiere una letra. [A...Z]
+                                            </p>
                                           </div>
                                         </div>
                                       </div>
@@ -283,10 +298,20 @@ onMounted(async () => {
                                 </div>
                               </div>
                               <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal" data-bs-dismiss="modal">
+                                <button
+                                  type="button"
+                                  class="btn btn-default"
+                                  data-dismiss="modal"
+                                  data-bs-dismiss="modal"
+                                >
                                   <i class="flaticon-cancel-12"></i> Cancelar
                                 </button>
-                                <button type="button" class="btn btn-primary" @click="guardar_item()">
+                                <button
+                                  type="button"
+                                  class="btn btn-primary"
+                                  @click="guardar_item()"
+                                  :disabled="errorAb"
+                                >
                                   {{ params.id ? "Editar" : "Agregar" }}
                                 </button>
                               </div>

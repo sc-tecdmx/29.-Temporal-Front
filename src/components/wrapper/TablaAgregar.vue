@@ -299,9 +299,7 @@ const verificaArray = () => {
       <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 invoice-address-company">
         <h4>{{ titulo }}</h4>
       </div>
-      <div
-        class="col-xl-7 col-lg-7 col-md-7 col-sm-7 text-sm-end text-center layout-spacing align-self-end"
-      >
+      <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 text-sm-end text-center layout-spacing align-self-end">
         <div class="d-flex justify-content-sm-end justify-content-center">
           <a href="javascript:;" @click="edit_user">
             <svg
@@ -517,13 +515,13 @@ const verificaArray = () => {
   margin-right: 35px;
   width: 43px;
   height: 41px;
-  color: #690061;
+  color: #0a2241;
   fill: rgba(154, 39, 143, 0.2392156863);
-  border: 1px solid #9a278f;
+  border: 1px solid #194891;
   box-shadow: 0 0 40px 0 rgba(94, 92, 154, 0.06);
 
   &:hover {
-    color: #ff8200;
+    color: #7b8c90;
     fill: rgba(255, 130, 0, 0.08);
   }
 }

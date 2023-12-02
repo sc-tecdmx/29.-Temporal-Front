@@ -90,7 +90,7 @@ onMounted(() => {
 }
 .card-header {
     color: #fff;
-    background-color: #9A278F;
+    background-color: #194891;
 }
 .toast-header-error {
     display: flex;

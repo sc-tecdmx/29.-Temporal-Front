@@ -24,7 +24,7 @@
     /* background: transparent; */ /* IFR */
    /* background-color: $color_inst_light; */ 
     background: -webkit-linear-gradient(270deg, $color_inst_light 49%, $color_inst_bg_inverse 85%, #2c303c00); //--PAO
-    background: linear-gradient($color_inst_bg_inverse  41%, $color_inst_light 95%, rgba(105, 0, 97, 0.9)); //--PAO
+    background: linear-gradient($color_inst_bg_inverse  41%, $color_inst_light 95%, rgba(25, 72, 145, 0.7)); //--PAO
 }
 
 .sidebar-closed {
@@ -185,7 +185,7 @@
                             background: $color_inst_gris_fuerte;
                             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
                             border-radius: 4px;
-                            color: #FF8200; //PAO $color_inst_text_dark
+                            color: #7b8c90; //PAO $color_inst_text_dark
                         }
 
                         &[aria-expanded='true']:not([data-active='true']) {
@@ -291,7 +291,7 @@
                         position: relative;
                     }
                     &:hover {
-                        color: #FF8200; //PAO #4361ee
+                        color: #7b8c90; //PAO #4361ee
 
                         &:before {
                             background-color: #4361ee !important;
@@ -340,7 +340,7 @@
 
                 a {
                     &:hover {
-                        color: #FF8200; //PAO #4361ee
+                        color: #7b8c90; //PAO #4361ee
                     }
 
                     &:before {
@@ -424,7 +424,7 @@
                                     box-shadow: none;
                                     color: #fff; //PAO
                                     svg {
-                                        color: #FF8200; //PAO #4361ee
+                                        color: #7b8c90; //PAO #4361ee
                                         fill: transparent; //PAO
                                     }
                                 }
@@ -436,7 +436,7 @@
                                     box-shadow: none;
                                     color: #4361ee;
                                     svg {
-                                        color: #FF8200; //PAO #4361ee
+                                        color: #7b8c90; //PAO #4361ee
                                     }
                                 }
                                 &.dropdown-toggle:not([data-active='true']):not([aria-expanded='true']):hover {

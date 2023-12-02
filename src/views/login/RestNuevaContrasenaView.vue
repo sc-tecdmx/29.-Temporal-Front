@@ -175,7 +175,7 @@
     right: 33px;
 }
 .form-control.is-valid:focus, .was-validated .form-control:valid:focus {
-    border-color: #FF8200;
+    border-color: #7b8c90;
     box-shadow: 0 0 0 .25rem rgba(255,130,0,.25);
 }
 </style>

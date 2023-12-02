@@ -84,9 +84,12 @@ onMounted(() => {
                         <li>
                             <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administración Roles</router-link>
                         </li>
+                        <li>
+                            <router-link to="/config/catalogos" @click="toggleMobileMenu">Catálogos</router-link>
+                        </li>
                     </ul>
                 </li>
-                <li class="menu">
+                <!-- <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#catalogo" aria-controls="apps" aria-expanded="false">
                         <div class="">
                             <IconList></IconList>
@@ -96,7 +99,7 @@ onMounted(() => {
                             <IconFeatherChevronRight></IconFeatherChevronRight>
                         </div>
                     </a>
-                    <ul id="catalogo" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
+                    <ul id="catalogo" class="collapse submenu list-unstyled" data-bs-parent="#sidebar"> 
                         <li>
                             <router-link to="/config/catalogo/areas" @click="toggleMobileMenu">Áreas de adscripción</router-link>
                         </li>
@@ -109,8 +112,11 @@ onMounted(() => {
                         <li>
                             <router-link to="/config/catalogo/tipoDocumento" @click="toggleMobileMenu">Tipos de documentos</router-link>
                         </li>
+                        <li>
+                            <router-link to="/config/catalogo/sexo" @click="toggleMobileMenu">Sexo</router-link>
+                        </li>
                     </ul>
-                </li>
+                </li> -->
             </perfect-scrollbar>
         </nav>
     </div>

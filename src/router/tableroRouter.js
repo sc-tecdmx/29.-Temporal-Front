@@ -4,12 +4,16 @@ import NuevoViewVue from '../views/tablero/documentos/nuevo/NuevoView.vue';
 import RecibidoViewVue from '../views/tablero/documentos/nuevo/RecibidoView.vue';
 import PerfilViewVue from '../views/login/PerfilView.vue';
 import CambiarContrasenaView from '../views/login/CambiarContrasenaView.vue';
+import RegistroEmpleadoView from '../views/login/RegistroEmpleadoView.vue';
 import PersonalRolAppViewVue from '../views/configuracion/PersonalRolAppView.vue';
 import AreasAdscripcionView from '../views/configuracion/catalogos/AreasAdscripcionView.vue';
 import PersonalView from '../views/configuracion/catalogos/PersonalView.vue';
 import RolesView from '../views/configuracion/catalogos/RolesView.vue';
 import TiposDocumentoView from '../views/configuracion/catalogos/TiposDocumentoView.vue';
-import RegistroEmpleadoView from '../views/login/RegistroEmpleadoView.vue';
+import SexoView from '../views/configuracion/catalogos/SexoView.vue';
+import CatalogosListView from '../views/configuracion/catalogos/CatalogosListView.vue';
+import CatalogoGenView from '../views/configuracion/catalogos/CatalogoGenView.vue';
+import ExpedienteView from '../views/configuracion/catalogos/ExpedienteView.vue';
 
 
 export default {
@@ -25,10 +29,13 @@ export default {
         { path: '/account/registroEmpleado', name: 'registroEmpleado', component: RegistroEmpleadoView },
         { path: '/config/adminRolPersonaApp', name: 'rolPersona', component: PersonalRolAppViewVue },
         //Catálogos
+        { path: '/config/catalogos', name:'catalogosList', component:CatalogosListView },
         { path: '/config/catalogo/areas', name:'catalogoAreas', component:AreasAdscripcionView },
         { path: '/config/catalogo/personal', name:'catalogoPersonal', component: PersonalView },
         { path: '/config/catalogo/roles', name:'catalogoRoles', component: RolesView },
         { path: '/config/catalogo/tipoDocumento', name:'catalogoTipoDocumento', component: TiposDocumentoView},
-
+        { path: '/config/catalogo/sexo', name:'catalogoSexo', component: SexoView},
+        { path: '/config/catalogo/expediente', name:'catalogoExpediente', component: ExpedienteView},
+        { path: '/config/catalogo/:catalogo', name: 'catalogoGen', component: CatalogoGenView},
     ]
 }

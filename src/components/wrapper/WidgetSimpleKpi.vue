@@ -71,11 +71,11 @@
 <style>
 
   .border-widget-espera{
-    border: solid  #690061;
+    border: solid  #0a2241;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-enviado{
-    border: solid #9A278F;
+    border: solid #194891;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-rechazado{
@@ -83,7 +83,7 @@
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-firmado{
-    border: solid #FF8200;
+    border: solid #7b8c90;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-atencion{

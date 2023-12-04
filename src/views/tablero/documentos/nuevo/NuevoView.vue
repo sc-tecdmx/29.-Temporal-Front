@@ -92,7 +92,9 @@ const catExpedientes = ref([])
  const getExpediente = async (num_exp) => {
               const url_exp = urlLAR + "/api/autocompletado?query=" + num_exp;
               try {
-                  const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
+                  
+                //const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
+                const { data } = await axios.get(url_exp, {headers:{"bearertoken": `${token}`}});
                   //console.log(data);
                   params.value.nombreExpediente = data[0].s_descripcion;
                   catExpedientes.value = data;
@@ -594,8 +596,8 @@ const enviaModoFirma = async() => {
             const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
            });
-             //await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-             await axios.post(urlAltaDoc, post, {headers:{"bearertoken": `${token}`}}).then((response) => {
+             await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+             //await axios.post(urlAltaDoc, post, {headers:{"bearertoken": `${token}`}}).then((response) => {
               
                //console.log(response)    
                alert(response.data.message);

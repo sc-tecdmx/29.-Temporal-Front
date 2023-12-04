@@ -15,7 +15,8 @@
     let urlRestPass = import.meta.env.VITE_API_LARURL + "/api/busqueda-general?query=" + busqueda;
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        //Authorization: `Bearer ${token}`,
+        bearertoken: `${token}`
       },
     };
     try {

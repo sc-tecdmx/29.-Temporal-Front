@@ -67,8 +67,9 @@ const token = authStore.state.user.token;
               //const url = "https://nekdu.com/j/nuevo_documento.php";
               try {
                 
-                  const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-                  //const { data } = await axiosInstance.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
+                  //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                
 
                   //console.log(data)
                   catDestino.value = data.data.catDestino;
@@ -97,6 +98,9 @@ const catExpedientes = ref([])
                   catExpedientes.value = data;
               } catch (error) {
                   console.log(error);
+                  if (confirm("El expediente no existe, favor de agregarlo")) {
+                    expDesc.value = false;
+                  }
               }
           };
 
@@ -231,8 +235,29 @@ const opcionSelectDestino = (idOpcion, campoValido) => {
     form.selectDestino = campoValido;
   }
 };
+const otroDocumento = ref(false);
+const expDesc = ref(false);
 const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
-  //params.value.tipoDocumento = idOpcion;
+  otroDocumento.value = false;
+  console.log(idOpcion)
+  if(idOpcion === 'Otro'){
+    otroDocumento.value = true;
+  }else{
+    params.value.tipoDocumento = idOpcion;
+  }
+  
+  paramsEnviar.value.tipoDocumento = idOpcion;
+  if (idOpcion == 0) {
+    form.selectTipoDocumento = false;
+  } else {
+    form.selectTipoDocumento = campoValido;
+  }
+};
+//otro- tipo de documento
+const inputOtroTipDoc = (idOpcion, campoValido) => {
+  console.log(idOpcion)
+  params.value.tipoDocumento = idOpcion;
+  
   paramsEnviar.value.tipoDocumento = idOpcion;
   if (idOpcion == 0) {
     form.selectTipoDocumento = false;
@@ -260,11 +285,14 @@ const opcionInputFolioDocumento = (idData, campoValido) => {
   }
 };
 const opcionInputNumeroExpediente = (idData, campoValido) => {
+  console.log(idData)
   //params.value.numExpediente = idData;
+  expDesc.value = true;
   paramsEnviar.value.numExpediente = idData;
   getExpediente(idData);
   if (idData == 0) {
     form.inputNumExpediente = false;
+    expDesc.value = false;
   } else {
     form.inputNumExpediente = campoValido;
   }
@@ -566,7 +594,9 @@ const enviaModoFirma = async() => {
             const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
            });
-             await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+             //await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+             await axios.post(urlAltaDoc, post, {headers:{"bearertoken": `${token}`}}).then((response) => {
+              
                //console.log(response)    
                alert(response.data.message);
                //  if(response.data.status){}
@@ -618,13 +648,15 @@ const enviaCaptura = async() => {
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-  // console.log(urlAltaDoc)
-  // console.log(post);
+   //console.log(post);
            try {
-              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-                console.log(response)    
-                alert(response.data.message);
-              });
+               await axios.post(urlAltaDoc, post, {headers:{
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+              }}).then((response) => {
+                 //console.log(response)    
+                 alert(response.data.message);
+               });
            } catch (error) {
              console.log(error)
            }
@@ -843,17 +875,6 @@ const addExpediente = async()=>{
                       <form class="select" novalidate @submit.stop.prevent="submit_formulario" >
                         <div class="row justify-content-between">
                           <div class="col-12 col-md-4">
-                            <SelectValidado
-                              idName="catDestino"
-                              label="Destino de oficio:"
-                              :is_submit_form="is_submit_form"
-                              :opciones="catDestino"
-                              v-if="catDisponible"
-                              @opcionSelect="opcionSelectDestino"
-                            ></SelectValidado>
-                          </div>
-                          
-                          <div class="col-12 col-md-6 col-lg-4">
                             <!-- Verifica que sea del día de hoy en adelante -->
                             <FechaBasica
                                 label="Fecha de documento:"
@@ -863,10 +884,29 @@ const addExpediente = async()=>{
                                 :obligatorio="true"
                             ></FechaBasica>
                           </div>
+                          <div class="col-12 col-md-6 col-lg-4">
+                            <InputValidado
+                              idName="elaboro"
+                              label="Elaboró:"
+                              :placeholder="usuarioSesion.sub"
+                              :disabled="true"
+                              @inputData="opcionInputElaboro"
+                            ></InputValidado>
+                          </div>
                         </div>
                         <!-- Datos del documento -->
                         <div class="row">
-                          <div class="col-12 col-md-6 col-lg-4">
+                          <div class="col-12" :class="[otroDocumento ? 'col-lg-4' : 'col-md-6']">
+                            <SelectValidado
+                              idName="catDestino"
+                              label="Destino de oficio:"
+                              :is_submit_form="is_submit_form"
+                              :opciones="catDestino"
+                              v-if="catDisponible"
+                              @opcionSelect="opcionSelectDestino"
+                            ></SelectValidado>
+                          </div>
+                          <div class="col-12" :class="[otroDocumento ? 'col-lg-4' : 'col-md-6']">
                             <SelectValidado
                               idName="catTipoDocumento"
                               label="Tipo de documento:"
@@ -876,16 +916,27 @@ const addExpediente = async()=>{
                               v-if="catDisponible"
                             ></SelectValidado>
                           </div>
-                          <div class="col-12 col-md-6 col-lg-4">
+                          <div class="col-12 col-md-6 col-lg-4" :class="[otroDocumento ? '' : 'd-none']">
+                            <InputValidado
+                              idName="otroDocumento"
+                              label="Otro:"
+                              placeholder="Ingresar tipo documento"
+                              :disabled="false"
+                              @inputData="inputOtroTipDoc"
+                            ></InputValidado>
+                          </div>
+                        </div>
+                        <div class="row align-items-center">
+                          <div class="col-12" :class="[expDesc ? 'col-md-3' : 'col-md-4']">
                             <InputValidado
                               idName="folioDocumento"
                               label="Folio del documento:"
-                              placeholder="folio del documento"
+                              placeholder="---"
                               :disabled="true"
                               @inputData="opcionInputFolioDocumento"
                             ></InputValidado>
                           </div>
-                          <div class="col-12 col-md-6 col-lg-4">
+                          <div class="col-12" :class="[expDesc ? 'col-md-3' : 'col-md-4']">
                             <InputValidado
                               idName="folio"
                               label="Folio especial:"
@@ -893,10 +944,7 @@ const addExpediente = async()=>{
                               @inputData="opcionInputFolio"
                             ></InputValidado>
                           </div>
-                        </div>
-                        <div class="row align-items-center">
-
-                          <div class="col-12 col-md-6 col-lg-5">
+                          <div class="col-12" :class="[expDesc ? 'col-md-2' : 'col-md-3']">
                             <InputAutocompletable
                               idName="numeroExpediente"
                               label="Número de Expediente:"
@@ -904,7 +952,7 @@ const addExpediente = async()=>{
                               @inputData="opcionInputNumeroExpediente"
                             ></InputAutocompletable>
                           </div>
-                          <div class="col-12 col-md-6 col-lg-5">
+                          <div class="col-12 col-md-3" :class="[expDesc ? '' : 'd-none']">
                             <InputValidado
                               idName="nombreExpediente"
                               label="Nombre de Expediente:"
@@ -913,28 +961,19 @@ const addExpediente = async()=>{
                               @inputData="opcionInputNombreExpediente"
                             ></InputValidado>
                           </div>
-                          <div class="col-12 col-md-6 col-lg-2 d-flex justify-content-center">
-                            <button type="button" class="btn btn-primary mb-2 me-2 mt-2" data-bs-toggle="modal" data-bs-target="#addExpedienteModal">
+                          <div class="col-12 col-md-1 d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary mb-1 me-2 mt-2" data-bs-toggle="modal" data-bs-target="#addExpedienteModal">
                                 <IconPlus></IconPlus>
                             </button>
                           </div>
                         </div>
                         <div class="row">
-                          <div class="col-12 col-md-6">
+                          <div class="col-12">
                             <InputValidado
                               idName="asuntoDocumento"
                               label="Asunto:"
                               placeholder="Asunto"
                               @inputData="opcionInputAsunto"
-                            ></InputValidado>
-                          </div>
-                          <div class="col-12 col-md-6">
-                            <InputValidado
-                              idName="elaboro"
-                              label="Elaboró:"
-                              :placeholder="usuarioSesion.sub"
-                              :disabled="true"
-                              @inputData="opcionInputElaboro"
                             ></InputValidado>
                           </div>
                         </div>

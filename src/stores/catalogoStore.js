@@ -15,7 +15,8 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     const getCatArea = async(token) => {
         const urlCat = baseUrl + "/api/get-catalogo/areas";
         try {
-            const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
             catState.value.catArea = data;
         } catch (error) {
             console.log(error);
@@ -26,7 +27,8 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     const getCatPuesto = async(token) => {
         const urlCat = baseUrl + "/api/get-catalogo/puestos";
         try {
-            const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
             // catState.value.catPuesto = data;
             return data;
         } catch (error) {
@@ -38,7 +40,8 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     const getCatSexo = async(token) => {
         const urlCat = baseUrl + "/api/get-catalogo/sexo";        
         try {
-            const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
             
             return data;
         } catch (error) {
@@ -51,7 +54,8 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     const getCatalogo = async(url, token) => {
         const urlCat = baseUrl + url;
         try {
-            const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
             return data;
         } catch (error) {
             console.log(error);
@@ -65,7 +69,8 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
             const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
            });
-              await axios.post(urlSaveCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+           //await axios.post(urlSaveCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            await axios.post(urlSaveCat, data, {headers:{"bearertoken": `${token}`}}).then((response) => {
                 if (confirm(response.data.mensaje)) {
                      window.location.reload();
                    }
@@ -81,7 +86,8 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         //     const axiosInstance = axios.create({
         //        "Access-Control-Allow-Origin": "*",
         //    });
-               await axios.put(urlEditCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+               //await axios.put(urlEditCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+                await axios.put(urlEditCat, data, {headers:{"bearertoken": `${token}`}}).then((response) => {
                  if (confirm(response.data.message)) {
                       window.location.reload();
                    }
@@ -97,7 +103,8 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         //     const axiosInstance = axios.create({
         //        "Access-Control-Allow-Origin": "*",
         //    });
-                await axios.delete(urlDelCat, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+        //await axios.delete(urlDelCat, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            await axios.delete(urlDelCat, {headers:{"bearertoken": `${token}`}}).then((response) => {
                   if (confirm(response.data.mensaje)) {
                        window.location.reload();
                     }

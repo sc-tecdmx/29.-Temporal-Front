@@ -23,7 +23,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Tipo de Documento</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/tipoDocumento" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/tipoDocumento" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Prioridad</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/prioridad" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/prioridad" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Destino</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/destino" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/destino" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
@@ -53,7 +53,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Etapa documento</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/etapa-documento" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/etapa-documento" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Estado usuario</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/estado-usuario" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/estado-usuario" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Sexo</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/sexo" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/sexo" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
@@ -84,21 +84,22 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Áreas de adscripción</h5>
                         <p class="card-text">
                         </p>
+                        <router-link to="/config/catalogo/areas" class="btn btn-primary">Administrar</router-link>
                         <a href="/config/catalogo/areas" class="btn btn-primary">Administrar</a>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
                     <div class="card text-center mb-3" style="width: 15rem">
                         <div class="card-body">
                         <h5 class="card-title">Personal</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/personal" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/personal" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
+                <!--<div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
                     <div class="card text-center mb-3" style="width: 15rem">
                         <div class="card-body">
                         <h5 class="card-title">Roles</h5>
@@ -125,7 +126,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Expediente</h5>
                         <p class="card-text">
                         </p>
-                        <a href="/config/catalogo/expediente" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/expediente" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>
@@ -135,7 +136,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Puesto</h5>
                         <p class="card-text">
                         </p>
-                        <a href="#" class="btn btn-primary">Administrar</a>
+                        <router-link to="/config/catalogo/puesto" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>

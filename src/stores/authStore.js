@@ -75,8 +75,8 @@ export const useAuthStore = defineStore('authStore',()=>{
                 //alert(response.data.message);
 
                 if (confirm(response.data.message)) {
-                    //console.log("IF de confirm")
-                    window.location.reload();
+                    //window.location.reload();
+                    router.push('/config/catalogo/personal');
                   }
             });
           

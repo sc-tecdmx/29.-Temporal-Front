@@ -11,12 +11,13 @@
     const props= defineProps({
         title: String,
         url: String,
-        thtabla: ref([])
+        thtabla: ref([]),
+        datos: Object
     });
-    
+    console.log("PROP:--- ", props)
     //const columns = props.thtabla;
     const columns = ref([]);
-    const items = ref([]);
+    const items = props.datos;
     // console.log("columns");
     // console.log(columns);
 
@@ -45,44 +46,44 @@
 
      onMounted(() => {
         //console.log("onMounted");
-        bind_data();
+        //bind_data();
      });
 
-    const bind_data = () => {
-        //console.log("bind_data");
+    // const bind_data = () => {
+    //     //console.log("bind_data");
 
-        const axiosInstance = axios.create({
-            "Access-Control-Allow-Origin": "*",
-        });
+    //     const axiosInstance = axios.create({
+    //         "Access-Control-Allow-Origin": "*",
+    //     });
 
-        const datosTabla = async () => {
-            const url = props.url;
-        try {
-            const { data } = await axiosInstance.get(url);
-            items.value = data;
-            //console.log("AXIOS:" + items.value);
-        } catch (error) {
-            console.log(error);
-        }
-            //  console.log("items");
-            //  console.log(items.value);
-            //Arreglar imprime doble los registros
-            items.value.forEach(e => {
-                for(var key in e){
-                    //console.log(etiqueta);
-                    columns.value.push(key);
-                    // if(e[key].constructor == Object){
-                    //     console.log("tiene campos");
-                    //     for(var subKey in key){
-                    //         console.log(subKey);
-                    //     }
-                    // }
-                }
-                //console.log(columns)
-             });
-        };
-        datosTabla();
-    };
+    //     const datosTabla = async () => {
+    //         const url = props.url;
+    //     try {
+    //         const { data } = await axiosInstance.get(url);
+    //         items.value = data;
+    //         //console.log("AXIOS:" + items.value);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    //         //  console.log("items");
+    //         //  console.log(items.value);
+    //         //Arreglar imprime doble los registros
+    //         items.value.forEach(e => {
+    //             for(var key in e){
+    //                 //console.log(etiqueta);
+    //                 columns.value.push(key);
+    //                 // if(e[key].constructor == Object){
+    //                 //     console.log("tiene campos");
+    //                 //     for(var subKey in key){
+    //                 //         console.log(subKey);
+    //                 //     }
+    //                 // }
+    //             }
+    //             //console.log(columns)
+    //          });
+    //     };
+    //     datosTabla();
+    // };
 
     const capitalize = (text) => {
         return text

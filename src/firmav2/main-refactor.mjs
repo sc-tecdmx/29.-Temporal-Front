@@ -4,8 +4,15 @@ import { Document } from './Document.mjs';
 import { Firma } from './Firma.mjs';
 import fs from 'fs';
 
-const apiFirma = 'http://localhost:8081';
-//const apiFirma = 'http://52.206.121.172:8080/firma-pki';
+/* 
+    Producción: http://52.206.121.172:8080/firma-pki
+    Local: http:localhost:8081
+*/
+
+//const apiFirma = 'http://localhost:8081';
+const apiFirma = 'http://52.206.121.172:8080/firma-pki';
+
+
 const urlTransaccion = apiFirma+'/api/firma/transaccion/get-transaccion';
 const urlOCPS = apiFirma+'/api/ocsp-validar'
 const urlTSP = apiFirma+'/api/tsp-timestamp';

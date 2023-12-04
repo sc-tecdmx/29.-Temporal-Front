@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, inject } from 'vue';
+    import { ref } from 'vue';
     import { defineProps, defineEmits } from 'vue'
     import '@/assets/sass/scrollspyNav.scss';
     import axios from 'axios';
@@ -13,10 +13,6 @@
          placeholder: String,
          disabled: Boolean
      });
-    //const config = inject('config');
-    
-    //const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
-    //const urlBase = "http://127.0.0.1:8083"
     const emit = defineEmits(['inputData'])
 
     const selected = ref('');
@@ -41,7 +37,8 @@
     const getExpediente = async (num_exp) => {
               const url_exp = import.meta.env.VITE_API_LARURL + "/api/autocompletado?query=" + num_exp;
               try {
-                  const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
+                //const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
+                  const { data } = await axios.get(url_exp, {headers:{"bearertoken": `${token}`}});
                 //   console.log("data");
                 //   console.log(data);
                   catExpedientes.value = data;

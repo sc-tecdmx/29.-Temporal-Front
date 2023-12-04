@@ -14,7 +14,13 @@ export const useGetData = () => {
     const getData = async (url, token) => {
 
         try {
-            const res = await axiosInstance.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+            if(url.includes(import.meta.env.VITE_API_LARURL)){
+                console.log('incluye' + import.meta.env.VITE_API_LARURL);
+                const res = await axiosInstance.get(url, {headers:{"bearertoken": `${token}`}});
+            }else{
+                const res = await axiosInstance.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+            }
+            
             data.value = res.data;
         } catch (error) {
             //console.log(error.code);

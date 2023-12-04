@@ -25,12 +25,10 @@ const props = defineProps({
   opInstruccion: Object
 });
 const emit = defineEmits(["tablaFirmantes"]);
-//const config = inject('config');
+
 const { data, getData, loading, errorData } = useGetData();
 const catEmpleados = ref({});
 
-//getData(props.url);
-//const token = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTk4NTE5ODgsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMDcxNTk4OH0.6pNiPGoBh4bM3RG8DiaeHo9i0N7We3_SU_wpWSICVpNimmm2F3sPubnD4XJvCOe0aWgE2nyhvEaO7RDcDeWdZg"
  const bind_data = () => {
           //  const axiosInstance = axios.create({
           //      "Access-Control-Allow-Origin": "*",
@@ -39,7 +37,8 @@ const catEmpleados = ref({});
           const datosTabla = async () => {
               const url = import.meta.env.VITE_API_LARURL + "/api/get-catalogo/empleados";
               try {
-                  const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                  //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                  const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
                   // console.log("AXIOS: ");
                   // console.log(data)
                   catEmpleados.value = data;

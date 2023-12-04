@@ -38,7 +38,8 @@ const getCatAreas = async () => {
   const urlCat = urlLAR + "/api/get-catalogo/areas";
   try {
     const { data } = await axios.get(urlCat, {
-      headers: { Authorization: `Bearer ${token}` },
+      //headers: { Authorization: `Bearer ${token}` },
+      headers: { bearertoken: `${token}` },
     });
     //console.log(data)
     catArea.value = data;
@@ -55,7 +56,8 @@ const getCatPuesto = async () => {
   const urlCat = urlLAR + "/api/get-catalogo/puestos";
   try {
     const { data } = await axios.get(urlCat, {
-      headers: { Authorization: `Bearer ${token}` },
+      //headers: { Authorization: `Bearer ${token}` },
+      headers: { bearertoken: `${token}` },
     });
     //console.log(data)
     catPuesto.value = data;
@@ -72,7 +74,8 @@ const getCatSexo = async () => {
   const urlCat = urlLAR + "/api/get-catalogo/sexo";
   try {
     const { data } = await axios.get(urlCat, {
-      headers: { Authorization: `Bearer ${token}` },
+      //headers: { Authorization: `Bearer ${token}` },
+      headers: { bearertoken: `${token}` },
     });
     //console.log(data)
     catSexo.value = data;
@@ -261,8 +264,10 @@ const opcionCheckSexo = (idOpcion) => {
     form.codigoSexo = true;
   }
 };
+const esTitular = ref(false);
 const opcionSwitchTitular = (idOpcion, campoValido) => {
   params.esTitular = idOpcion;
+  esTitular.value = idOpcion;
   if (idOpcion == 0) {
     form.esTitular = false;
   } else {
@@ -538,16 +543,6 @@ const selected_area = ref("");
                       ></RadioGroup>
                     </div>
                     <div class="col-12 col-md-6">
-                      <SwitchRounded
-                        class="mt-4 ms-5"
-                        label="Es titular"
-                        id="sw-titular"
-                        @chkSwitch="opcionSwitchTitular"
-                      ></SwitchRounded>
-                    </div>
-                  </div>
-                  <div class="row mt-2 mb-4">
-                    <div class="col-12 col-md-6">
                       <FechaGeneric
                         label="Fecha de alta:"
                         :date="params.fechaAltaEmpleado"
@@ -556,7 +551,17 @@ const selected_area = ref("");
                         :obligatorio="false"
                       ></FechaGeneric>
                     </div>
+                  </div>
+                  <div class="row mt-2 mb-4">
                     <div class="col-12 col-md-6">
+                      <SwitchRounded
+                        class="mt-4 ms-5"
+                        label="Es titular"
+                        id="sw-titular"
+                        @chkSwitch="opcionSwitchTitular"
+                      ></SwitchRounded>
+                    </div>
+                    <div class="col-12 col-md-6" :class="[esTitular ? '' : 'd-none']">
                       <FechaGeneric
                         label="Fecha de inicio como titular:"
                         :date="params.fechainicioTitular"

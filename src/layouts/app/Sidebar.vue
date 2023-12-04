@@ -79,9 +79,6 @@ onMounted(() => {
                     </a>
                     <ul id="configuracion" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="/account/registroEmpleado" @click="toggleMobileMenu">Agregar empleado</router-link>
-                        </li>
-                        <li>
                             <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administración Roles</router-link>
                         </li>
                         <li>
@@ -89,34 +86,6 @@ onMounted(() => {
                         </li>
                     </ul>
                 </li>
-                <!-- <li class="menu">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#catalogo" aria-controls="apps" aria-expanded="false">
-                        <div class="">
-                            <IconList></IconList>
-                            <span>Catálogos</span>
-                        </div>
-                        <div>
-                            <IconFeatherChevronRight></IconFeatherChevronRight>
-                        </div>
-                    </a>
-                    <ul id="catalogo" class="collapse submenu list-unstyled" data-bs-parent="#sidebar"> 
-                        <li>
-                            <router-link to="/config/catalogo/areas" @click="toggleMobileMenu">Áreas de adscripción</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/config/catalogo/personal" @click="toggleMobileMenu">Personal</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/config/catalogo/roles" @click="toggleMobileMenu">Roles</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/config/catalogo/tipoDocumento" @click="toggleMobileMenu">Tipos de documentos</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/config/catalogo/sexo" @click="toggleMobileMenu">Sexo</router-link>
-                        </li>
-                    </ul>
-                </li> -->
             </perfect-scrollbar>
         </nav>
     </div>

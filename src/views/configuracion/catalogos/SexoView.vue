@@ -232,9 +232,8 @@ onMounted(async () => {
                           </div>
                         </div>
                         <div class="mt-3 d-flex justify-content-end">
-                          <a href="/config/catalogos" class="btn btn-primary"
-                            >Regresar a catálogos</a
-                          >
+                          <router-link to="/config/catalogos" class="btn btn-primary">Regresar a catálogos</router-link>
+                          <!-- <a href="/config/catalogos" class="btn btn-primary" >Regresar a catálogos</a> -->
                         </div>
 
                         <!-- Modal -->

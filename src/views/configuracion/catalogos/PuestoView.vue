@@ -19,7 +19,7 @@ const catalogo = ref(null);
 const catDisponible = ref(false);
 const headers = ["id", "nombramiento", "tipoUsuario", "acciones"];
 let addContactModal = ref(null);
-const params = ref({ id: null, numExpediente: "", descripcion: "" });
+const params = ref({ id: null, nombramiento: "", tipoUsuario: "" });
 const items = ref([]);
 
 //Configuración de tabla
@@ -75,7 +75,7 @@ const delete_row = (item) => {
 };
 const edit_user = (item) => {
   //console.log(item);
-  params.value = { id: null, numExpediente: "", descripcion: ""  };
+  params.value = { id: null, nombramiento: "", tipoUsuario: ""  };
   if (item) {
     errorAb.value = false;
     params.value = JSON.parse(JSON.stringify(item));
@@ -247,7 +247,7 @@ onMounted(async () => {
                                             <label>Nombramiento</label>
                                             <input
                                               type="text"
-                                              v-model="params.numExpediente"
+                                              v-model="params.nombramiento"
                                               class="form-control form-control-sm"
                                               placeholder="Ingrese número de expediente"
                                             />
@@ -258,7 +258,7 @@ onMounted(async () => {
                                             <label>Tipo de usuario</label>
                                             <input
                                               type="text"
-                                              v-model="params.descripcion"
+                                              v-model="params.tipoUsuario"
                                               class="form-control form-control-sm"
                                               placeholder="Ingrese la decripción"
                                             />

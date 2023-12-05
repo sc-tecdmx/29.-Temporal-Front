@@ -700,7 +700,7 @@ const enviaFirma = async () => {
     //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
     // console.log(certificado.value.contrasenaCer);
     // console.log(token);
-    main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token);
+    main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
 
   }else if(pfxFileData.file!=null){
     const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
@@ -709,7 +709,7 @@ const enviaFirma = async () => {
     //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
     console.log(certificado.value.contrasenaCer);
     console.log(token);
-    main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token);
+    main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
     
   }
 

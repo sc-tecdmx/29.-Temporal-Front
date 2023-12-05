@@ -9,8 +9,8 @@ import fs from 'fs';
     Local: http:localhost:8081
 */
 
-//const apiFirma = 'http://localhost:8081';
-const apiFirma = 'http://52.206.121.172:8080/firma-pki';
+const apiFirma = 'http://localhost:8081';
+//const apiFirma = 'http://52.206.121.172:8080/firma-pki';
 
 
 const urlTransaccion = apiFirma+'/api/firma/transaccion/get-transaccion';
@@ -43,7 +43,7 @@ export function readContentTxt(filePath) {
  * --------------------------------------------------------------------------------------- 
 */
 
-async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token){
+async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc){
     
     let responseBody = new ResponseBody();
     const document = await new Document(pdfBase64);
@@ -59,11 +59,13 @@ async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token){
             const validacionOCSP = await certificate.validateOCSP(firma.idTransaccion, urlOCPS, token, responseBody);//Validamos OCSP
             if(validacionOCSP){
                 if(certificate.ValidateMatchCerKey(responseBody)){//Validamos la coincidencia de la lave privada con el certificado
-                    const docToSign = document.pdfStamppedHashBase64!=null?document.pdfStamppedHashBase64:document.pdfBase64;
+                    //const docToSign = document.pdfStamppedHashBase64!=null?document.pdfStamppedHashBase64:document.pdfBase64;
+                    const docToSign = document.pdfBase64;
                     const estampaTSP = await firma.timeStampTSP(docToSign, urlTSP, token, responseBody);//Se realiza la estampa de tiempo
                     if(estampaTSP){
-                        firma.sign(docToSign, certificate.x509Cert, certificate.privateKey); 
-                        const firmado = await firma.buildAndSavePDF(codigoFirmaAplicada, document.hash, certificate.cerBase64, docToSign, urlBuildAndStoreFirma, token, responseBody);
+                        firma.sign(docToSign, certificate.x509Cert, certificate.privateKey);
+                        const docHashed = hashDOc?hashDOc:document.hash;
+                        const firmado = await firma.buildAndSavePDF(codigoFirmaAplicada, docHashed, certificate.cerBase64, docToSign, urlBuildAndStoreFirma, token, responseBody);
                         console.log('Documento firmado');
                     }else{
                         console.log(responseBody);
@@ -78,17 +80,17 @@ async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token){
     }
 }
 
-export async function main_pfx(pfxBase64, password, pdfBase64, codigoFirmaAplicada, token){
+export async function main_pfx(pfxBase64, password, pdfBase64, codigoFirmaAplicada, token, hashDOc){
     const certificate = new CertificatePfx(pfxBase64, password);
-    firmar(certificate, pdfBase64, codigoFirmaAplicada, token);
+    firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc);
 }
 
 
 
 export async function main_cer(cerBase64, keyBase64, password,
-    pdfBase64, codigoFirmaAplicada, token){
+    pdfBase64, codigoFirmaAplicada, token, hashDOc){
     const certificate = new CertificateCer(cerBase64, keyBase64, password);
-    firmar(certificate, pdfBase64, codigoFirmaAplicada, token);
+    firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc);
 }
 
 

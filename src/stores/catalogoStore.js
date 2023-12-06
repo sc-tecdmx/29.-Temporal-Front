@@ -53,8 +53,11 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
 
     const getCatalogo = async(url, token) => {
         const urlCat = baseUrl + url;
+        //console.log(urlCat)
         try {
+            //local
             //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
+            //servidor
             const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
             return data;
         } catch (error) {
@@ -65,11 +68,14 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     }
     const saveCatalogo = async(urlCat, data, token) => {
         const urlSaveCat = baseUrl + urlCat;
+        //console.log(urlSaveCat)
         try {
             const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
            });
+           //local
            //await axios.post(urlSaveCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //servidor
             await axios.post(urlSaveCat, data, {headers:{"bearertoken": `${token}`}}).then((response) => {
                 if (confirm(response.data.mensaje)) {
                      window.location.reload();
@@ -83,10 +89,9 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     const editCatalogo = async(urlCat, data, token) => {
         const urlEditCat = baseUrl + urlCat;
         try {
-        //     const axiosInstance = axios.create({
-        //        "Access-Control-Allow-Origin": "*",
-        //    });
-               //await axios.put(urlEditCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //local
+                //await axios.put(urlEditCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //servidor
                 await axios.put(urlEditCat, data, {headers:{"bearertoken": `${token}`}}).then((response) => {
                  if (confirm(response.data.message)) {
                       window.location.reload();
@@ -100,10 +105,9 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     const deleteCatalogo = async(urlCat, token) => {
         const urlDelCat = baseUrl + urlCat;
         try {
-        //     const axiosInstance = axios.create({
-        //        "Access-Control-Allow-Origin": "*",
-        //    });
-        //await axios.delete(urlDelCat, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //local
+            //await axios.delete(urlDelCat, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //servidor
             await axios.delete(urlDelCat, {headers:{"bearertoken": `${token}`}}).then((response) => {
                   if (confirm(response.data.mensaje)) {
                        window.location.reload();
@@ -114,5 +118,36 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
              console.log(error)
            }
     }
-    return { getCatArea, getCatPuesto, getCatSexo, catState, getCatalogo, saveCatalogo, editCatalogo, deleteCatalogo }
+    const getNuevoDocumento = async(urlNewDoc, token) => {
+        try {
+            //local
+             //const { data } = await axios.get(urlNewDoc, {headers:{"Authorization": `Bearer ${token}`}});
+             //servidor
+             const { data } = await axios.get(urlNewDoc, {headers:{"bearertoken": `${token}`}});
+             return data;    
+           } catch (error) {
+             console.log("Error",error)
+           }
+    }
+    const getDetalleDocumento = async(urlDetalle, token) => {
+        try {
+            const { data } = await axios.get(urlDetalle, {headers:{"Authorization": `Bearer ${token}`}});
+            //const { data } = await axios.get(urlDetalle, {headers:{"bearertoken": `${token}`}});
+            return data;    
+           } catch (error) {
+             console.log(error)
+           }
+    }
+
+    return { 
+        catState, 
+        //getCatArea, 
+        //getCatPuesto, 
+        //getCatSexo, 
+        getCatalogo, 
+        saveCatalogo, 
+        editCatalogo, 
+        deleteCatalogo,
+        getNuevoDocumento, 
+        getDetalleDocumento }
 })

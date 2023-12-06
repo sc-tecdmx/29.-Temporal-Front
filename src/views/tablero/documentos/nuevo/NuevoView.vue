@@ -15,7 +15,9 @@ import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import "@/assets/sass/forms/custom-flatpickr.css";
+//Stores
 import { useAuthStore } from '@/stores/authStore.js';
+import { useCatalogoStore } from "@/stores/catalogoStore";
 //Componentes
 import TablaAgregar from "@/components/wrapper/TablaAgregar.vue";
 import TextAreaValidado from "@/components/wrapper/TextAreaValidado.vue";
@@ -34,7 +36,7 @@ import { getCertificadoData } from "@/firma/main.mjs";
 import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
 import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
 
-//Composable
+//Composable 
 import { useGetData } from "@/composables/getData";
 
 //useMeta({ title: 'Vue Multiselect' });
@@ -49,45 +51,50 @@ const catDestino = ref({});
 const catTipoDocumento = ref({});
 const catInstruccion = ref({});
 const catInstruccionDest = ref({});
+const catNuevoDoc = ref(null);
 
 const catPrioridad = ref({});
 const authStore = useAuthStore();
+const catalogoStore = useCatalogoStore();
 
+const urlNewDoc = import.meta.env.VITE_API_LARURL + import.meta.env.VITE_CAT_NUEVO_DOC;
 
 const token = authStore.state.user.token;
 //console.log("token", token)
+async function obtenerCatNuevoDoc(url) {
+  return await catalogoStore.getNuevoDocumento(url, token);
+}
+//  const bind_data = () => {
+//            const axiosInstance = axios.create({
+//                "Access-Control-Allow-Origin": "*",
+//            });
 
- const bind_data = () => {
-           const axiosInstance = axios.create({
-               "Access-Control-Allow-Origin": "*",
-           });
-
-          const datosTabla = async () => {
-              const url = urlLAR + "/api/get-catalogo-pantalla/nuevo-documento";
-              //const url = "https://nekdu.com/j/nuevo_documento.php";
-              try {
+//           const datosTabla = async () => {
+//               const url = urlLAR + "/api/get-catalogo-pantalla/nuevo-documento";
+//               //const url = "https://nekdu.com/j/nuevo_documento.php";
+//               try {
                 
-                const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
-                  //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+//                 const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
+//                   //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
                 
 
-                  //console.log(data)
-                  catDestino.value = data.data.catDestino;
-                  catTipoDocumento.value = data.data.catTipoDocumento;
-                  catInstruccion.value = data.data.catInstruccionFirmantes;
-                  catPrioridad.value = data.data.catPrioridad;
-                  catInstruccionDest.value =  data.data.catInstruccionDestinatarios;
-                  setTimeout(()=>{
-                      catDisponible.value = true;
-                    }, 10);
-              } catch (error) {
-                  console.log(error);
-                  alert(error.response.data.message)
-              }
-          };
+//                   //console.log(data)
+//                   catDestino.value = data.data.catDestino;
+//                   catTipoDocumento.value = data.data.catTipoDocumento;
+//                   catInstruccion.value = data.data.catInstruccionFirmantes;
+//                   catPrioridad.value = data.data.catPrioridad;
+//                   catInstruccionDest.value =  data.data.catInstruccionDestinatarios;
+//                   setTimeout(()=>{
+//                       catDisponible.value = true;
+//                     }, 10);
+//               } catch (error) {
+//                   console.log(error);
+//                   alert(error.response.data.message)
+//               }
+//           };
           
-          datosTabla();
- };
+//           datosTabla();
+//  };
 const catExpedientes = ref([])
  const getExpediente = async (num_exp) => {
               const url_exp = urlLAR + "/api/autocompletado?query=" + num_exp;
@@ -241,7 +248,7 @@ const otroDocumento = ref(false);
 const expDesc = ref(false);
 const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
   otroDocumento.value = false;
-  console.log(idOpcion)
+  //console.log(idOpcion)
   if(idOpcion === 'Otro'){
     otroDocumento.value = true;
   }else{
@@ -257,7 +264,7 @@ const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
 };
 //otro- tipo de documento
 const inputOtroTipDoc = (idOpcion, campoValido) => {
-  console.log(idOpcion)
+  //console.log(idOpcion)
   params.value.tipoDocumento = idOpcion;
   
   paramsEnviar.value.tipoDocumento = idOpcion;
@@ -287,7 +294,7 @@ const opcionInputFolioDocumento = (idData, campoValido) => {
   }
 };
 const opcionInputNumeroExpediente = (idData, campoValido) => {
-  console.log(idData)
+  //console.log(idData)
   //params.value.numExpediente = idData;
   expDesc.value = true;
   paramsEnviar.value.numExpediente = idData;
@@ -498,7 +505,18 @@ const submit_formulario = () => {
 const catDisponible = ref(false);
 onMounted(async() => {
   initPopup();
-  bind_data();
+  //bind_data();
+  catNuevoDoc.value = await obtenerCatNuevoDoc(urlNewDoc);
+  //console.log(catNuevoDoc.value.data);
+
+  catDestino.value = catNuevoDoc.value.data.catDestino;
+  catTipoDocumento.value = catNuevoDoc.value.data.catTipoDocumento;
+  catInstruccion.value = catNuevoDoc.value.data.catInstruccionFirmantes;
+  catPrioridad.value = catNuevoDoc.value.data.catPrioridad;
+  catInstruccionDest.value =  catNuevoDoc.value.data.catInstruccionDestinatarios;
+  setTimeout(()=>{
+    catDisponible.value = true;
+  }, 10);
 });
 const documentos = ref([]);
 /* Obtener documentos */
@@ -598,16 +616,13 @@ const enviaModoFirma = async() => {
            });
              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
              //await axios.post(urlAltaDoc, post, {headers:{"bearertoken": `${token}`}}).then((response) => {
-              
                //console.log(response)    
-               alert(response.data.message);
-               //  if(response.data.status){}
-               if (confirm(response.data.message)) {
-                    //console.log("IF de confirm")
-                    certificadoModal.hide();
-                    //window.location.reload();
-                    router.push('/');
-                  }
+               
+               //if (confirm(response.data.message)) {
+                    //certificadoModal.hide();
+
+                    //router.push('/');
+                  //}
               });
             
            } catch (error) {
@@ -713,7 +728,7 @@ const enviaFirma = async () => {
     
   }
 
-  
+  certificadoModal.hide();
 
 };
 
@@ -860,8 +875,12 @@ const addExpediente = async()=>{
     <div class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center">
       <!--PAO -->
       <div class="col-xxl-10 col-12">
-        <!--PAO -->
-        <div class="doc-container">
+        <div class="d-flex justify-content-center m-5" v-if="!catDisponible">
+          <div class="spinner-border text-primary" role="status" >
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        <div class="doc-container" v-if="catDisponible">
           <div class="row">
             <div class="col-lg-12">
               <div class="invoice-content">
@@ -929,7 +948,7 @@ const addExpediente = async()=>{
                           </div>
                         </div>
                         <div class="row align-items-center">
-                          <div class="col-12" :class="[expDesc ? 'col-md-3' : 'col-md-4']">
+                          <div class="col-12" :class="[expDesc ? 'col-md-2' : 'col-md-4']">
                             <InputValidado
                               idName="folioDocumento"
                               label="Folio del documento:"
@@ -946,7 +965,7 @@ const addExpediente = async()=>{
                               @inputData="opcionInputFolio"
                             ></InputValidado>
                           </div>
-                          <div class="col-12" :class="[expDesc ? 'col-md-2' : 'col-md-3']">
+                          <div class="col-12" :class="[expDesc ? 'col-md-3' : 'col-md-3']">
                             <InputAutocompletable
                               idName="numeroExpediente"
                               label="Número de Expediente:"

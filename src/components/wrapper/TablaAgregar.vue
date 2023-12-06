@@ -37,8 +37,10 @@ const catEmpleados = ref({});
           const datosTabla = async () => {
               const url = import.meta.env.VITE_API_LARURL + "/api/get-catalogo/empleados";
               try {
-                  //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-                  const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
+                //local  
+                //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
+                  //servidor
+                const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
                   // console.log("AXIOS: ");
                   // console.log(data)
                   catEmpleados.value = data;

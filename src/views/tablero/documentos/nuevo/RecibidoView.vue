@@ -1,38 +1,37 @@
 <script setup>
-import { onMounted, ref, inject } from "vue";
+import { onMounted, ref } from "vue";
 import "@/assets/sass/apps/invoice-preview.scss";
 import IconFeatherFileText from "@/components/icons/IconFeatherFileText.vue";
-//composable
-import { useGetData } from "@/composables/getDataN";
+
 //PDF viewer
 import PDF from "pdf-vue3";
 import { useRoute, useRouter } from "vue-router";
 import { getCertificadoData } from "@/firma/main.mjs";
 import { useMeta } from "@/composables/use-meta";
 import { useAuthStore } from '@/stores/authStore.js';
-    const authStore = useAuthStore();
-    const token = authStore.state.user.token;
+import { useCatalogoStore } from "@/stores/catalogoStore";
+
+const catalogoStore = useCatalogoStore();
+const authStore = useAuthStore();
+const token = authStore.state.user.token;
 useMeta({ title: "Detalle Documento" });
 
-//const config = inject('config');
-const { data, getData, loading, errorData } = useGetData();
 const route = useRoute();
 const documento = ref(null);
 
-//console.log(data)
-//const items = ref([]);
 const columns = ref([]);
-//const items2 = ref([]);
 const columns2 = ref([]);
-const url = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
 
-onMounted(() => {
+
+const urlDetalle = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
+
+async function obtenerDetalle(url) {
+  return await catalogoStore.getDetalleDocumento(url, token);
+}
+onMounted(async() => {
   bind_data();
-  getData(url, token);
+  documento.value = await obtenerDetalle(urlDetalle);
 });
-const detalleDoc = ref(null);
-detalleDoc.value = data;
-
 
 const bind_data = () => {
   columns.value = [
@@ -146,7 +145,12 @@ const closeModal = () => {
         <div class="row invoice layout-top-spacing layout-spacing apps-invoice">
           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="doc-container">
-              <div class="row">
+              <div class="d-flex justify-content-center m-5" v-if="!documento">
+                <div class="spinner-border text-primary" role="status" >
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+              <div class="row" v-if="documento">
                 <div class="col-xl-9">
                   <div class="invoice-container">
                     <div class="invoice-inbox">
@@ -158,7 +162,7 @@ const closeModal = () => {
                                 <div class="col-sm-6 col-12 me-auto">
                                   <div class="d-flex">
                                     <h3 class="align-self-center">
-                                      {{ data?.asunto }}
+                                      {{ documento.asunto }}
                                     </h3>
                                   </div>
                                 </div>
@@ -167,17 +171,17 @@ const closeModal = () => {
                                   <p class="inv-list-number">
                                     <span class="inv-title">Folio : </span>
                                     <span class="inv-number">{{
-                                      data?.folioDocumento
+                                      documento.folioDocumento
                                     }}</span>
                                   </p>
                                 </div>
 
                                 <div class="col-sm-6 align-self-center mt-3">
                                   <p class="inv-street-addr">
-                                    <b>Destino:</b> {{ data?.tipoDestino }}
+                                    <b>Destino:</b> {{ documento.tipoDestino }}
                                   </p>
                                   <p class="inv-email-address">
-                                    <b>Prioridad:</b> {{ data?.prioridad }}
+                                    <b>Prioridad:</b> {{ documento.prioridad }}
                                   </p>
                                 </div>
                                 <div
@@ -188,7 +192,7 @@ const closeModal = () => {
                                       >Fecha del Documento :
                                     </span>
                                     <span class="inv-date">{{
-                                      data?.fechaCreacion
+                                      documento.fechaCreacion
                                     }}</span>
                                   </p>
                                   <p class="inv-due-date">
@@ -196,7 +200,7 @@ const closeModal = () => {
                                       >Fecha límite :
                                     </span>
                                     <span class="inv-date">{{
-                                      data?.fechaLimiteFirma
+                                      documento.fechaLimiteFirma
                                     }}</span>
                                   </p>
                                 </div>
@@ -207,14 +211,14 @@ const closeModal = () => {
                               <div class="row">
                                 <div class="col-xl-7 col-lg-7 col-md-6 col-sm-4">
                                   <p class="inv-street-addr">
-                                    <b>Tipo de documento:</b> {{ data?.tipoDocumento }}
+                                    <b>Tipo de documento:</b> {{ documento.tipoDocumento }}
                                   </p>
                                   <p class="inv-street-addr">
-                                    <b>Expediente:</b> {{ data?.numExpediente }}
+                                    <b>Expediente:</b> {{ documento.numExpediente }}
                                   </p>
                                   <!-- <p class="inv-email-address">
                                     <b>Nombre de expediente:</b>
-                                    {{ data?.s_descripcion }}
+                                    {{ documento.s_descripcion }}
                                   </p> -->
                                 </div>
 
@@ -225,9 +229,9 @@ const closeModal = () => {
                                         ><b>Elaboró: </b></span
                                       >
                                       <span
-                                        >{{ data?.nombreEmpleado }}
-                                        {{ data?.apellido1Empleado }}
-                                        {{ data?.apellido2Empleado }}</span
+                                        >{{ documento.nombreEmpleado }}
+                                        {{ documento.apellido1Empleado }}
+                                        {{ documento.apellido2Empleado }}</span
                                       >
                                     </p>
                                   </div>
@@ -236,14 +240,14 @@ const closeModal = () => {
                               <div class="row mt-3">
                                 <div class="col-sm-12">
                                   <p class="inv-email-address">
-                                    <b>Contenido:</b> {{ data?.contenido }}
+                                    <b>Contenido:</b> {{ documento.contenido }}
                                   </p>
                                 </div>
                               </div>
                               <div class="row mt-3">
                                 <div class="col-sm-12">
                                   <p class="inv-email-address">
-                                    <b>Notas:</b> {{ data?.notas }}
+                                    <b>Notas:</b> {{ documento.notas }}
                                   </p>
                                 </div>
                               </div>
@@ -260,7 +264,7 @@ const closeModal = () => {
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    <tr v-for="firmante in data?.firmantes" :key="firmante.numEmpleado" >
+                                    <tr v-for="firmante in documento.firmantes" :key="firmante.numEmpleado" >
                                       <td>
                                         <div class="fw-bold">{{ firmante.nombre }} {{ firmante.apellido1 }} {{ firmante.apellido2 }}</div>
                                         <div class="ms-2">{{ firmante.area }}</div>
@@ -294,7 +298,7 @@ const closeModal = () => {
                                   </thead>
                                   <tbody>
                                     <tr
-                                      v-for="destinatario in data?.destinatarios"
+                                      v-for="destinatario in documento.destinatarios"
                                       :key="destinatario.numEmpleado"
                                     >
                                       <td>
@@ -322,7 +326,7 @@ const closeModal = () => {
                                   <p>
                                     Documento adjunto a firmar
                                   </p>
-                                  <div v-for="doc in data?.documentosAdjuntos">
+                                  <div v-for="doc in documento.documentosAdjuntos">
                                     <a
                                       href="javascript:;"
                                       class="btn dropdown-toggle btn-icon-only"
@@ -338,7 +342,7 @@ const closeModal = () => {
                                   <!-- <a
                                     href="javascript:;"
                                     class="btn dropdown-toggle btn-icon-only"
-                                    @click=" pdf_view( data?.documentosAdjuntos) "
+                                    @click=" pdf_view( documento.documentosAdjuntos) "
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalPDF"
                                   >

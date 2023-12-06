@@ -81,8 +81,9 @@ const edit_user = (item) => {
     params.value = { 
       id: item.id,  
       descripcion: item.tipoDocumento,
-      area: item.area,
-      areaId: item.id
+      // area: item.area,
+      // areaId: item.id
+      //areaId: 5
     };
   }
   addContactModal.show();
@@ -90,22 +91,22 @@ const edit_user = (item) => {
 const guardar_item = () => {
   //console.log("SAVE-PARAMS -- ", params);
   if (!params.value.descripcion) {
-    alert("Ingresar número de expediente");
+    alert("Ingresar tipo de documento");
     //showMessage('Name is required.', 'error');
     return true;
   }
-  if (!params.value.areaId) {
-    alert("Ingresar descripción");
-    //showMessage('Email is required.', 'error');
-    return true;
-  }
+  // if (!params.value.areaId) {
+  //   alert("Ingresar descripción");
+  //   //showMessage('Email is required.', 'error');
+  //   return true;
+  // }
 
   if (params.value.id) {
     //console.log("edit");
     //update user
     let editItem = {
       descripcion: params.value.descripcion,
-      areaId: params.value.areaId,
+      //areaId: params.value.areaId,
     };
     //console.log(editItem)
     const urlCat = import.meta.env.VITE_CAT_EDIT_TIPDOC + params.value.id;
@@ -116,9 +117,9 @@ const guardar_item = () => {
     const urlCat = import.meta.env.VITE_CAT_ADD_TIPDOC;
     let saveItem = {
         descripcion: params.value.descripcion,
-        areaId: params.value.areaId,
+        //areaId: params.value.areaId,
     };
-    console.log(saveItem)
+    //console.log(saveItem)
     catalogoStore.saveCatalogo(urlCat, saveItem, token);
   }
 
@@ -130,7 +131,7 @@ onMounted(async () => {
     catalogo.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_TIPDOC);
     catDisponible.value = true;
     catArea.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_AREA);
-    console.log(catArea)
+    //console.log(catArea)
   } catch (error) {
     console.log(error);
   }
@@ -255,18 +256,18 @@ onMounted(async () => {
                                   <div class="add-contact-content">
                                     <form id="addContactModalTitle">
                                       <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                           <div class="form-group mb-4">
                                             <label>Tipo de documento</label>
                                             <input
                                               type="text"
                                               v-model="params.descripcion"
                                               class="form-control form-control-sm"
-                                              placeholder="Ingrese número de expediente"
+                                              placeholder="Ingresar tipo de documento"
                                             />
                                           </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <!-- <div class="col-md-6">
                                           <div class="form-group mb-4">
                                             <label>Área</label>
                                             <input
@@ -276,7 +277,7 @@ onMounted(async () => {
                                               placeholder="Ingrese la decripción"
                                             />
                                           </div>
-                                        </div>
+                                        </div> -->
                                       </div>
                                     </form>
                                   </div>

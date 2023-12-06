@@ -71,7 +71,7 @@ onMounted(() => {
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#configuracion" aria-controls="apps" aria-expanded="false">
                         <div class="">
                             <IconFeatherSettings></IconFeatherSettings>
-                            <span>Configuración</span>
+                            <span>Configuraci&oacute;n</span>
                         </div>
                         <div>
                             <IconFeatherChevronRight></IconFeatherChevronRight>
@@ -79,10 +79,10 @@ onMounted(() => {
                     </a>
                     <ul id="configuracion" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administración Roles</router-link>
+                            <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administraci&oacute;n Roles</router-link>
                         </li>
                         <li>
-                            <router-link to="/config/catalogos" @click="toggleMobileMenu">Catálogos</router-link>
+                            <router-link to="/config/catalogos" @click="toggleMobileMenu">Cat&aacute;logos</router-link>
                         </li>
                     </ul>
                 </li>

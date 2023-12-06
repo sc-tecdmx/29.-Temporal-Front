@@ -15,6 +15,7 @@ import CatalogosListView from '../views/configuracion/catalogos/CatalogosListVie
 import CatalogoGenView from '../views/configuracion/catalogos/CatalogoGenView.vue';
 import ExpedienteView from '../views/configuracion/catalogos/ExpedienteView.vue';
 import PuestoView from '../views/configuracion/catalogos/PuestoView.vue';
+import GruposView from '../views/configuracion/GruposView.vue'
 
 
 export default {
@@ -29,6 +30,7 @@ export default {
         { path: '/account/cambiar_contrasena', name:'cambiarContrasena', component:CambiarContrasenaView },
         { path: '/account/registroEmpleado', name: 'registroEmpleado', component: RegistroEmpleadoView },
         { path: '/config/adminRolPersonaApp', name: 'rolPersona', component: PersonalRolAppViewVue },
+        { path: '/config/grupos', name: 'grupos', component: GruposView },
         //Catálogos
         { path: '/config/catalogos', name:'catalogosList', component:CatalogosListView },
         { path: '/config/catalogo/areas', name:'catalogoAreas', component:AreasAdscripcionView },

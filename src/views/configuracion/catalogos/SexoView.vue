@@ -93,7 +93,7 @@ const validarAbreviatura = () => {
   errorAb.value = !regex.test(params.value.abreviatura);
 };
 const guardar_item = () => {
-  console.log("SAVE-PARAMS -- ", params);
+  //console.log("SAVE-PARAMS -- ", params);
   if (!params.value.sexo) {
     alert("Ingresar descripción");
     //showMessage('Name is required.', 'error');
@@ -106,7 +106,7 @@ const guardar_item = () => {
   }
 
   if (params.value.id) {
-    console.log("edit");
+    //console.log("edit");
     //update user
     let editItem = {
       nombreItem: params.value.sexo,
@@ -117,7 +117,7 @@ const guardar_item = () => {
     errorAb.value = false;
   } else {
     //add user
-    console.log("add");
+    //console.log("add");
     const urlCat = import.meta.env.VITE_CAT_ADD_SEXO;
     let saveItem = {
       descripcion: params.value.sexo,

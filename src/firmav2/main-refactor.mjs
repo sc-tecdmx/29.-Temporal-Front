@@ -67,6 +67,10 @@ async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDO
                         const docHashed = hashDOc?hashDOc:document.hash;
                         const firmado = await firma.buildAndSavePDF(codigoFirmaAplicada, docHashed, certificate.cerBase64, docToSign, urlBuildAndStoreFirma, token, responseBody);
                         console.log('Documento firmado');
+
+                        if (confirm("Documento firmado")) {
+                            window.location.href = "/";
+                        }
                     }else{
                         console.log(responseBody);
                     }

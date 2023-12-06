@@ -32,13 +32,13 @@ const authStore = useAuthStore();
             <li role="presentation">
               <router-link to="/account/cambiar_contrasena" class="dropdown-item">
                 <IconFeatherLock></IconFeatherLock>
-                Cambio de conrtaseña
+                Cambio de contrase&ntilde;a
               </router-link>
             </li>
             <li role="presentation">
               <router-link to="#" class="dropdown-item">
                 <IconFeatherSettings></IconFeatherSettings>
-                Configuración
+                Configuraci&oacute;n
               </router-link>
             </li>
             <li role="presentation">

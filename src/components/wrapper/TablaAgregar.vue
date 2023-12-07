@@ -27,10 +27,11 @@ const props = defineProps({
   id_tabla:String,
   thtabla: ref([]),
   tbTabla: ref([]),
-  opInstruccion: Object
+  opInstruccion: Object,
+  opGrupos: Object
 });
 const emit = defineEmits(["tablaFirmantes"]);
-
+//console.log(props.opGrupos)
 //const { data, getData, loading, errorData } = useGetData();
 const catEmpleados = ref({});
 const catGrupos = ref({});
@@ -96,10 +97,6 @@ params = {
   nuevoUsuario_email: "",
 };
 
-if(props.id_tabla == "firmantes"){
-
-}
-
 let addContactModal = ref(null);
 let addGrupoModal = ref(null);
 
@@ -116,26 +113,27 @@ onMounted(async() => {
   initPopup();
   //bind_data();
   catEmpleados.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_EMPLEADOS);
-  catGrupos.value = [
-            {   id: 1, 
-                grupo: 'grupo 1',
-                integrantes:[
-                    { id:7866, nombre: 'René', apellido1: 'Navarrete', apellido2: 'Tenco', instruccion: "Firma"},
-                    { id:7865, nombre: 'Paola',apellido1: 'Montero', apellido2: 'Guerrero', instruccion: "Rubrica"},
-                ],
-                tipoGrupo: "Firmantes"   
-            },
-            {
-                id: 2, 
-                grupo: 'comite',
-                integrantes:[
-                    { id:7867, nombre: 'Otilio Esteban', apellido1: 'Hernández', apellido2: 'Pérez', instruccion: "Firma"},
-                    { id: 6314, nombre: 'Graciela Eunice',apellido1: 'Illescas', apellido2: 'Acosta', instruccion: "Rubrica"},
+  catGrupos.value = props.opGrupos;
+  // [
+  //           {   id: 1, 
+  //               grupo: 'grupo 1',
+  //               personas:[
+  //                   { id:7866, nombre: 'René', apellido1: 'Navarrete', apellido2: 'Tenco', instruccion: "Firma"},
+  //                   { id:7865, nombre: 'Paola',apellido1: 'Montero', apellido2: 'Guerrero', instruccion: "Rubrica"},
+  //               ],
+  //               tipoGrupo: "Firmantes"   
+  //           },
+  //           {
+  //               id: 2, 
+  //               grupo: 'comite',
+  //               personas:[
+  //                   { id:7867, nombre: 'Otilio Esteban', apellido1: 'Hernández', apellido2: 'Pérez', instruccion: "Firma"},
+  //                   { id: 6314, nombre: 'Graciela Eunice',apellido1: 'Illescas', apellido2: 'Acosta', instruccion: "Rubrica"},
                     
-                ],
-                tipoGrupo: "Destinatarios"
-            },
-        ];
+  //               ],
+  //               tipoGrupo: "Destinatarios"
+  //           },
+  //       ];
 });
 
 const usuarioSelected = ref(false);
@@ -230,15 +228,15 @@ const class_idInstruccion = (valor) =>{
 };
 
 const add_grupo = () => {
-//console.log(selectedGroup.value.integrantes);
+//console.log(selectedGroup.value.personas);
    if (selectedGroup.value == '0') {
       alert('Elegir grupo.', 'error');
       return true;
    }
      let max_user_id=0;
 
-     for (let i = 0; i < selectedGroup.value.integrantes.length; i++) {
-        //console.log(selectedGroup.value.integrantes[i])
+     for (let i = 0; i < selectedGroup.value.personas.length; i++) {
+        //console.log(selectedGroup.value.personas[i])
         //Valida que el arreglo de la tabla tiene datos para obtener la secuencia
         if(arrayTabla.value.length != 0){
             secuencia = arrayTabla.value.length + 1;
@@ -247,20 +245,37 @@ const add_grupo = () => {
             secuencia = secuencia + 1;
             max_user_id = 0;
         }
+
         let empleado = {
          id_tabla: max_user_id + 1,
-         idEmpleado: selectedGroup.value.integrantes[i].id,
+         idEmpleado: selectedGroup.value.personas[i].id,
          usuario: {
-                 nombre: selectedGroup.value.integrantes[i].nombre,
-                 apellido1: selectedGroup.value.integrantes[i].apellido1,
-                 apellido2: selectedGroup.value.integrantes[i].apellido2,
-                 puesto: selectedGroup.value.integrantes[i].puesto,
-                 area: selectedGroup.value.integrantes[i].area
+                 nombre: selectedGroup.value.personas[i].nombre,
+                 apellido1: selectedGroup.value.personas[i].apellido1,
+                 apellido2: selectedGroup.value.personas[i].apellido2,
+                 puesto: selectedGroup.value.personas[i].puesto,
+                 area: selectedGroup.value.personas[i].area
              },
-         id_instruccion: class_idInstruccion(selectedGroup.value.integrantes[i].instruccion),
-         instruccion: selectedGroup.value.integrantes[i].instruccion,
+         id_instruccion: class_idInstruccion(selectedGroup.value.personas[i].instruccion),
+         instruccion: selectedGroup.value.personas[i].instruccion,
          secuencia: secuencia,
          };
+
+        //  if(props.tipoGrupo === 'Firmantes'){
+        //   let empleado={
+        //     "idEmpleado": selected.value.id,
+        //     "idInstFirmante": params.id_instruccion,
+        //     "idInstDest": null
+        //   }
+        //   arrayEnviado.value.push(empleado);
+        // } else if(props.tipoGrupo === 'Destinatarios'){
+        //   let empleado={
+        //     "idEmpleado": selected.value.id,
+        //     "idInstFirmante": null,
+        //     "idInstDest": params.id_instruccion
+        //   }
+        //   arrayEnviado.value.push(empleado);
+        // }
         arrayTabla.value.push(empleado);
       }
       arrayEnviado.value = arrayTabla.value;
@@ -636,7 +651,7 @@ const verificaArray = () => {
                       <select v-model="selectedGroup" class="form-select form-select-sm" @change="verificaDuplicado(selectedGroup)" :disabled="usuarioSelected">
                         <option value="0">--Seleccionar--</option>
                         <option v-for="opcion in catGrupos" :value="opcion" v-if="!usuarioSelected">
-                          {{ opcion.grupo }}
+                          {{ opcion.nombreGrupo }}
                         </option>
                       </select>
                     </div>

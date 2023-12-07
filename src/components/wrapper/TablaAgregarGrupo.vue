@@ -2,6 +2,7 @@
 import { onMounted, ref, inject } from "vue";
 import { defineProps, defineEmits } from "vue";
 import "@/assets/sass/apps/contacts.scss";
+import { watch } from "vue";
 //Componentes
 import IconFeatherTrash from "../icons/IconFeatherTrash.vue";
 import IconEdit2 from "../icons/IconEdit2.vue";
@@ -30,13 +31,13 @@ const props = defineProps({
   otro: Boolean,
   tipoGrupo: String
 });
-//console.log("Props --- ", props)
+//console.log("Props --- ", props.tipoGrupo)
 const emit = defineEmits(["tablaFirmantes"]);
 
 // const { data, getData, loading, errorData } = useGetData();
 // const catEmpleados = ref({});
-const catInstruccion = props.opInstruccion;
-//const catInstruccion = ref(null);
+//const catInstruccion = props.opInstruccion;
+const catInstruccion = ref(null);
 const selected = ref("0");
 const instruccion = ref("");
 //const prioridad = ref("");
@@ -72,9 +73,9 @@ params = {
   nuevoUsuario_email: "",
 };
 
-if(props.id_tabla == "firmantes"){
+// if(props.id_tabla == "firmantes"){
 
-}
+// }
 
 let addContactModal = ref(null);
 const initPopup = () => {
@@ -85,6 +86,7 @@ const initPopup = () => {
 
 onMounted(async() => {
   initPopup();
+  await actualizarCatInstruccion();
   catInstruccionTEMP.value = await obtenerCatNuevoDoc(urlNewDoc);
   //console.log(catInstruccionTEMP)
 //   if(props.tipoGrupo === 'Firmantes'){
@@ -95,6 +97,22 @@ onMounted(async() => {
 //   instDisponible.value = true;
 // }
 });
+
+watch(() => props.tipoGrupo, async (nuevoTipoGrupo) => {
+  await actualizarCatInstruccion(nuevoTipoGrupo);
+});
+
+const actualizarCatInstruccion = async (tipoGrupo = props.tipoGrupo) => {
+  catInstruccionTEMP.value = await obtenerCatNuevoDoc(urlNewDoc);
+
+  if (tipoGrupo === 'Firmantes') {
+    catInstruccion.value = catInstruccionTEMP.value.data.catInstruccionFirmantes;
+    instDisponible.value = true;
+  } else if (tipoGrupo === 'Destinatarios') {
+    catInstruccion.value = catInstruccionTEMP.value.data.catInstruccionDestinatarios;
+    instDisponible.value = true;
+  }
+};
 
 const usuarioSelected = ref(false);
 const edit_user = (user) => {

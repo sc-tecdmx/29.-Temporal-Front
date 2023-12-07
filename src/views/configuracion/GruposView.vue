@@ -118,7 +118,7 @@ const edit_user = (item) => {
   addContactModal.show();
 };
 const guardar_item = () => {
-//   console.log("SAVE-PARAMS -- ", params);
+   //console.log("SAVE-PARAMS -- ", params.value);
 //   console.log(arrayIntegrantes);
   if (!params.value.nombreGrupo) {
     alert("Ingresar nombre de grupo");
@@ -157,7 +157,7 @@ const guardar_item = () => {
         "personas": arrayIntegrantes.value
     }
     
-    console.log(saveItem);
+    //console.log(saveItem);
     catalogoStore.saveCatalogo(urlCat, saveItem, token);
     arrayIntegrantes.value = null;
   }
@@ -275,7 +275,6 @@ const tablaPersonal = (data, campoValido) => {
 };
 const tipoGrupo = ref("")
 const opcionTipoGrupo = (idOpcion) => {
-  //console.log(idOpcion);
   params.value.tipoGrupo = idOpcion;
   tipoGrupo.value = idOpcion
   instDisponible.value= true;
@@ -594,15 +593,8 @@ const check_all_checkbox = computed(() => {
                         </div> -->
 
                         <!-- Modal -->
-                        <div
-                          id="addContactModal"
-                          class="modal fade"
-                          aria-labelledby="exampleModalLabel"
-                          aria-hidden="true"
-                        >
-                          <div
-                            class="modal-dialog modal-lg modal-dialog-centered"
-                          >
+                        <div id="addContactModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-lg modal-dialog-centered" >
                             <div class="modal-content mailbox-popup">
                               <div class="modal-header">
                                 <h5 class="modal-title">
@@ -651,7 +643,7 @@ const check_all_checkbox = computed(() => {
                                               :thtabla="thPersonal"
                                               :tbTabla="catPersonal"
                                               :opInstruccion="catInstruccion"
-                                            v-if="instDisponible"
+                                              v-if="instDisponible"
                                               @tablaFirmantes="tablaPersonal"
                                               :otro="false"
                                               :tipoGrupo="params.tipoGrupo"

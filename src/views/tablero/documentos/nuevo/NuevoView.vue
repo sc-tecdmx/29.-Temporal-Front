@@ -56,6 +56,8 @@ const catNuevoDoc = ref(null);
 const catPrioridad = ref({});
 const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
+const catGruposFirmante = ref(null);
+const catGruposDestinatario = ref(null);
 
 const urlNewDoc = import.meta.env.VITE_API_LARURL + import.meta.env.VITE_CAT_NUEVO_DOC;
 
@@ -63,6 +65,9 @@ const token = authStore.state.user.token;
 //console.log("token", token)
 async function obtenerCatNuevoDoc(url) {
   return await catalogoStore.getNuevoDocumento(url, token);
+}
+async function obtenerCatalogos(url) {
+  return await catalogoStore.getCatalogo(url, token);
 }
 //  const bind_data = () => {
 //            const axiosInstance = axios.create({
@@ -509,7 +514,8 @@ onMounted(async() => {
   //bind_data();
   catNuevoDoc.value = await obtenerCatNuevoDoc(urlNewDoc);
   //console.log(catNuevoDoc.value.data);
-
+  catGruposFirmante.value = await obtenerCatalogos(import.meta.env.VITE_CAT_GET_GRUPOS_FIR);
+  catGruposDestinatario.value = await obtenerCatalogos(import.meta.env.VITE_CAT_GET_GRUPOS_DES);
   catDestino.value = catNuevoDoc.value.data.catDestino;
   catTipoDocumento.value = catNuevoDoc.value.data.catTipoDocumento;
   catInstruccion.value = catNuevoDoc.value.data.catInstruccionFirmantes;
@@ -1019,6 +1025,7 @@ const addExpediente = async()=>{
                     :thtabla="thFirmantes"
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccion"
+                    :opGrupos="catGruposFirmante"
                     v-if="catDisponible"
                     @tablaFirmantes = "tablaFirmantes"
                   ></TablaAgregar>
@@ -1030,6 +1037,7 @@ const addExpediente = async()=>{
                     :thtabla="thDestinatarios"
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccionDest"
+                    :opGrupos="catGruposDestinatario"
                     v-if="catDisponible"
                     @tablaFirmantes = "tablaDestinatarios"
                   ></TablaAgregar>

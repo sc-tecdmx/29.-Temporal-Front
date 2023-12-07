@@ -1,70 +1,43 @@
 <script setup>
 import { onMounted, ref, inject } from "vue";
 import { defineProps, defineEmits } from "vue";
-import axios from "axios";
 import "@/assets/sass/apps/contacts.scss";
 //Componentes
 import IconFeatherTrash from "../icons/IconFeatherTrash.vue";
-//import IconAlertOctagon from "../icons/IconAlertOctagon.vue";
 import IconEdit2 from "../icons/IconEdit2.vue";
-//composable
-//import { useGetData } from "@/composables/getData";
-//Stores
-import { useAuthStore } from '@/stores/authStore.js';
-import { useCatalogoStore } from "@/stores/catalogoStore";
 
 /** Multiselect */
 import "@/assets/sass/scrollspyNav.scss";
 //  import Multiselect from '@suadelabs/vue3-multiselect';
 import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
+//Stores
+import { useAuthStore } from "@/stores/authStore.js";
+import { useCatalogoStore } from "@/stores/catalogoStore";
 
-const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
+const authStore = useAuthStore();
 const token = authStore.state.user.token;
+const catInstruccionTEMP = ref(null);
+const instDisponible = ref(false);
+const urlNewDoc = import.meta.env.VITE_API_LARURL + import.meta.env.VITE_CAT_NUEVO_DOC;
 
 const props = defineProps({
   titulo: String,
   id_tabla:String,
   thtabla: ref([]),
   tbTabla: ref([]),
-  opInstruccion: Object
+  opInstruccion: Object,
+  otro: Boolean,
+  tipoGrupo: String
 });
+//console.log("Props --- ", props)
 const emit = defineEmits(["tablaFirmantes"]);
 
-//const { data, getData, loading, errorData } = useGetData();
-const catEmpleados = ref({});
-const catGrupos = ref({});
-
-async function obtenerCatalogo(url) {
-  return await catalogoStore.getCatalogo(url, token);
-}
-
-//  const bind_data = () => {
-//           //  const axiosInstance = axios.create({
-//           //      "Access-Control-Allow-Origin": "*",
-//           //  });
-//           const datosTabla = async () => {
-//               const url = import.meta.env.VITE_API_LARURL + "/api/get-catalogo/empleados";
-//               try {
-//                 //local  
-//                 const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-//                   //servidor
-//                 //const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
-//                   // console.log("AXIOS: ");
-//                   // console.log(data)
-//                   catEmpleados.value = data;
-//               } catch (error) {
-//                   console.log(error);
-//               }
-//           };
-//           datosTabla();
-//  };
-
- //console.log(data)
-//console.log("PROPS: ", props.opInstruccion);
+// const { data, getData, loading, errorData } = useGetData();
+// const catEmpleados = ref({});
 const catInstruccion = props.opInstruccion;
+//const catInstruccion = ref(null);
 const selected = ref("0");
-const selectedGroup = ref("0");
 const instruccion = ref("");
 //const prioridad = ref("");
 const nuevoUsuario_email = ref("");
@@ -75,6 +48,9 @@ const thtabla = props.thtabla;
 const arrayTabla = ref([]);
 const arrayEnviado = ref([]);
 
+async function obtenerCatNuevoDoc(url) {
+  return await catalogoStore.getNuevoDocumento(url, token);
+}
 var params = new Object;
 params = {
   id_tabla: null,
@@ -101,41 +77,23 @@ if(props.id_tabla == "firmantes"){
 }
 
 let addContactModal = ref(null);
-let addGrupoModal = ref(null);
-
 const initPopup = () => {
   addContactModal = new window.bootstrap.Modal(
     document.getElementById("addContactModal"+ props.id_tabla)
-  );
-  addGrupoModal = new window.bootstrap.Modal(
-    document.getElementById("addGrupoModal"+ props.id_tabla)
   );
 };
 
 onMounted(async() => {
   initPopup();
-  //bind_data();
-  catEmpleados.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_EMPLEADOS);
-  catGrupos.value = [
-            {   id: 1, 
-                grupo: 'grupo 1',
-                integrantes:[
-                    { id:7866, nombre: 'René', apellido1: 'Navarrete', apellido2: 'Tenco', instruccion: "Firma"},
-                    { id:7865, nombre: 'Paola',apellido1: 'Montero', apellido2: 'Guerrero', instruccion: "Rubrica"},
-                ],
-                tipoGrupo: "Firmantes"   
-            },
-            {
-                id: 2, 
-                grupo: 'comite',
-                integrantes:[
-                    { id:7867, nombre: 'Otilio Esteban', apellido1: 'Hernández', apellido2: 'Pérez', instruccion: "Firma"},
-                    { id: 6314, nombre: 'Graciela Eunice',apellido1: 'Illescas', apellido2: 'Acosta', instruccion: "Rubrica"},
-                    
-                ],
-                tipoGrupo: "Destinatarios"
-            },
-        ];
+  catInstruccionTEMP.value = await obtenerCatNuevoDoc(urlNewDoc);
+  //console.log(catInstruccionTEMP)
+//   if(props.tipoGrupo === 'Firmantes'){
+//     catInstruccion.value = catInstruccionTEMP.value.data.catInstruccionFirmantes;
+//     instDisponible.value = true;
+// } else if(props.tipoGrupo === 'Destinatarios'){
+//   catInstruccion.value = catInstruccionTEMP.value.data.catInstruccionDestinatarios;
+//   instDisponible.value = true;
+// }
 });
 
 const usuarioSelected = ref(false);
@@ -192,26 +150,9 @@ const edit_user = (user) => {
      
   addContactModal.show();
 };
-
-const edit_grupo = (grupo) => {
-  //  console.log("edit-grupo");
-  //  console.log(grupo);
-   selectedGroup.value = "0";
-     addGrupoModal.show();
-};
-
-//Clase para icono Prioridad
-// let titlePrioriodad = "";
-// const class_prioridad = (valor) => {
-//   for(let i = 0 ; i < catPrioridad.length; i++){
-//     if(valor == catPrioridad[i].n_id_prioridad){
-//       titlePrioriodad= catPrioridad[i].desc_prioridad;
-//       return catPrioridad[i].desc_prioridad;
-//     }
-//   }
-//     };
 //Clase para instrucción
 const class_instruccion = (valor) =>{
+
   for(let i = 0 ; i < catInstruccion.length; i++){
     if(valor == catInstruccion[i].id){
 
@@ -219,56 +160,7 @@ const class_instruccion = (valor) =>{
     }
   }
 };
-const class_idInstruccion = (valor) =>{
-  //console.log(valor)
-   for(let i = 0 ; i < catInstruccion.length; i++){
-    //console.log(catInstruccion[i].instruccion)
-     if(valor == catInstruccion[i].instruccion){
-       return catInstruccion[i].id
-     }
-   }
-};
 
-const add_grupo = () => {
-//console.log(selectedGroup.value.integrantes);
-   if (selectedGroup.value == '0') {
-      alert('Elegir grupo.', 'error');
-      return true;
-   }
-     let max_user_id=0;
-
-     for (let i = 0; i < selectedGroup.value.integrantes.length; i++) {
-        //console.log(selectedGroup.value.integrantes[i])
-        //Valida que el arreglo de la tabla tiene datos para obtener la secuencia
-        if(arrayTabla.value.length != 0){
-            secuencia = arrayTabla.value.length + 1;
-            max_user_id = arrayTabla.value.reduce((max, character) => (character.id_tabla > max ? character.id_tabla : max), arrayTabla.value[0].id_tabla);
-        }else{
-            secuencia = secuencia + 1;
-            max_user_id = 0;
-        }
-        let empleado = {
-         id_tabla: max_user_id + 1,
-         idEmpleado: selectedGroup.value.integrantes[i].id,
-         usuario: {
-                 nombre: selectedGroup.value.integrantes[i].nombre,
-                 apellido1: selectedGroup.value.integrantes[i].apellido1,
-                 apellido2: selectedGroup.value.integrantes[i].apellido2,
-                 puesto: selectedGroup.value.integrantes[i].puesto,
-                 area: selectedGroup.value.integrantes[i].area
-             },
-         id_instruccion: class_idInstruccion(selectedGroup.value.integrantes[i].instruccion),
-         instruccion: selectedGroup.value.integrantes[i].instruccion,
-         secuencia: secuencia,
-         };
-        arrayTabla.value.push(empleado);
-      }
-      arrayEnviado.value = arrayTabla.value;
-  //console.log(arrayTabla)
-  //   arrayTabla.value.push(params);
-  //   arrayEnviado.value.push(empleado);
-  addGrupoModal.hide();
-};
 const save_user = () => {
    email_valido.value = true;
 
@@ -292,10 +184,6 @@ const save_user = () => {
        alert('Seleccionar instrucción.', 'error');
        return true;
    }
-  //  if (prioridad.value == '') {
-  //      alert('Seleccionar prioridad.', 'error');
-  //      return true;
-  //  }
 
   if (selected.value.id_tabla || params.id_tabla) {
     //update user
@@ -337,13 +225,24 @@ const save_user = () => {
     params.idUsuario = "";
     //params.fechaLimite = "";
     //console.log("PARAMS Firman",params)
-    let empleado={
-      "secuencia": secuencia,
-      "idEmpleado": selected.value.id,
-      "instruccion": params.instruccion
+    
+    if(props.tipoGrupo === 'Firmantes'){
+      let empleado={
+        "idEmpleado": selected.value.id,
+        "idInstFirmante": params.id_instruccion,
+        "idInstDest": null
+      }
+      arrayEnviado.value.push(empleado);
+    } else if(props.tipoGrupo === 'Destinatarios'){
+      let empleado={
+        "idEmpleado": selected.value.id,
+        "idInstFirmante": null,
+        "idInstDest": params.id_instruccion
+      }
+      arrayEnviado.value.push(empleado);
     }
     arrayTabla.value.push(params);
-    arrayEnviado.value.push(empleado);
+    
 
   }
 
@@ -354,7 +253,7 @@ const save_user = () => {
 const duplicado = ref(false);
 const esCorreoElectronico = correoElectronico => /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(correoElectronico);
 const verificaDuplicado= (data) => {
-  //console.log("verificaDuplicado",data)
+  
   if(esCorreoElectronico(data)){
     duplicado.value = arrayTabla.value.find((empleado) => empleado.nuevoUsuario_email === data);
     return duplicado;
@@ -370,7 +269,6 @@ const verificaDuplicado= (data) => {
 const email_valido = ref(false);
 
 const delete_row = (item) => {
-  //console.log(item)
   if (confirm('¿Desea eliminar este registro?')) {
     arrayTabla.value = arrayTabla.value.filter((d) => d.id_tabla != item.id_tabla);
       if (arrayTabla.value.length == 0) {
@@ -413,30 +311,11 @@ const verificaArray = () => {
               <line x1="23" y1="11" x2="17" y2="11"></line>
             </svg>
           </a>
-          <a href="javascript:;" @click="edit_grupo">
-            <svg
-              id="btn-add-contact"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-users"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-          </a>
         </div>
       </div>
     </div>
 
+    <!-- <div class="row"></div> -->
     <div class="table-responsive">
       <table role="table" aria-busy="false" aria-colcount="5" class="table table-bordered" :id="'tabla-' + props.id_tabla">
         <thead role="rowgroup">
@@ -494,7 +373,7 @@ const verificaArray = () => {
       </table>
     </div>
   </div>
-  <!-- Modal Individual-->
+  <!-- Modal -->
   <div :id="'addContactModal'+props.id_tabla" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true" >
     <div class="modal-dialog modal-md modal-dialog-centered">
       <div class="modal-content mailbox-popup">
@@ -517,14 +396,14 @@ const verificaArray = () => {
                       <select v-model="selected" class="form-select form-select-sm" @change="verificaDuplicado(selected)" :disabled="usuarioSelected">
                         <option value="0">--Seleccionar--</option>
                         <option :value="selected" v-if="usuarioSelected && selected != 'otro'">{{ selected.usuario.nombre }} {{ selected.usuario.apellido1 }} {{ selected.usuario.apellido2 }}</option>
-                        <option v-for="opcion in catEmpleados" :value="opcion" v-if="!usuarioSelected">
+                        <option v-for="opcion in props.tbTabla" :value="opcion" v-if="!usuarioSelected">
                           <!-- <option v-for="(value, key) in catSelect.value" :value="key"> -->
                           {{ opcion.nombre }} {{ opcion.apellido1 }} {{ opcion.apellido2 }}
                         </option>
-                        <option value="otro">Otro</option>
+                        <option value="otro" v-if="otro">Otro</option>
                       </select>
                     </div>
-                  </div>
+                  </div> 
                 </div>
 
                 <div class="row">
@@ -609,52 +488,6 @@ const verificaArray = () => {
             <i class="flaticon-cancel-12"></i> Cancelar
           </button>
           <button type="button" class="btn btn-primary" @click="save_user(); verificaArray(); emit('tablaFirmantes', arrayEnviado, submit_listado);" :disabled="duplicado">
-            {{ selected.id_tabla || params.id_tabla ? "Editar" : "Agregar" }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal Grupo-->
-  <div :id="'addGrupoModal'+props.id_tabla" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog modal-md modal-dialog-centered">
-      <div class="modal-content mailbox-popup">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            {{ selected.id_tabla || params.id_tabla ? "Editar Grupo" : "Agregar Grupo" }}
-          </h5>
-          <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="add-contact-box">
-            <div class="add-contact-content">
-              <form :id="'addGrupoModalTitle'+ props.id_tabla">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group mb-0">
-                      <label>Grupo</label>
-                      <select v-model="selectedGroup" class="form-select form-select-sm" @change="verificaDuplicado(selectedGroup)" :disabled="usuarioSelected">
-                        <option value="0">--Seleccionar--</option>
-                        <option v-for="opcion in catGrupos" :value="opcion" v-if="!usuarioSelected">
-                          {{ opcion.grupo }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="alert alert-light-danger alert-dismissible border-0 mb-4" role="alert" v-if="duplicado">
-                    <strong>Este grupo ya ha sido agregado.</strong>
-                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">×</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" data-bs-dismiss="modal">
-            <i class="flaticon-cancel-12"></i> Cancelar
-          </button>
-          <button type="button" class="btn btn-primary" @click="add_grupo(); verificaArray(); emit('tablaFirmantes', arrayEnviado, submit_listado);" :disabled="duplicado">
             {{ selected.id_tabla || params.id_tabla ? "Editar" : "Agregar" }}
           </button>
         </div>

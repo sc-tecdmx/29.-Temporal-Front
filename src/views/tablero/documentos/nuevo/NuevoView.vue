@@ -341,6 +341,7 @@ const opcionInputContenido = (idData, campoValido) => {
   }
 };
 const tablaFirmantes = (data, campoValido) => {
+  //console.log(data)
   //params.value.firmantes = data;
   paramsEnviar.value.firmantes = data;
    if (data == 0) {

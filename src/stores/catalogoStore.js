@@ -53,7 +53,6 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
 
     const getCatalogo = async(url, token) => {
         const urlCat = baseUrl + url;
-        //console.log(urlCat)
         try {
             //local
             //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
@@ -68,7 +67,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     }
     const saveCatalogo = async(urlCat, data, token) => {
         const urlSaveCat = baseUrl + urlCat;
-        //console.log(urlSaveCat)
+        
         try {
             const axiosInstance = axios.create({
                "Access-Control-Allow-Origin": "*",
@@ -77,10 +76,11 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
            //await axios.post(urlSaveCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
             //servidor
             await axios.post(urlSaveCat, data, {headers:{"bearertoken": `${token}`}}).then((response) => {
-                if (confirm(response.data.mensaje)) {
-                     window.location.reload();
-                   }
-               });
+            
+                 if (confirm(response.data.message)) {
+                      window.location.reload();
+                    }
+                });
             
            } catch (error) {
              console.log(error)
@@ -109,7 +109,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
             //await axios.delete(urlDelCat, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
             //servidor
             await axios.delete(urlDelCat, {headers:{"bearertoken": `${token}`}}).then((response) => {
-                  if (confirm(response.data.mensaje)) {
+                  if (confirm(response.data.message)) {
                        window.location.reload();
                     }
                  });

@@ -82,6 +82,10 @@ onMounted(() => {
                             <router-link to="/config/adminRolPersonaApp" @click="toggleMobileMenu">Administraci&oacute;n Roles</router-link>
                         </li>
                         <li>
+                            <router-link to="/config/grupos" @click="toggleMobileMenu">Mis grupos</router-link>
+                        </li>
+                        
+                        <li>
                             <router-link to="/config/catalogos" @click="toggleMobileMenu">Cat&aacute;logos</router-link>
                         </li>
                     </ul>

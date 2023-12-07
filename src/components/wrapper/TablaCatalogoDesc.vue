@@ -117,7 +117,7 @@ const edit_item = (item) => {
 };
 
 const guardar_item = () => {
-    console.log("SAVE-PARAMS -- ", params)
+    //console.log("SAVE-PARAMS -- ", params)
    if (!params.value.descripcion) {
         alert("Ingresar descripción");
        //showMessage('Name is required.', 'error');
@@ -125,7 +125,7 @@ const guardar_item = () => {
    }
 
    if (params.value.id) {
-     console.log("edit");
+     //console.log("edit");
     //update user
     let editItem = {
             "descripcion": params.value.descripcion,

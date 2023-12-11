@@ -7,6 +7,24 @@
     const authStore = useAuthStore();
     const token = authStore.state.user.token;
 
+    const envApp = 'prod';
+
+  function getAuthorizationHeadersForLaravel(token) {
+  if(envApp=='prod'){
+    return {
+      headers: {
+        "bearertoken": `${token}`
+      }
+    };
+  }else{
+    return {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    };
+  }
+}
+
     const props= defineProps({
          idName: String,
          label: String,
@@ -38,7 +56,7 @@
               const url_exp = import.meta.env.VITE_API_LARURL + "/api/autocompletado?query=" + num_exp;
               try {
                 //const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
-                  const { data } = await axios.get(url_exp, {headers:{"bearertoken": `${token}`}});
+                  const { data } = await axios.get(url_exp, getAuthorizationHeadersForLaravel(token));
                 //   console.log("data");
                 //   console.log(data);
                   catExpedientes.value = data;

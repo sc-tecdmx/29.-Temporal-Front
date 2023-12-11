@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('authStore',()=>{
                   usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
                   state.value.user = JSON.parse(localStorage.getItem('user'));
                   if(response.data.status === "failed" || response.data.token == null){
-                      alert("Usuario o contraseña incorrecta")
+                      alert("Usuario o contraseï¿½a incorrecta")
                   }else{
                       router.push('/');
                   }
@@ -112,8 +112,8 @@ export const useAuthStore = defineStore('authStore',()=>{
               }
           
             } catch (error) {
-                alert('Error al solicitar reset de contraseña')
-                console.log('Error al solicitar reset de contraseña:',error)
+                alert('Error al solicitar reset de contraseï¿½a')
+                console.log('Error al solicitar reset de contraseï¿½a:',error)
             }
     }
     const resetPass = async(token, password) => {
@@ -132,8 +132,8 @@ export const useAuthStore = defineStore('authStore',()=>{
                 }
           
             } catch (error) {
-                alert('Error al solicitar reset de contraseña')
-                console.log('Error al solicitar reset de contraseña:',error)
+                alert('Error al solicitar reset de contraseï¿½a')
+                console.log('Error al solicitar reset de contraseï¿½a:',error)
             }
     }
     return { loginUser, logoutUser, registerUser, registerEmpleado, cambiarPass, restablecerPass, resetPass, state, loadingUser }

@@ -63,6 +63,26 @@ const urlNewDoc = import.meta.env.VITE_API_LARURL + import.meta.env.VITE_CAT_NUE
 
 const token = authStore.state.user.token;
 //console.log("token", token)
+
+const envApp = 'prod';
+
+  function getAuthorizationHeadersForLaravel(token) {
+    console.log(envApp);
+  if(envApp==='prod'){
+    return {
+      headers: {
+        "bearertoken": `${token}`
+      }
+    };
+  }else{
+    return {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    };
+  }
+}
+
 async function obtenerCatNuevoDoc(url) {
   return await catalogoStore.getNuevoDocumento(url, token);
 }
@@ -106,7 +126,7 @@ const catExpedientes = ref([])
               try {
                   
                 //const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
-                const { data } = await axios.get(url_exp, {headers:{"bearertoken": `${token}`}});
+                const { data } = await axios.get(url_exp, getAuthorizationHeadersForLaravel(token));
                   //console.log(data);
                   params.value.nombreExpediente = data[0].s_descripcion;
                   catExpedientes.value = data;
@@ -831,7 +851,7 @@ const addExpediente = async()=>{
           try {
               
             //await axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${authStore.userData}`}}).then((response) => {
-            await axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            await axios.post(urlExpediente, post, getAuthorizationHeadersForLaravel(token)).then((response) => {
               //console.log(response)
               if (confirm(response.data.mensaje)) {
                 addExpedienteModal.hide();

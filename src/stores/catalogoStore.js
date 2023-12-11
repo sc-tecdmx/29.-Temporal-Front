@@ -4,6 +4,24 @@ import { ref } from 'vue';
 
 const baseUrl = import.meta.env.VITE_API_LARURL;
 
+const envApp = 'prod';
+
+  function getAuthorizationHeadersForLaravel(token) {
+  if(envApp=='prod'){
+    return {
+      headers: {
+        "bearertoken": `${token}`
+      }
+    };
+  }else{
+    return {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    };
+  }
+}
+
 export const useCatalogoStore = defineStore('catalogoStore',() => {
     const catState = ref({
         catArea: [],
@@ -16,7 +34,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         const urlCat = baseUrl + "/api/get-catalogo/areas";
         try {
             //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
-            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
+            const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
             catState.value.catArea = data;
         } catch (error) {
             console.log(error);
@@ -28,7 +46,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         const urlCat = baseUrl + "/api/get-catalogo/puestos";
         try {
             //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
-            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
+            const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
             // catState.value.catPuesto = data;
             return data;
         } catch (error) {
@@ -41,7 +59,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         const urlCat = baseUrl + "/api/get-catalogo/sexo";        
         try {
             //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
-            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
+            const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
             
             return data;
         } catch (error) {
@@ -57,7 +75,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
             //local
             //const { data } = await axios.get(urlCat, {headers:{"Authorization": `Bearer ${token}`}});
             //servidor
-            const { data } = await axios.get(urlCat, {headers:{"bearertoken": `${token}`}});
+            const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
             return data;
         } catch (error) {
             console.log(error);
@@ -75,7 +93,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
            //local
            //await axios.post(urlSaveCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
             //servidor
-            await axios.post(urlSaveCat, data, {headers:{"bearertoken": `${token}`}}).then((response) => {
+            await axios.post(urlSaveCat, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
             
                  if (confirm(response.data.message)) {
                       window.location.reload();
@@ -92,7 +110,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
             //local
                 //await axios.put(urlEditCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
             //servidor
-                await axios.put(urlEditCat, data, {headers:{"bearertoken": `${token}`}}).then((response) => {
+                await axios.put(urlEditCat, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
                  if (confirm(response.data.message)) {
                       window.location.reload();
                    }
@@ -108,7 +126,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
             //local
             //await axios.delete(urlDelCat, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
             //servidor
-            await axios.delete(urlDelCat, {headers:{"bearertoken": `${token}`}}).then((response) => {
+            await axios.delete(urlDelCat, getAuthorizationHeadersForLaravel(token)).then((response) => {
                   if (confirm(response.data.message)) {
                        window.location.reload();
                     }
@@ -123,7 +141,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
             //local
              //const { data } = await axios.get(urlNewDoc, {headers:{"Authorization": `Bearer ${token}`}});
              //servidor
-             const { data } = await axios.get(urlNewDoc, {headers:{"bearertoken": `${token}`}});
+             const { data } = await axios.get(urlNewDoc, getAuthorizationHeadersForLaravel(token));
              return data;    
            } catch (error) {
              console.log("Error",error)
@@ -131,7 +149,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
     }
     const getDetalleDocumento = async(urlDetalle, token) => {
         try {
-            const { data } = await axios.get(urlDetalle, {headers:{"Authorization": `Bearer ${token}`}});
+            const { data } = await axios.get(urlDetalle, getAuthorizationHeadersForLaravel(token));
             //const { data } = await axios.get(urlDetalle, {headers:{"bearertoken": `${token}`}});
             return data;    
            } catch (error) {

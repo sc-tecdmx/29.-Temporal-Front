@@ -11,16 +11,28 @@
   const busqueda = ref('');
   const token = authStore.state.user.token;
 
+  const envApp = 'prod';
+
+  function getAuthorizationHeadersForLaravel(token) {
+  if(envApp=='prod'){
+    return {
+      headers: {
+        "bearertoken": `${token}`
+      }
+    };
+  }else{
+    return {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    };
+  }
+}
+
   const busquedaGeneral = async(token, busqueda) => {
     let urlRestPass = import.meta.env.VITE_API_LARURL + "/api/busqueda-general?query=" + busqueda;
-    const config = {
-      headers: {
-        //Authorization: `Bearer ${token}`,
-        bearertoken: `${token}`
-      },
-    };
     try {
-        const response = await axios.get(urlRestPass, config);
+        const response = await axios.get(urlRestPass, getAuthorizationHeadersForLaravel(token));
         console.log(response.data);
         //alert(response.data.message);
           

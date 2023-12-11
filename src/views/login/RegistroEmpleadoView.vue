@@ -34,13 +34,27 @@ const catArea = ref([]);
 const catPuesto = ref([]);
 const catSexo = ref([]);
 
+const envApp = 'prod';
+function getAuthorizationHeadersForLaravel(token) {
+  if(envApp=='prod'){
+    return {
+      headers: {
+        "bearertoken": `${token}`
+      }
+    };
+  }else{
+    return {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    };
+  }
+}
+
 const getCatAreas = async () => {
   const urlCat = urlLAR + "/api/get-catalogo/areas";
   try {
-    const { data } = await axios.get(urlCat, {
-      //headers: { Authorization: `Bearer ${token}` },
-      headers: { bearertoken: `${token}` },
-    });
+    const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
     //console.log(data)
     catArea.value = data;
     setTimeout(() => {
@@ -55,10 +69,7 @@ const getCatAreas = async () => {
 const getCatPuesto = async () => {
   const urlCat = urlLAR + "/api/get-catalogo/puestos";
   try {
-    const { data } = await axios.get(urlCat, {
-      //headers: { Authorization: `Bearer ${token}` },
-      headers: { bearertoken: `${token}` },
-    });
+    const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
     //console.log(data)
     catPuesto.value = data;
     setTimeout(() => {
@@ -73,10 +84,7 @@ const getCatPuesto = async () => {
 const getCatSexo = async () => {
   const urlCat = urlLAR + "/api/get-catalogo/sexo";
   try {
-    const { data } = await axios.get(urlCat, {
-      //headers: { Authorization: `Bearer ${token}` },
-      headers: { bearertoken: `${token}` },
-    });
+    const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
     //console.log(data)
     catSexo.value = data;
     setTimeout(() => {

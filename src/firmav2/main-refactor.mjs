@@ -9,8 +9,8 @@ import fs from 'fs';
     Local: http:localhost:8081
 */
 
-const apiFirma = 'http://localhost:8081';
-//const apiFirma = 'http://52.206.121.172:8080/firma-pki';
+//const apiFirma = 'http://localhost:8081';
+const apiFirma = 'http://52.206.121.172:8080/firma-pki';
 
 
 const urlTransaccion = apiFirma+'/api/firma/transaccion/get-transaccion';

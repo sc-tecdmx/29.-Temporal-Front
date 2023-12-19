@@ -13,7 +13,7 @@ import IconDropDown from "@/components/icons/IconDropDown.vue";
 
 import { useMeta } from "@/composables/use-meta";
 
-useMeta({ title: "Catálogo tipo de documento" });
+useMeta({ title: "Mis grupos" });
 
 //Variables
 const authStore = useAuthStore();

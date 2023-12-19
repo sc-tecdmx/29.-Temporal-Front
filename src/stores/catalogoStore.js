@@ -4,9 +4,10 @@ import { ref } from 'vue';
 
 const baseUrl = import.meta.env.VITE_API_LARURL;
 
-const envApp = 'prod';
+const envApp = import.meta.env.VITE_ENV_APP;
 
   function getAuthorizationHeadersForLaravel(token) {
+    
   if(envApp=='prod'){
     return {
       headers: {
@@ -156,6 +157,14 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
              console.log(error)
            }
     }
+    const getDocumentsUser = async(url, token) => {
+      try {
+        const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});  
+          return data;    
+         } catch (error) {
+           console.log(error)
+         }
+  }
 
     return { 
         catState, 
@@ -167,5 +176,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         editCatalogo, 
         deleteCatalogo,
         getNuevoDocumento, 
-        getDetalleDocumento }
+        getDetalleDocumento,
+        getDocumentsUser
+       }
 })

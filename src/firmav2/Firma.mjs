@@ -23,10 +23,10 @@ export class Firma {
 
     async getTransaccion(hashDocumento, cerBase64, url, token, responseBody) {
         //const url = 'http://localhost:8080' + '/api/firma/transaccion/get-transaccion';
-        const headers = {
-            'Authorization': 'Bearer ' + token, // Reemplaza 'tuTokenAquí' con tu token real
-            'Content-Type': 'application/json'
-        };
+        const headers =   {
+             'Authorization': 'Bearer ' + token, // Reemplaza 'tuTokenAquí' con tu token real
+             'Content-Type': 'application/json'
+         };
         const data = {
             hashDocumento: hashDocumento,
             certificado: cerBase64,

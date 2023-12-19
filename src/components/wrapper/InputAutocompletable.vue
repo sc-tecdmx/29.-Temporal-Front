@@ -7,7 +7,7 @@
     const authStore = useAuthStore();
     const token = authStore.state.user.token;
 
-    const envApp = 'prod';
+    const envApp = import.meta.env.VITE_ENV_APP;
 
   function getAuthorizationHeadersForLaravel(token) {
   if(envApp=='prod'){

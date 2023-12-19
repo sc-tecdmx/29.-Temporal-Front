@@ -25,90 +25,38 @@ const catalogoStore = useCatalogoStore();
 let modalCamposRequeridos = ref(null);
 
 const token = authStore.state.user.token;
-const urlLAR = import.meta.env.VITE_API_LARURL;
-const loadingArea = ref(false);
-const loadingPuesto = ref(false);
-const loadingSexo = ref(false);
+//const urlLAR = import.meta.env.VITE_API_LARURL;
+const loadingCat = ref(false);
 
 const catArea = ref([]);
 const catPuesto = ref([]);
 const catSexo = ref([]);
+const urlArea = import.meta.env.VITE_CAT_GET_AREA;
+const urlPuesto = import.meta.env.VITE_CAT_GET_PUESTOS;
+const urlSexo = import.meta.env.VITE_CAT_GET_SEXO;
 
-const envApp = 'prod';
-function getAuthorizationHeadersForLaravel(token) {
-  if(envApp=='prod'){
-    return {
-      headers: {
-        "bearertoken": `${token}`
-      }
-    };
-  }else{
-    return {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    };
-  }
-}
 
-const getCatAreas = async () => {
-  const urlCat = urlLAR + "/api/get-catalogo/areas";
-  try {
-    const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
-    //console.log(data)
-    catArea.value = data;
-    setTimeout(() => {
-      loadingArea.value = true;
-    }, 10);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    //loadingArea.value = false;
-  }
-};
-const getCatPuesto = async () => {
-  const urlCat = urlLAR + "/api/get-catalogo/puestos";
-  try {
-    const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
-    //console.log(data)
-    catPuesto.value = data;
-    setTimeout(() => {
-      loadingPuesto.value = true;
-    }, 10);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    //loadingPuesto.value = false;
-  }
-};
-const getCatSexo = async () => {
-  const urlCat = urlLAR + "/api/get-catalogo/sexo";
-  try {
-    const { data } = await axios.get(urlCat, getAuthorizationHeadersForLaravel(token));
-    //console.log(data)
-    catSexo.value = data;
-    setTimeout(() => {
-      loadingSexo.value = true;
-    }, 10);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    //loadingPuesto.value = false;
-  }
-};
-getCatAreas();
-getCatPuesto();
-getCatSexo();
-// const getCatalogos = async() => {
-//   console.log("catalogos");
-//   //catArea.value = await catalogoStore.getCatArea(token);
-//   await catalogoStore.getCatArea(token);
-//   catArea.value = catalogoStore.state.catPuesto;
-//   console.log(catalogoStore.state)
-
-//   await catalogoStore.getCatPuesto(token);
-//   catPuesto.value = catalogoStore.state.catPuesto;
+// const envApp = import.meta.env.VITE_ENV_APP;
+// function getAuthorizationHeadersForLaravel(token) {
+//   if(envApp=='prod'){
+//     return {
+//       headers: {
+//         "bearertoken": `${token}`
+//       }
+//     };
+//   }else{
+//     return {
+//       headers: {
+//         "Authorization": `Bearer ${token}`
+//       }
+//     };
+//   }
 // }
+ async function getCatalogo(url) {
+   return await catalogoStore.getCatalogo(url, token);
+ }
+
+console.log("AREAS --- ",catArea.value);
 
 //Inicializa Modal
 const initPopup = () => {
@@ -118,7 +66,16 @@ const initPopup = () => {
 };
 onMounted(async () => {
   initPopup();
-  //getCatalogos();
+  try {
+    catArea.value = await getCatalogo(urlArea);
+    catPuesto.value = await getCatalogo(urlPuesto);
+    catSexo.value = await getCatalogo(urlSexo);
+    console.log("AREAS-HIjas",catArea.value[0].AreasHijas);
+    loadingCat.value = true;
+  } catch (error) {
+    console.log(error);
+  }
+  
 });
 const set_pwd_type = () => {
   if (pwd_type.value === "password") {
@@ -128,23 +85,23 @@ const set_pwd_type = () => {
   }
 };
 const params = {
-  idNumEmpleado: "",
-  nombre: "",
-  apellido1: "",
-  apellido2: "",
-  codigoSexo: "",
-  emailPers: "",
-  emailInst: "",
-  telPers: "",
-  telInst: "",
-  curp: "",
-  rfc: "",
-  pathFotografia: "",
-  codigoArea: "",
-  codigoPuesto: "",
-  fechaAltaEmpleado: "",
+  idNumEmpleado: null,
+  nombre: null,
+  apellido1: null,
+  apellido2: null,
+  codigoSexo: null,
+  emailPers: null,
+  emailInst: null,
+  telPers: null,
+  telInst: null,
+  curp: null,
+  rfc: null,
+  pathFotografia: null,
+  codigoArea: null,
+  codigoPuesto: null,
+  fechaAltaEmpleado: null,
   esTitular: false,
-  fechainicioTitular: "",
+  fechainicioTitular: null,
 };
 
 const form = {
@@ -283,7 +240,13 @@ const opcionSwitchTitular = (idOpcion, campoValido) => {
   }
 };
 const opcionDateAlta = (date, campoValido) => {
-  params.fechaAltaEmpleado = date;
+  //Es necesaria la hora?
+  const fechaActual = new Date();
+  const fechaConHora = new Date(`${date}T${fechaActual.toTimeString().slice(0, 8)}`);
+  const fechaFormateada = formatDateWithTime(fechaConHora);
+  //console.log("fechaFormateada",fechaFormateada);
+
+  params.fechaAltaEmpleado = fechaFormateada;
   if (date == 0) {
     form.fechaAltaEmpleado = false;
   } else {
@@ -291,7 +254,13 @@ const opcionDateAlta = (date, campoValido) => {
   }
 };
 const opcionDateTitular = (date, campoValido) => {
-  params.fechainicioTitular = date;
+  //Es necesaria la hora?
+  const fechaActual = new Date();
+  const fechaConHora = new Date(`${date}T${fechaActual.toTimeString().slice(0, 8)}`);
+  const fechaFormateada = formatDateWithTime(fechaConHora);
+  //console.log("fechaFormateada",fechaFormateada);
+
+  params.fechainicioTitular = fechaFormateada;
   if (date == 0) {
     form.fechainicioTitular = false;
   } else {
@@ -299,6 +268,20 @@ const opcionDateTitular = (date, campoValido) => {
   }
 };
 
+// Función para formatear la fecha con hora en el formato deseado
+function formatDateWithTime(date) {
+  const year = date.getFullYear();
+  const month = padZero(date.getMonth() + 1);
+  const day = padZero(date.getDate());
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  const seconds = padZero(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+function padZero(number) {
+  return number < 10 ? `0${number}` : number;
+}
 const submit_formulario = () => {
   arrayCampos.value = [];
 
@@ -356,7 +339,7 @@ const submit_formulario = () => {
       "esTitular": params.esTitular,
       "fechainicioTitular": params.fechainicioTitular
     }
-
+    //console.log("EMP",empleado)
     authStore.registerEmpleado(empleado);
   }
 };
@@ -374,10 +357,7 @@ const imageSrc = () => {
 const is_submit_form = ref(false);
 const selected_option = ref("");
 const selected_area = ref("");
-//const selected_sexo = ref("");
 
-//Catálogo sexo
-//getData(import.meta.env.VITE_API_LARURL + "/api/get-catalogo/sexo", );
 </script>
 <template>
   <div class="form auth-boxed">
@@ -388,7 +368,12 @@ const selected_area = ref("");
             <div class="form-content">
               <h1 class="">Registrar empleado</h1>
               <form class="text-start" novalidate @submit.stop.prevent="submit_formulario">
-                <div class="form">
+                <div class="d-flex justify-content-center m-5" v-if="!loadingCat">
+                  <div class="spinner-border text-primary" role="status" >
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                </div>
+                <div class="form" v-if="loadingCat">
                   <div class="row justify-content-center text-center">
                     <div class="col-12">
                       <div class="upload mt-4 pe-md-4 mb-5">
@@ -515,11 +500,12 @@ const selected_area = ref("");
                         idName="catArea"
                         label="Área:"
                         :is_submit_form="is_submit_form"
-                        :items="catArea"
-                        v-if="loadingArea"
+                        :items="catArea[0].AreasHijas"
+                        v-if="loadingCat"
                         v-model="selected_area"
-                        value-field="id"
-                        label-field="abreviatura"
+                        keyField="id"
+                        value-field="abreviatura"
+                        label-field="area"
                         value=""
                         @opcionSelect="opcionSelectArea"
                       ></GenericSelect>
@@ -530,9 +516,10 @@ const selected_area = ref("");
                         label="Puesto:"
                         :is_submit_form="is_submit_form"
                         :items="catPuesto"
-                        v-if="loadingPuesto"
+                        v-if="loadingCat"
                         v-model="selected_option"
-                        value-field="id"
+                        keyField="id"
+                        value-field="nombramiento"
                         label-field="nombramiento"
                         value=""
                         @opcionSelect="opcionSelectPuesto"
@@ -544,7 +531,7 @@ const selected_area = ref("");
                       <RadioGroup
                         label="Sexo"
                         :options="catSexo"
-                        v-if="loadingSexo"
+                        v-if="loadingCat"
                         value-field="abreviatura"
                         label-field="sexo"
                         @opcionCheck="opcionCheckSexo"

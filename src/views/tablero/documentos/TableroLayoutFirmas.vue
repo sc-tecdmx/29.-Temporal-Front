@@ -9,7 +9,9 @@ import TableroBuscar from "./TableroBuscar.vue";
 // import ModalAddTask   from "./ModalAddTask.vue";
 // import ModalViewTask  from "./ModalViewTask.vue";
 import TableroTablaListado from "../documentos/TableroTablaListado.vue";
-
+//Stores
+import { useAuthStore } from '@/stores/authStore.js';
+import { useCatalogoStore } from "@/stores/catalogoStore";
 
 import "@/assets/sass/apps/todolist.scss";
 import "@/assets/css/modulos/todolist-editor.css"
@@ -24,6 +26,10 @@ import IconPlus from "@/components/icons/IconPlus.vue";
 //import IconDropdown from "@/components/icons/IconDropdown.vue";
 
 //---------------------------
+const authStore = useAuthStore();
+const catalogoStore = useCatalogoStore();
+const token = authStore.state.user.token;
+
 const is_show_task_menu = ref(false);
 const params = ref({ task_id: null, title: "", description: "" });
 const tab_index = ref(0);
@@ -33,6 +39,12 @@ const search_task = ref("");
 const selected_tab = ref("");
 const selected_task = ref(null);
 const urlBase = import.meta.env.VITE_API_PKIURL;
+const urlUserDocs = import.meta.env.VITE_API_PKIURL + import.meta.env.VITE_CAT_DOCUMENTOS;
+const userDocuments = ref(null);
+
+async function obtenerDocumentos(url) {
+  return await catalogoStore.getDocumentsUser(urlUserDocs, token);
+}
 
 const editor_options = ref({
   modules: {
@@ -57,16 +69,18 @@ const axiosInstance = axios.create({
 });
 
 const bind_task_list = async () => {
-  try {
-    const { data } = await axiosInstance.get("https://nekdu.com/j/d.php");
-    task_list.value = data;
+  userDocuments.value = await obtenerDocumentos(urlUserDocs);
+  task_list.value = userDocuments.value.data;
+  // try {
+  //   const { data } = await axiosInstance.get("https://nekdu.com/j/d.php");
+  //   task_list.value = data;
 
-    //console.log(data)
-    //console.log("AXIOS:" + task_list.value);
-  } catch (error) {
-    console.log(error);
-    alert(error)
-  }
+  //   //console.log(data)
+  //   //console.log("AXIOS:" + task_list.value);
+  // } catch (error) {
+  //   console.log(error);
+  //   alert(error)
+  // }
   //console.log("bind_task_list")
 
   search_tasks(search_task.value);
@@ -77,15 +91,16 @@ const search_tasks = (search_task) => {
   //console.log("search_task["+search_task+"]")
   let res; 
   if (selected_tab.value) {
-    res = task_list.value.filter((d) => d.status == selected_tab.value);
+    res = task_list.value.filter((d) => d.etapa == selected_tab.value);
   } else {
-    res = task_list.value.filter((d) => d.status != "trash");
+    res = task_list.value.filter((d) => d.etapa != "trash");
   }
   filtered_task_list.value = res.filter((d) =>
-    d.title.toLowerCase().includes(search_task)
+    d.etapa.includes(search_task)
   );
 };
 const tab_changed = (type) => {
+  //console.log("Type",type);
   selected_tab.value = type;
   search_tasks(search_task.value);
   is_show_task_menu.value = false;
@@ -106,7 +121,7 @@ const set_priority = (task, name) => {
   task.priority = name;
 };
 const task_complete = (task) => {
-  console.log('task_complete')
+  //console.log('task_complete')
   if (!task.status) {
     task.status = "complete";
   } else {
@@ -265,6 +280,7 @@ const showMessage = (msg = "", type = "success") => {
           <!-- Content Tablero -->
           <div id="todo-inbox" class="accordion todo-inbox">
             <TableroTablaListado
+              :filtered_task_list="filtered_task_list"
               :url= "urlBase + '/api/documento/documentos-usuario'"
             ></TableroTablaListado>
           </div>

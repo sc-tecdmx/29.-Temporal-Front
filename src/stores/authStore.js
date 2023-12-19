@@ -19,23 +19,35 @@ export const useAuthStore = defineStore('authStore',()=>{
                  password: password
              }
              try {
-                const usuario = ref({})
-                await axios.post(urlLogin, post).then((response) => {
-                  //console.log("*** Login ***")
-                  //console.log("response",response)
-                  usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
-                  state.value.user = JSON.parse(localStorage.getItem('user'));
-                  if(response.data.status === "failed" || response.data.token == null){
-                      alert("Usuario o contrase�a incorrecta")
-                  }else{
-                      router.push('/');
-                  }
-                });
+              const response = await axios.post(urlLogin, post);
+              const token = response.headers.authorization;
+              const decodedToken =  parseJwt(token);
+              const idEmpleado = decodedToken.sub;
+              // console.log("Token:", token);
+              // console.log("Idempleado:", idEmpleado);
+              // console.log("Encabezados:", response.headers)
+              const usuario = ref({});
+              usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
+              state.value.user = JSON.parse(localStorage.getItem('user'));
+              if (response.data.status === "failed" || response.data.token == null) {
+                alert("Usuario o contraseña incorrecta");
+              } else {
+                router.push('/');
+              }
              } catch (error) {
                  console.log(error);
              }finally{
                 loadingUser.value = false;
              }
+    }
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    
+      return JSON.parse(jsonPayload);
     }
     const logoutUser = () => {
         localStorage.removeItem('user');
@@ -64,20 +76,26 @@ export const useAuthStore = defineStore('authStore',()=>{
           }
     }
     const registerEmpleado = async(user) => {
-      const axiosInstance = axios.create({
-        "Access-Control-Allow-Origin": "*",
-    });
+    //   const axiosInstance = axios.create({
+    //     "Access-Control-Allow-Origin": "*",
+    // });
         let urlRegUser = import.meta.env.VITE_API_SEGURL + "/api/seguridad/create-empleado";
         const token = state.value.user.token;
           try {
-           await axiosInstance.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+           await axios.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //await axiosInstance.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
                 //console.log(response)    
                 //alert(response.data.message);
-
+              if(response.data.status == "Fail"){
                 if (confirm(response.data.message)) {
-                    //window.location.reload();
-                    router.push('/config/catalogo/personal');
-                  }
+                  window.location.reload();
+                }
+              }else{
+                if (confirm(response.data.message)) {
+                  router.push('/config/catalogo/personal');
+                }
+              }
+                
             });
           
           } catch (error) {
@@ -112,8 +130,8 @@ export const useAuthStore = defineStore('authStore',()=>{
               }
           
             } catch (error) {
-                alert('Error al solicitar reset de contrase�a')
-                console.log('Error al solicitar reset de contrase�a:',error)
+                alert('Error al solicitar reset de contraseña')
+                console.log('Error al solicitar reset de contraseña:',error)
             }
     }
     const resetPass = async(token, password) => {
@@ -132,8 +150,8 @@ export const useAuthStore = defineStore('authStore',()=>{
                 }
           
             } catch (error) {
-                alert('Error al solicitar reset de contrase�a')
-                console.log('Error al solicitar reset de contrase�a:',error)
+                alert('Error al solicitar reset de contraseña')
+                console.log('Error al solicitar reset de contraseña:',error)
             }
     }
     return { loginUser, logoutUser, registerUser, registerEmpleado, cambiarPass, restablecerPass, resetPass, state, loadingUser }

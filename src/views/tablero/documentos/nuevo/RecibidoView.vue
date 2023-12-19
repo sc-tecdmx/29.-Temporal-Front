@@ -9,10 +9,14 @@ import { useRoute, useRouter } from "vue-router";
 import { getCertificadoData } from "@/firma/main.mjs";
 import { useMeta } from "@/composables/use-meta";
 import { useAuthStore } from '@/stores/authStore.js';
-import { useCatalogoStore } from "@/stores/catalogoStore";
-
+import { useCatalogoStore } from "@/stores/catalogoStore.js";
+import { useFirmaStore } from "@/stores/firmaStore.js";
+import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
+//Stores
 const catalogoStore = useCatalogoStore();
 const authStore = useAuthStore();
+const firmaStore = useFirmaStore();
+
 const token = authStore.state.user.token;
 useMeta({ title: "Detalle Documento" });
 
@@ -21,6 +25,12 @@ const documento = ref(null);
 
 const columns = ref([]);
 const columns2 = ref([]);
+const is_submit_form_cer = ref(false);
+const is_submit_form_key = ref(false);
+const is_submit_form_pass = ref(false);
+const is_submit_form_doc = ref(false);
+const alertFirma = ref(false);
+let certificadoModal = ref(null);
 
 
 const urlDetalle = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
@@ -28,9 +38,16 @@ const urlDetalle = import.meta.env.VITE_API_LARURL +`/api/documento/${route.para
 async function obtenerDetalle(url) {
   return await catalogoStore.getDetalleDocumento(url, token);
 }
+//Inicializa Modal
+ const initPopup = () => {
+   certificadoModal = new window.bootstrap.Modal(document.getElementById("certificadoModal")); 
+ };
 onMounted(async() => {
   bind_data();
+  //initPopup();
   documento.value = await obtenerDetalle(urlDetalle);
+  //console.log(documento.value)
+  status_btn();
 });
 
 const bind_data = () => {
@@ -63,6 +80,8 @@ const archivoEsCer = ref(false);
 const change_file_cer = (event) => {
   selected_file_cer.value = event.target.files[0];
   certificado.value.archivoCer = selected_file_cer.value;
+  is_submit_form_cer.value = false;
+  alertFirma.value = false;
 
   const inputElement = document.getElementById("formFileCer");
   const nombreArchivo = inputElement.value.toLowerCase();
@@ -79,55 +98,29 @@ const change_file_key = (event) => {
 };
 
 const setContrasena = (contrasena) => {
-  console.log("constraseña" + contrasena.value);
+  //console.log("constraseña" + contrasena.value);
   certificado.value.contrasenaCer = contrasena.value;
-};
-
-const enviaFirma = () => {
-  console.log("certificado");
-  const certFileData = {
-    file: certificado.value.archivoCer,
-    buffer: null,
-    base64: null,
-    iscer: archivoEsCer.value,
-  };
-  const pfxFileData = {
-    file: certificado.value.archivoCer,
-    buffer: null,
-    base64: null,
-    iscer: archivoEsCer.value,
-  };
-  const keyFileData = {
-    file: certificado.value.archivoKey,
-    buffer: null,
-    base64: null,
-  };
-  const docFileData = {
-    file: certificado.value.documento,
-    buffer: null,
-    base64: null,
-  };
-
-  getCertificadoData(
-    certFileData,
-    keyFileData,
-    docFileData,
-    certificado.value.contrasenaCer
-  );
 };
 /* Termina Modal firmar ahora */
 
 /* Modal Rechazo*/
 const motivoRechazo = () => {
-  console.log("motivo rechazo");
+  // console.log("motivo rechazo");
+  // console.log(documento.value.idDocumento);
+  let post ={
+      "idDocumento": documento.value.idDocumento,
+      "codigoFirmaAplicada": "Rechazado",
+      "tipoUsuario": "firmante"
+  }
+  firmaStore.rechazarDocumento(post,token);
 };
 /* Termina Modal Rechazo*/
 
 const pathdocumento = ref("");
-const pdf_view = (adjuntos) => {
-  console.log(adjuntos)
-  //pathdocumento.value = path;
-};
+// const pdf_view = (adjuntos) => {
+//   console.log(adjuntos)
+//   //pathdocumento.value = path;
+// };
 const getNombre = (path) => {
   const parts = path.split('/');
   const fileName = parts[parts.length - 1];
@@ -137,6 +130,153 @@ const closeModal = () => {
   // Liberar el objeto PDF asignándole null
   pathdocumento.value = null;
 };
+const submit_formFirma = async () => {
+
+if(archivoEsCer.value){
+  //console.log("SI Es CER");
+  is_submit_form_cer.value = true
+  is_submit_form_key.value =true
+  is_submit_form_pass.value = true
+}else{
+  //console.log("NO Es PFX");
+  is_submit_form_cer.value = true
+  is_submit_form_pass.value = true
+}
+
+if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
+    || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
+  //await enviaFirma();
+  await firmaStore.enviaFirma(
+    certificado.value.archivoCer, 
+    certificado.value.archivoCer, 
+    certificado.value.archivoKey,
+    certificado.value.contrasenaCer, 
+    documento.value.documentosAdjuntos, 
+    archivoEsCer.value,
+    token
+    );
+}
+};
+// const enviaFirma = async () => {
+//   const certFileData = {
+//                         file: certificado.value.archivoCer,
+//                         buffer: null,
+//                         base64: null,
+//                         iscer: archivoEsCer.value,
+//                       };
+//   const pfxFileData = {
+//                         file: certificado.value.archivoCer,
+//                         buffer: null,
+//                         base64: null,
+//                         iscer: archivoEsCer.value,
+//                       };
+//   const keyFileData = {
+//                         file: certificado.value.archivoKey,
+//                         buffer: null,
+//                         base64: null,
+//                       };
+//   const docFileData = {
+//                         file: certificado.value.documento,
+//                         buffer: null,
+//                         base64: null,
+//                       };
+  
+//    if(certFileData.file!=null){
+//      const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+//      const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
+//      const codigoFirmaAplicada = 'Firmado';
+
+//      documento.value.documentosAdjuntos.forEach(doc => {
+//       const pdfFileObj = doc.docBase64;
+//       main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+//     });
+
+//    }else if(pfxFileData.file!=null){
+//      const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+//      const pdfFileObj = documento.value.documentosAdjuntos[0].docBase64;
+//      //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
+//      const codigoFirmaAplicada = 'Firmado';
+//      main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+//      //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+//    }
+//   certificadoModal.hide();
+
+// };
+function arrayBufferToBase64(arrayBuffer) {
+  const binary = new Uint8Array(arrayBuffer);
+  let base64 = '';
+  binary.forEach((byte) => {
+    base64 += String.fromCharCode(byte);
+  });
+  return btoa(base64);
+}
+
+async function getMimeTypeAndArrayBufferFromFile_v2(file) {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+
+    fileReader.onload = () => {
+      const arrayBuffer = fileReader.result;
+      const base64 = arrayBufferToBase64(arrayBuffer);
+      const uint8 = new Uint8Array(arrayBuffer);
+      //const blob = new Blob([arrayBuffer]);
+      resolve({
+        //mimeType: blob.type,
+        arrayBuffer: arrayBuffer,
+        base64: base64,
+        uint8: uint8
+      });
+    };
+
+    fileReader.onerror = () => {
+      reject(new Error('No se pudo leer el archivo.'));
+    };
+
+    fileReader.readAsArrayBuffer(file);
+  });
+}
+//botones
+const btnEnviar = ref(false);
+const btnFirmar = ref(false);
+const btnRechazado = ref(false);
+
+const status_btn = () => {
+  //revisar 
+  console.log("Etapa",documento.value.etapaDocumento)
+  switch(documento.value.etapaDocumento){
+    case 'Creado':
+      btnEnviar.value = true;
+      btnFirmar.value = false;
+      btnRechazado.value = false;
+      break;
+    case 'Enviado':
+      //Si firmante, deshabilitados
+      //Si destinatario habilitados
+      btnEnviar.value = true;
+      btnFirmar.value = true;
+      btnRechazado.value = true;
+      break;
+    case 'En Firma':
+      btnEnviar.value = false;
+      btnFirmar.value = false;
+      btnRechazado.value = false;
+      break;
+    case 'Rechazado':
+      btnEnviar.value = true;
+      btnFirmar.value = true;
+      btnRechazado.value = true;
+      break;
+    case 'Terminado':
+      btnEnviar.value = true;
+      btnFirmar.value = true;
+      btnRechazado.value = true;
+      break;
+    default:
+      alert("No se encuentra etapa de documento");
+      break;
+  }
+};
+
 </script>
 <template>
   <div class="row no-gutters justify-content-center">
@@ -166,7 +306,6 @@ const closeModal = () => {
                                     </h3>
                                   </div>
                                 </div>
-
                                 <div class="col-sm-6 text-sm-end">
                                   <p class="inv-list-number">
                                     <span class="inv-title">Folio : </span>
@@ -363,35 +502,37 @@ const closeModal = () => {
                     <div class="invoice-action-btn">
                       <div class="row">
                         <div class="col-xl-12 col-md-3 col-sm-6">
-                          <a
+                          <button
                             href="javascript:;"
-                            class="btn btn-primary btn-send"
-                            >Enviar/Transferir</a
-                          >
+                            class="btn btn-primary btn-send btn-accion-enviar"
+                            :disabled="btnEnviar"
+                            >Enviar/Transferir</button>
                         </div>
                         <div class="col-xl-12 col-md-3 col-sm-6">
-                          <a
+                          <button
                             data-bs-toggle="modal"
                             data-bs-target="#certificadoModal"
                             id="btn-certificado"
-                            class="btn btn-success btn-send"
+                            class="btn btn-success btn-send btn-accion-firmar"
+                            :disabled="btnFirmar"
                             href="javascript:void(0);"
                             @click=""
                           >
                             Firmar
-                          </a>
+                          </button>
                         </div>
                         <div class="col-xl-12 col-md-3 col-sm-6">
-                          <a
+                          <button
                             data-bs-toggle="modal"
                             data-bs-target="#rechazoModal"
                             id="btn-rechazo"
-                            class="btn btn-danger btn-send"
+                            class="btn btn-danger btn-send btn-accion-rechazar"
+                            :disabled="btnRechazado"
                             href="javascript:void(0);"
                             @click=""
                           >
                             Rechazar
-                          </a>
+                          </button>
                           <!-- <router-link to="#" class="btn btn-danger btn-edit">Rechazar</router-link> -->
                         </div>
                       </div>
@@ -400,61 +541,42 @@ const closeModal = () => {
                 </div>
                 <!-- Boton de firmar -->
                 <!-- Modal Firma -->
-                <div
-                  id="certificadoModal"
-                  class="modal fade"
-                  aria-labelledby="exampleModalLabel"
-                  aria-hidden="true"
-                >
+                <div id="certificadoModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-md modal-dialog-centered">
                     <div class="modal-content mailbox-popup">
                       <div class="modal-header">
                         <h5 class="modal-title">Firma electrónica</h5>
-                        <button
-                          type="button"
-                          data-dismiss="modal"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                          class="btn-close"
-                        ></button>
+                        <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
                       </div>
                       <div class="modal-body">
                         <div class="compose-box">
                           <div class="compose-content">
-                            <form>
+                            <form novalidate class="simple-example" @submit.stop.prevent="submit_formFirma">
                               <div class="row">
                                 <div class="col-md-12">
                                   <div class="mb-3">
-                                    <label for="formFileCer" class="form-label"
-                                      >Archivo de certificado (*.cer o
-                                      .pfx)</label
-                                    >
-                                    <input
-                                      class="form-control"
-                                      type="file"
-                                      id="formFileCer"
-                                      @change="change_file_cer"
-                                      accept=".cer, .pfx"
+                                    <label for="formFileCer" class="form-label" >Archivo de certificado (*.cer o .pfx)</label>
+                                    <input class="form-control"
+                                            type="file"
+                                            id="formFileCer"
+                                            @change="change_file_cer"
+                                            accept=".cer, .pfx"
+                                            :class="[is_submit_form_cer ? (selected_file_cer ? 'is-valid' : 'is-invalid') : '']"
                                     />
                                   </div>
-                                  <!-- <AgregarArchivo
-                                            label="Archivo de certificado (*.cer)"
-                                        ></AgregarArchivo> -->
                                 </div>
                               </div>
 
                               <div class="row">
                                 <div class="col-md-12" v-if="archivoEsCer">
                                   <div class="mb-3">
-                                    <label for="formFileKey" class="form-label"
-                                      >Archivo de certificado (*.key)</label
-                                    >
-                                    <input
-                                      class="form-control"
-                                      type="file"
-                                      id="formFileKey"
-                                      @change="change_file_key"
-                                      accept=".key"
+                                    <label for="formFileKey" class="form-label">Archivo de certificado (*.key)</label>
+                                    <input class="form-control"
+                                            type="file"
+                                            id="formFileKey"
+                                            @change="change_file_key"
+                                            accept=".key"
+                                            :class="[is_submit_form_key ? (selected_file_key ? 'is-valid' : 'is-invalid') : '']"
                                     />
                                   </div>
                                 </div>
@@ -462,10 +584,9 @@ const closeModal = () => {
 
                               <div class="form-group row invoice-created-by">
                                 <div class="col-sm-12">
-                                  <label
-                                    for="contrasenaCer"
+                                  <label for="contrasenaCer"
                                     class="col-sm-12 col-form-label col-form-label-sm pb-0"
-                                    >Contraseña</label
+                                    >Contrase&ntilde;a</label
                                   >
                                   <input
                                     type="password"
@@ -473,20 +594,27 @@ const closeModal = () => {
                                     id="contrasenaCer"
                                     class="form-control form-control-sm"
                                     placeholder="Introduzca su contraseña"
+                                    :class="[is_submit_form_pass ? (certificado.contrasenaCer ? 'is-valid' : 'is-invalid') : '']" 
                                   />
+                                  <!-- <div class="valid-feedback">Looks good!</div> -->
+                                  <div class="invalid-feedback">Ingresa contrase&ntilde;a</div>
                                 </div>
+                              </div>
+                              <div class="alert alert-light-danger alert-dismissible border-0 mb-4" role="alert" v-if="alertFirma">
+                                <strong>Ingrese datos en los campos solicitados.</strong>
                               </div>
 
                               <div class="row justify-content-end">
                                 <div class="col-3">
-                                  <a
+                                  <button type="submit" class="btn mt-2 btn-success btn-send">Firmar</button>
+                                  <!-- <a
                                     id="btn-modal-firma"
                                     class="btn btn-success btn-send p-3"
                                     href="javascript:void(0);"
                                     @click="enviaFirma()"
                                   >
                                     Firmar
-                                  </a>
+                                  </a> -->
                                 </div>
                               </div>
                             </form>
@@ -625,5 +753,17 @@ const closeModal = () => {
 <style>
 .pStyle {
   font-size: 13px;
+}
+.btn-accion-enviar{
+  padding: 8px 62px;
+  margin-bottom: 20px;
+}
+.btn-accion-firmar{
+  padding: 8px 93px;
+  margin-bottom: 20px;
+}
+.btn-accion-rechazar{
+  padding: 8px 85px;
+  margin-bottom: 20px;
 }
 </style>

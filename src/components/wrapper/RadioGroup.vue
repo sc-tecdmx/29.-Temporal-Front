@@ -1,5 +1,6 @@
 <script setup>
   import { ref } from 'vue';
+  import { watch } from "vue";
   
   const props = defineProps([
     'options', 
@@ -8,9 +9,14 @@
     'value', 
     'label'
 ]);
-  const selectedValue = ref(props.value);
+//console.log("PROPS--Radio",props)
+  const selectedValue = ref(null);
   const emit = defineEmits(['opcionCheck']);
 
+watch(() => props.value, async (nuevoValue) => {
+  //console.log(nuevoValue);
+  selectedValue.value = nuevoValue;
+});
   </script>
   <template>
         <p>{{ props.label }}</p>

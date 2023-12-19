@@ -9,8 +9,9 @@ import fs from 'fs';
     Local: http:localhost:8081
 */
 
+const apiFirma = import.meta.env.VITE_API_PKIURL;
 //const apiFirma = 'http://localhost:8081';
-const apiFirma = 'http://52.206.121.172:8080/firma-pki';
+//const apiFirma = 'http://52.206.121.172:8080/firma-pki';
 
 
 const urlTransaccion = apiFirma+'/api/firma/transaccion/get-transaccion';
@@ -44,7 +45,6 @@ export function readContentTxt(filePath) {
 */
 
 async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc){
-    
     let responseBody = new ResponseBody();
     const document = await new Document(pdfBase64);
     await document.initialize();
@@ -55,6 +55,12 @@ async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDO
     if(isCertVigente){//Validamos vigencia solo con datos del certificado
         console.log('--------------Es certVigente')
         const hasTransaccion = await firma.getTransaccion(document.hash, certificate.cerBase64, urlTransaccion, token, responseBody);//Obtenemos la transacción
+        if(responseBody.message != undefined){
+            if (confirm(responseBody.message)) {
+                window.location.href = "/";
+                //console.log(responseBody);
+            }
+        }
         if(hasTransaccion){
             const validacionOCSP = await certificate.validateOCSP(firma.idTransaccion, urlOCPS, token, responseBody);//Validamos OCSP
             if(validacionOCSP){

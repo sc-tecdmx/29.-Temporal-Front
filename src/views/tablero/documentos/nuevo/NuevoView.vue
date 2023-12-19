@@ -1,18 +1,19 @@
 <script setup>
-import { onMounted, inject, ref } from "vue";
+import { onMounted, ref } from "vue";
 import axios from 'axios';
-import jwtDecode from "vue-jwt-decode";
+//import jwtDecode from "vue-jwt-decode";
+import VueJwtDecode from "vue-jwt-decode";
 import "@/assets/sass/apps/invoice-add.scss";
-import router from "@/router";
+//import router from "@/router";
 //-----------------------
 import "@/assets/sass/forms/file-upload-with-preview.min.css";
-import "@/assets/sass/forms/custom-flatpickr.css";
+//import "@/assets/sass/forms/custom-flatpickr.css";
 import { useMeta } from "@/composables/use-meta";
 /** Multiselect */
 import "@/assets/sass/scrollspyNav.scss";
 import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
 //flatpickr
-import flatPickr from "vue-flatpickr-component";
+//import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import "@/assets/sass/forms/custom-flatpickr.css";
 //Stores
@@ -37,7 +38,7 @@ import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
 import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
 
 //Composable 
-import { useGetData } from "@/composables/getData";
+//import { useGetData } from "@/composables/getData";
 
 //useMeta({ title: 'Vue Multiselect' });
 /** ./Multiselect */
@@ -45,7 +46,7 @@ useMeta({ title: "Nuevo documento" });
 //Config URLs
 const urlPKI = import.meta.env.VITE_API_PKIURL;
 const urlLAR = import.meta.env.VITE_API_LARURL;
-//const config = inject('config');
+
 const catalogos = ref({});
 const catDestino = ref({});
 const catTipoDocumento = ref({});
@@ -64,10 +65,10 @@ const urlNewDoc = import.meta.env.VITE_API_LARURL + import.meta.env.VITE_CAT_NUE
 const token = authStore.state.user.token;
 //console.log("token", token)
 
-const envApp = 'prod';
+const envApp = import.meta.env.VITE_ENV_APP;
 
   function getAuthorizationHeadersForLaravel(token) {
-    console.log(envApp);
+    
   if(envApp==='prod'){
     return {
       headers: {
@@ -529,8 +530,10 @@ const submit_formulario = () => {
 //   dt.setDate(dt.getDate() + 5);
 //   params.value.configuracion.fechaLimite = dt;
 const catDisponible = ref(false);
+const headerData = ref(null);
 onMounted(async() => {
   initPopup();
+  decodeToken();
   //bind_data();
   catNuevoDoc.value = await obtenerCatNuevoDoc(urlNewDoc);
   //console.log(catNuevoDoc.value.data);
@@ -893,8 +896,17 @@ const addExpediente = async()=>{
     // };
 
     const usuarioSesion = ref(null);
-    usuarioSesion.value = jwtDecode.decode(token);
-    //console.log(usuarioSesion)
+    usuarioSesion.value = VueJwtDecode.decode(token);
+    //console.log(usuarioSesion.value)
+
+const idEmpleado = ref(null);
+const decodeToken = () => {
+  //console.log(token)
+  const decodedToken = JSON.parse(atob(token.split('.')[1]));
+  //console.log(decodedToken);
+  idEmpleado.value = decodedToken.Idempleado;
+  //console.log(idEmpleado)
+};
 
 </script>
 <template>
@@ -975,7 +987,7 @@ const addExpediente = async()=>{
                           </div>
                         </div>
                         <div class="row align-items-center">
-                          <div class="col-12" :class="[expDesc ? 'col-md-2' : 'col-md-4']">
+                          <div class="col-12" :class="[expDesc ? 'col-md-3' : 'col-md-4']">
                             <InputValidado
                               idName="folioDocumento"
                               label="Folio del documento:"
@@ -984,7 +996,7 @@ const addExpediente = async()=>{
                               @inputData="opcionInputFolioDocumento"
                             ></InputValidado>
                           </div>
-                          <div class="col-12" :class="[expDesc ? 'col-md-3' : 'col-md-4']">
+                          <div class="col-12" :class="[expDesc ? 'col-md-2' : 'col-md-4']">
                             <InputValidado
                               idName="folio"
                               label="Folio especial:"
@@ -1232,7 +1244,7 @@ const addExpediente = async()=>{
                     </div>
                     <div class="row">
                         <div class="col-md-12 form-group">
-                            <label for="contrasenaCer">Contraseña</label>
+                            <label for="contrasenaCer">Contrase&ntilde;a</label>
                             <input v-model="certificado.contrasenaCer" 
                                     id="contrasenaCer" 
                                     type="password" 
@@ -1240,7 +1252,7 @@ const addExpediente = async()=>{
                                     :class="[is_submit_form_pass ? (certificado.contrasenaCer ? 'is-valid' : 'is-invalid') : '']" 
                             />
                             <!-- <div class="valid-feedback">Looks good!</div> -->
-                            <div class="invalid-feedback">Ingresa contraseña</div>
+                            <div class="invalid-feedback">Ingresa contrase&ntilde;a</div>
                         </div>
                     </div>
                     <div class="alert alert-light-danger alert-dismissible border-0 mb-4" role="alert" v-if="alertFirma">

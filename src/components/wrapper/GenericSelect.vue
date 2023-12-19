@@ -3,6 +3,7 @@
   
   const props = defineProps([
     'items', 
+    'keyField', 
     'valueField', 
     'labelField', 
     'value', 
@@ -10,7 +11,7 @@
     'label', 
     'is_submit_form'
   ]);
-
+//console.log("PROPS", props)
   const selectedValue = ref(props.value);
   const emit = defineEmits(['opcionSelect']);
 
@@ -46,7 +47,7 @@
               :id="idName"
               @change="submit_form3(); emit('opcionSelect', selectedValue)">
           <option value="">-- Seleccionar --</option>
-          <option v-for="option in options" :key="option[props.valueField]" :value="option[props.labelField]">
+          <option v-for="option in options" :key="option[props.valueField]" :value="option[props.valueField]">
             {{ option[props.labelField] }}
           </option>
         </select>

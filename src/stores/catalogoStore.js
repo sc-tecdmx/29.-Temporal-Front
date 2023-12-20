@@ -88,14 +88,14 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         const urlSaveCat = baseUrl + urlCat;
         
         try {
-            const axiosInstance = axios.create({
-               "Access-Control-Allow-Origin": "*",
-           });
+          //   const axiosInstance = axios.create({
+          //      "Access-Control-Allow-Origin": "*",
+          //  });
            //local
            //await axios.post(urlSaveCat, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
             //servidor
             await axios.post(urlSaveCat, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
-            
+              //console.log("Resp",response)
                  if (confirm(response.data.message)) {
                       window.location.reload();
                     }

@@ -4,8 +4,8 @@ import axios from "axios";
 
 //import { useLiveStore } from "@/stores/appLiveStore.js";
 import TableroSidebar from "./TableroSidebar.vue";
-import TableroListado from "./TableroListado.vue";
-import TableroBuscar from "./TableroBuscar.vue";
+// import TableroListado from "./TableroListado.vue";
+// import TableroBuscar from "./TableroBuscar.vue";
 // import ModalAddTask   from "./ModalAddTask.vue";
 // import ModalViewTask  from "./ModalViewTask.vue";
 import TableroTablaListado from "../documentos/TableroTablaListado.vue";
@@ -24,7 +24,7 @@ import "@/assets/sass/tables/table-basic.scss";
 import IconPortapapeles from "@/components/icons/IconPortapapeles.vue";
 import IconPlus from "@/components/icons/IconPlus.vue";
 //import IconDropdown from "@/components/icons/IconDropdown.vue";
-
+import { defineProps, watch } from 'vue';
 //---------------------------
 const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
@@ -41,6 +41,18 @@ const selected_task = ref(null);
 const urlBase = import.meta.env.VITE_API_PKIURL;
 const urlUserDocs = import.meta.env.VITE_API_PKIURL + import.meta.env.VITE_CAT_DOCUMENTOS;
 const userDocuments = ref(null);
+
+const props = defineProps({
+  activarFiltro: String
+});
+
+watch(() => props.activarFiltro, (nuevoValor) => {
+  if (nuevoValor) {
+    let res; 
+      res = task_list.value.filter((d) => d.etapa == nuevoValor);
+      filtered_task_list.value = res;
+  }
+});
 
 async function obtenerDocumentos(url) {
   return await catalogoStore.getDocumentsUser(urlUserDocs, token);

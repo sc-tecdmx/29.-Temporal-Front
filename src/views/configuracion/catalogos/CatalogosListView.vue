@@ -38,9 +38,9 @@ const authStore = useAuthStore();
                     </div>
                 </div>
                 <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
-                    <div class="card text-center mb-3" style="width: 15rem">
+                    <div class="card text-center mb-3" style="width: 16rem">
                         <div class="card-body">
-                        <h5 class="card-title">Destino</h5>
+                        <h5 class="card-title">Destino de documento</h5>
                         <p class="card-text">
                         </p>
                         <router-link to="/config/catalogo/destino" class="btn btn-primary">Administrar</router-link>

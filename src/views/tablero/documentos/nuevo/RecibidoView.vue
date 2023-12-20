@@ -1,6 +1,10 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import "@/assets/sass/apps/invoice-preview.scss";
+import "@/assets/sass/apps/invoice-add.scss";
+import "@/assets/sass/scrollspyNav.scss";
+import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
+import "@/assets/sass/forms/file-upload-with-preview.min.css";
 import IconFeatherFileText from "@/components/icons/IconFeatherFileText.vue";
 
 //PDF viewer
@@ -31,6 +35,7 @@ const is_submit_form_pass = ref(false);
 const is_submit_form_doc = ref(false);
 const alertFirma = ref(false);
 let certificadoModal = ref(null);
+let rechazoModal = ref(null);
 
 
 const urlDetalle = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
@@ -38,18 +43,19 @@ const urlDetalle = import.meta.env.VITE_API_LARURL +`/api/documento/${route.para
 async function obtenerDetalle(url) {
   return await catalogoStore.getDetalleDocumento(url, token);
 }
-//Inicializa Modal
- const initPopup = () => {
-   certificadoModal = new window.bootstrap.Modal(document.getElementById("certificadoModal")); 
- };
+
 onMounted(async() => {
   bind_data();
-  //initPopup();
+  initPopup();
   documento.value = await obtenerDetalle(urlDetalle);
   //console.log(documento.value)
   status_btn();
 });
-
+//Inicializa Modal
+const initPopup = () => {
+   certificadoModal = new window.bootstrap.Modal(document.getElementById("certificadoModal"));
+   rechazoModal = new window.bootstrap.Modal(document.getElementById("rechazoModal"));
+};
 const bind_data = () => {
   columns.value = [
     { key: "firmante", label: "Firmante" },
@@ -242,6 +248,7 @@ const btnRechazado = ref(false);
 
 const status_btn = () => {
   //revisar 
+  //revisar statusFirma
   console.log("Etapa",documento.value.etapaDocumento)
   switch(documento.value.etapaDocumento){
     case 'Creado':
@@ -276,7 +283,23 @@ const status_btn = () => {
       break;
   }
 };
-
+const is_submit_rechazo = ref(false);
+const formRechazo = ref({ motivo: '' });
+const submit_rechazo = () => {
+  is_submit_rechazo.value = true;
+        if (formRechazo.value.motivo) {
+          let post ={
+              "idDocumento": documento.value.idDocumento,
+              "codigoFirmaAplicada": "Rechazado",
+              "tipoUsuario": "firmante",
+              "motivo": formRechazo.value.motivo
+          }
+          console.log(post)
+          //Falta el nuevo servicio que contenga el motivo
+          firmaStore.rechazarDocumento(post,token);
+        }
+        rechazoModal.hide();
+    };
 </script>
 <template>
   <div class="row no-gutters justify-content-center">
@@ -540,8 +563,40 @@ const status_btn = () => {
                   </div>
                 </div>
                 <!-- Boton de firmar -->
-                <!-- Modal Firma -->
-                <div id="certificadoModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                
+                <!-- Modal PDF-->
+                <div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                  <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button
+                          type="button"
+                          data-dismiss="modal"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                          class="btn-close"
+                        ></button>
+                      </div>
+                      <div class="modal-body">
+                        <PDF :src="pathdocumento"></PDF>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal" @click="closeModal">
+                          <i class="flaticon-cancel-12"></i>Cerrar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Firma -->
+  <div id="certificadoModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-md modal-dialog-centered">
                     <div class="modal-content mailbox-popup">
                       <div class="modal-header">
@@ -626,12 +681,7 @@ const status_btn = () => {
                 </div>
                 <!-- Termina Modal Firma -->
                 <!-- Modal Rechazo -->
-                <div
-                  id="rechazoModal"
-                  class="modal fade"
-                  aria-labelledby="exampleModalLabel"
-                  aria-hidden="true"
-                >
+                <div id="rechazoModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true" >
                   <div class="modal-dialog modal-md modal-dialog-centered">
                     <div class="modal-content mailbox-popup">
                       <div class="modal-header">
@@ -650,64 +700,21 @@ const status_btn = () => {
                             <form>
                               <div class="row">
                                 <div class="col-md-12">
-                                  <div
-                                    class="checkbox-primary custom-control custom-checkbox text-color"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      class="custom-control-input"
-                                      id="chk_1"
-                                    />
-                                    <label
-                                      class="custom-control-label"
-                                      for="chk_1"
-                                    >
-                                      No me corresponde
-                                    </label>
-                                  </div>
-                                  <div
-                                    class="checkbox-primary custom-control custom-checkbox text-color"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      class="custom-control-input"
-                                      id="chk_2"
-                                    />
-                                    <label
-                                      class="custom-control-label"
-                                      for="chk_2"
-                                    >
-                                      Error en documento
-                                    </label>
-                                  </div>
-                                  <div
-                                    class="checkbox-primary custom-control custom-checkbox text-color"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      class="custom-control-input"
-                                      id="chk_otro"
-                                    />
-                                    <label
-                                      class="custom-control-label"
-                                      for="chk_otro"
-                                    >
-                                      otro
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="row justify-content-end">
-                                <div class="col-6">
-                                  <a
-                                    id="btn-modal-rechazo"
-                                    class="btn btn-danger btn-send p-3"
-                                    href="javascript:void(0);"
-                                    @click="motivoRechazo()"
-                                  >
-                                    Rechazar documento
-                                  </a>
+                                  <form novalidate class="simple-example" @submit.stop.prevent="submit_rechazo">
+                                      <div class="row">
+                                          <div class="col-md-12 form-group">
+                                              <label for="fullName">Motivo del rechazo</label>
+                                              <input v-model="formRechazo.motivo" id="fullName" type="text" class="form-control form-control-sm" :class="[is_submit_rechazo ? (formRechazo.motivo ? 'is-valid' : 'is-invalid') : '']" />
+                                              <!-- <div class="valid-feedback">Looks good!</div> -->
+                                              <div class="invalid-feedback">Ingresar el motivo del rechazo</div>
+                                          </div>
+                                      </div>
+                                      <div class="row justify-content-end">
+                                        <div class="col-6">
+                                          <button id="btn-modal-rechazo" type="submit" class="btn btn-danger btn-send p-3">Rechazar documento</button>
+                                        </div>
+                                      </div>
+                                  </form>
                                 </div>
                               </div>
                             </form>
@@ -718,37 +725,6 @@ const status_btn = () => {
                   </div>
                 </div>
                 <!-- Termina Modal Rechazo -->
-                <!-- Modal PDF-->
-                <div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-                  <div class="modal-dialog modal-xl" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button
-                          type="button"
-                          data-dismiss="modal"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                          class="btn-close"
-                        ></button>
-                      </div>
-                      <div class="modal-body">
-                        <PDF :src="pathdocumento"></PDF>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal" @click="closeModal">
-                          <i class="flaticon-cancel-12"></i>Cerrar
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 <style>
 .pStyle {

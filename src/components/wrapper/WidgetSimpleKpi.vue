@@ -1,28 +1,34 @@
 <script setup>
     import "@/assets/sass/widgets/widgets.scss";
-    defineProps({
-    cantidad: {
-        type: String,
-        required: true,
-    },
-    mensaje: {
-        type: String,
-        required: true,
-    },
-    color: {
-      type: String
-    },
+    import { defineEmits } from 'vue';
+    const props = defineProps({
+        cantidad: {
+            type: Number,
+            required: true,
+        },
+        mensaje: {
+            type: String,
+            required: true,
+        },
+        color: {
+          type: String
+        },
+        etapa:String
     });
+    const emit = defineEmits(['activaEtapa']);
+    const activaEtapa = () => {
+      emit('activaEtapa', props.etapa);
+    };
 </script>
 <template>
   <!-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12 layout-spacing"> -->
   <div class="col-xl-2 col-lg-3 col-md-6 col-12 layout-spacing">
-    <div class="widget widget-simple_kpi"  :class="`border-widget-${color}`">
+    <div class="widget widget-simple_kpi"  :class="`border-widget-${color}`" @click="activaEtapa()">
       <div class="widget-heading">
         <h5>{{ cantidad }}</h5>
         <div class="task-action">
           <div class="dropdown btn-group">
-            <a
+            <!-- <a
               href="javascript:;"
               id="ddlStatistics"
               class="btn dropdown-toggle btn-icon-only"
@@ -52,7 +58,7 @@
             >
               <li><a href="javascript:;" class="dropdown-item">Detalles</a></li>
               <li><a href="javascript:;" class="dropdown-item">Reporte</a></li>
-            </ul>
+            </ul> -->
           </div>
         </div>
       </div>
@@ -79,11 +85,11 @@
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-rechazado{
-    border: solid #F85F2A;
+    border: solid #E7515A;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-firmado{
-    border: solid #7b8c90;
+    border: solid #009688;
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-atencion{
@@ -91,7 +97,7 @@
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-conocimiento{
-    border: solid #7589ED;
+    border: solid #197293;
     border-width: 10px 1px 1px 1px;
   }
 </style>

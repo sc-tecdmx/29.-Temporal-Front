@@ -1,6 +1,6 @@
 <script setup>
     import { onMounted, ref } from 'vue';
-    import axios from 'axios';
+    //import axios from 'axios';
     import { useRouter } from 'vue-router';
     import { useAuthStore } from '@/stores/authStore.js';
     import { useFirmaStore } from "@/stores/firmaStore.js";
@@ -12,7 +12,7 @@
     //PDF viewer
     import PDF from 'pdf-vue3';
     //Iconos
-    import IconMoreHorizontal from '@/components/icons/IconMoreHorizontal.vue';
+    //import IconMoreHorizontal from '@/components/icons/IconMoreHorizontal.vue';
     import IconChevronDown from '@/components/icons/IconChevronDown.vue';
     import IconAlertOctagon from '@/components/icons/IconAlertOctagon.vue';
     import IconFeatherFileText from '@/components/icons/IconFeatherFileText.vue';
@@ -36,7 +36,7 @@
 
     /* inicia getData */
     //const columns = ['acciones','e','p','d','folio','asunto','fecha','firmantes','destinatarios', 'detalle'];
-    const columns = ['acciones','p','d','folio','asunto','fecha','firmantes','destinatarios'];
+    const columns = ['acciones','información','folio','asunto','fecha','firmantes','destinatarios'];
     const items = ref([]);    
     const token = authStore.state.user.token;
     /* Modal firmar ahora */
@@ -99,11 +99,12 @@
         },
         resizableColumns: true,
         hiddenColumns: [],
+        orderBy: { ascending:true }
     });
 
     onMounted(() => {
         //bind_data();
-        //initPopup();
+        initPopup();
     });
 
     //Detalle
@@ -441,7 +442,8 @@ const initPopup = () => {
                                 </div>
                             </template>
                             <template #acciones="props">
-                                <a href="javascript:;"
+                                <div class="text-center">
+                                    <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
                                     data-bs-toggle="modal"
@@ -467,7 +469,7 @@ const initPopup = () => {
                                     @click="router.push(`/documento/recibido/${props.row.idDocumento}`)">
                                     <IconEye></IconEye>
                                 </a>
-                                <a href="javascript:;"
+                                <!-- <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
                                     :class="[class_estado(props.row.etapa)]"
@@ -479,49 +481,8 @@ const initPopup = () => {
                                     <IconSignature v-if="docFirma"></IconSignature>
                                     <IconFeatherX v-if="docRechazado"></IconFeatherX>
                                     <IconFeatherCheck v-if="docTerminado"></IconFeatherCheck>
-                                </a>
-                            </template>
-                            <template #p="props">
-                                <div class="priority-dropdown">
-                                    <div class="dropdown btn-group">
-                                        <a href="javascript:;"
-                                            id="ddlPriority"
-                                            class="btn dropdown-toggle btn-icon-only"
-                                            :class="[class_prioridad(props.row.prioridad)]"
-                                            data-bs-toggle="tooltip"
-                                            :title="titlePrioriodad"
-                                        >
-                                            <IconAlertOctagon></IconAlertOctagon>
-                                        </a>
-                                    </div>
-                                </div>
-                            </template>
-                            <!-- <template #e="props">
-                                <div class="priority-dropdown">
-                                    <div class="dropdown btn-group">
-                                        <a href="javascript:;"
-                                            id="ddlPriority"
-                                            class="btn dropdown-toggle btn-icon-only"
-                                            :class="[class_estado(props.row.id_etapa_documento)]">
-                                            <div title="Creado"><IconFilePlus v-if="docCreado"></IconFilePlus></div>
-                                            <div title="Enviado"><IconSend v-if="docEnviado"></IconSend></div>
-                                            <div title="En Firma"><IconSignature v-if="docFirma"></IconSignature></div>
-                                            <div title="Rechazado"><IconFeatherX v-if="docRechazado"></IconFeatherX></div>
-                                            <div title="Terminado"><IconFeatherCheck v-if="docTerminado"></IconFeatherCheck></div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </template> -->
-                            <template #d="props">
-                                <!-- <a href="javascript:;"
-                                    class="btn dropdown-toggle btn-icon-only"
-                                    @click="pdf_view(props.row.documentosAdjuntos)"
-                                    v-if="props.row.documentosAdjuntos.length > 0"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalxl">
-                                    <IconFeatherFileText></IconFeatherFileText>
                                 </a> -->
-                                <a class="btn dropdown-toggle btn-icon-only text-truncate" 
+                                <a class="btn dropdown-toggle btn-icon-only text-truncate ms-2" 
                                     href="#" role="button" 
                                     id="pendingTask" 
                                     v-if="props.row.documentosAdjuntos.length > 0"
@@ -543,8 +504,89 @@ const initPopup = () => {
                                             </a>
                                         </li>
                                     </ul>
+                                </div>
                             </template>
-                            <template #folio="props">{{ props.row.folioDocumento }}</template>
+                            <template #información="props">
+                                <div class="priority-dropdown text-center">
+                                    <div class="dropdown btn-group">
+                                        <a href="javascript:;"
+                                            id="ddlPriority"
+                                            class="btn dropdown-toggle btn-icon-only"
+                                            :class="[class_prioridad(props.row.prioridad)]"
+                                            data-bs-toggle="tooltip"
+                                            :title="titlePrioriodad"
+                                        >
+                                            <IconAlertOctagon></IconAlertOctagon>
+                                        </a>
+                                        <a href="javascript:;"
+                                            id="ddlPriority"
+                                            class="btn dropdown-toggle btn-icon-only ms-2"
+                                            :class="[class_estado(props.row.etapa)]"
+                                            data-bs-toggle="tooltip"
+                                            :title="titulo"
+                                        >
+                                            <IconFilePlus v-if="docCreado"></IconFilePlus>
+                                            <IconSend v-if="docEnviado"></IconSend>
+                                            <IconSignature v-if="docFirma"></IconSignature>
+                                            <IconFeatherX v-if="docRechazado"></IconFeatherX>
+                                            <IconFeatherCheck v-if="docTerminado"></IconFeatherCheck>
+                                        </a>
+                                    </div>
+                                </div>
+                            </template>
+                            <!-- <template #e="props">
+                                <div class="priority-dropdown">
+                                    <div class="dropdown btn-group">
+                                        <a href="javascript:;"
+                                            id="ddlPriority"
+                                            class="btn dropdown-toggle btn-icon-only"
+                                            :class="[class_estado(props.row.id_etapa_documento)]">
+                                            <div title="Creado"><IconFilePlus v-if="docCreado"></IconFilePlus></div>
+                                            <div title="Enviado"><IconSend v-if="docEnviado"></IconSend></div>
+                                            <div title="En Firma"><IconSignature v-if="docFirma"></IconSignature></div>
+                                            <div title="Rechazado"><IconFeatherX v-if="docRechazado"></IconFeatherX></div>
+                                            <div title="Terminado"><IconFeatherCheck v-if="docTerminado"></IconFeatherCheck></div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </template> -->
+                            <!-- <template #d="props"> -->
+                                <!-- <a href="javascript:;"
+                                    class="btn dropdown-toggle btn-icon-only"
+                                    @click="pdf_view(props.row.documentosAdjuntos)"
+                                    v-if="props.row.documentosAdjuntos.length > 0"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalxl">
+                                    <IconFeatherFileText></IconFeatherFileText>
+                                </a> -->
+                                <!-- <a class="btn dropdown-toggle btn-icon-only text-truncate" 
+                                    href="#" role="button" 
+                                    id="pendingTask" 
+                                    v-if="props.row.documentosAdjuntos.length > 0"
+                                    data-bs-toggle="dropdown" 
+                                    aria-haspopup="true" 
+                                    aria-expanded="false" 
+                                    @click="pdf_view(props.row.documentosAdjuntos)"
+                                    style="font-size: 12px;">
+                                    <IconFeatherFileText></IconFeatherFileText>
+                                </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li class="font-list" v-for="doc in documentosAdjuntos">
+                                            <a href="javascript:;"
+                                                class="btn dropdown-toggle btn-icon-only"
+                                                @click="pathdocumento = doc.path"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalPDF">
+                                                {{ doc.nombre }}
+                                            </a>
+                                        </li>
+                                    </ul> -->
+                            <!-- </template> -->
+                            <template #folio="props">
+                                <div class="text-center">
+                                    {{ props.row.folioDocumento }}
+                                </div>
+                            </template>
                             
                             <template #asunto="props">
                                 <!-- <div :title="props.row.s_asunto" class="">

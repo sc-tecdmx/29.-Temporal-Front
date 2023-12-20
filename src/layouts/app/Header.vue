@@ -6,8 +6,23 @@
   import Comentarios      from '@/components/header/Comentarios.vue'
   import Notificaciones   from '@/components/header/Notificaciones.vue'
   import Perfil           from '@/components/header/Perfil.vue'
+import { onBeforeUnmount, onMounted, ref } from "vue";
   
   const appLiveStore = useLiveStore();
+  const isMobile = ref(false);
+
+  const checkWindowSize = () => {
+        isMobile.value = window.innerWidth <= 991;
+    };
+  
+    onMounted(() => {
+    checkWindowSize();
+    window.addEventListener('resize', checkWindowSize);
+    });
+
+    onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkWindowSize);
+    });
 </script>
 <template>
   <!-- BARRA DE NAVEGACIÓN-->
@@ -16,22 +31,6 @@
       <!-- Logotipo institucional. -->
       <BrandLogo />
       <!-- ./Logotipo institucional. -->
-
-      <!-- Hamburger -->
-      <!-- <ul class="navbar-item flex-row ms-md-4 ms-auto">-->
-        <!-- Logotipo institucional. -->
-        <!--<li class="nav-item theme-logo">
-            <a
-              href="javascript:void(0);"
-              class="sidebarCollapse"
-              data-placement="bottom"
-              @click="appLiveStore.toggleSideBar( !appLiveStore.state.is_show_sidebar)"
-            >
-              <IconHamburger/>
-            </a>
-        </li>
-      </ul> -->
-      <!-- ./Hamburger-->
 
      <!-- Buscar -->
       <Buscar/>
@@ -50,6 +49,21 @@
         <!-- Profile-->
         <Perfil />
         <!-- ./Profile-->
+
+        <!-- Hamburger -->
+       <ul class="navbar-item flex-row ms-md-4 ms-auto me-3" :class="{ 'd-none': !isMobile }">
+        <!-- Logotipo institucional. -->
+        <li class="nav-item theme-logo">
+            <a
+              href="javascript:void(0);"
+              class="sidebarCollapse"
+              data-placement="bottom"
+              @click="appLiveStore.toggleSideBar( !appLiveStore.state.is_show_sidebar)"
+            >
+              <IconHamburger/>
+            </a>
+        </li>
+      </ul> 
       </div>
     </header>
   </div>

@@ -25,6 +25,7 @@ const token = authStore.state.user.token;
 const props = defineProps({
   titulo: String,
   id_tabla:String,
+  label: String,
   thtabla: ref([]),
   tbTabla: ref([]),
   opInstruccion: Object,
@@ -515,7 +516,7 @@ const verificaArray = () => {
       <div class="modal-content mailbox-popup">
         <div class="modal-header">
           <h5 class="modal-title">
-            {{ selected.id_tabla || params.id_tabla ? "Editar firmante" : "Agregar Firmante" }}
+            {{ selected.id_tabla || params.id_tabla ? "Editar " : "Agregar " }} {{ props.label }}
           </h5>
           <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
         </div>

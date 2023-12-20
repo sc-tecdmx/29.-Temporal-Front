@@ -4,7 +4,7 @@ import axios from 'axios';
 //import jwtDecode from "vue-jwt-decode";
 import VueJwtDecode from "vue-jwt-decode";
 import "@/assets/sass/apps/invoice-add.scss";
-//import router from "@/router";
+import router from "@/router";
 //-----------------------
 import "@/assets/sass/forms/file-upload-with-preview.min.css";
 //import "@/assets/sass/forms/custom-flatpickr.css";
@@ -36,9 +36,6 @@ import IconPlus from '@/components/icons/IconPlus.vue'
 import { getCertificadoData } from "@/firma/main.mjs";
 import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
 import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
-
-//Composable 
-//import { useGetData } from "@/composables/getData";
 
 //useMeta({ title: 'Vue Multiselect' });
 /** ./Multiselect */
@@ -701,8 +698,15 @@ const enviaCaptura = async() => {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
               }}).then((response) => {
-                 //console.log(response)    
-                 alert(response.data.message);
+                console.log(response)
+                if (confirm(response.data.message)) {
+                  router.push('/');
+                }
+                 //console.log(response)
+                 //msjAlert.value = response.data.message;
+                 //enableAlert.value = true;
+                 //alertTop();
+                 //alert(response.data.message);
                });
            } catch (error) {
              console.log(error)
@@ -1054,6 +1058,7 @@ const decodeToken = () => {
                   <TablaAgregar
                     titulo="Agregar Firmantes"
                     id_tabla="firmantes"
+                    label="firmante"
                     :thtabla="thFirmantes"
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccion"
@@ -1066,6 +1071,7 @@ const decodeToken = () => {
                    <TablaAgregar
                     titulo="Agregar Destinatarios"
                     id_tabla="destinatarios"
+                    label="destinatario"
                     :thtabla="thDestinatarios"
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccionDest"
@@ -1188,7 +1194,7 @@ const decodeToken = () => {
                         class="btn btn-success btn-download"
                         @click="submit_formulario()"
                       >
-                        Firmar y enviar a firmantes</a
+                        Enviar a firmantes</a
                       >
                     </div>
                   </div>

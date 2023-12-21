@@ -56,6 +56,8 @@
     const archivoEsCer = ref(false);
     const alertFirma = ref(false);
     let certificadoModal = ref(null);
+    let rechazoModal = ref(null);
+
     // const bind_data = () => {
     //     //console.log("bind_data");
     //     const axiosInstance = axios.create({
@@ -256,18 +258,6 @@
     const firmar = async(documento) => {
         certificado.value.documento = documento.row.documentosAdjuntos
     };
-    //Rechazar documento
-    const rechazar = (documento) => {
-        // console.log(documento.row)
-        let post ={
-            "idDocumento": documento.row.idDocumento,
-            "codigoFirmaAplicada": "Rechazado",
-            "tipoUsuario": "firmante"
-        }
-        if (confirm("¿Desea rechazar el documento con folio: " + documento.row.folioDocumento + "?")) {
-            firmaStore.rechazarDocumento(post,token);
-        }
-    };
 
     const formatDate = (date) => {
 
@@ -395,8 +385,29 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
 }
 //Inicializa Modal
 const initPopup = () => {
-   certificadoModal = new window.bootstrap.Modal(document.getElementById("certificadoModal")); 
+   certificadoModal = new window.bootstrap.Modal(document.getElementById("certificadoModal"));
+   rechazoModal = new window.bootstrap.Modal(document.getElementById("rechazoModal"));
  };
+ //Rechazar documento
+ const is_submit_rechazo = ref(false);
+ const formRechazo = ref({ 
+    idDocumento: '', 
+    codigoFirmaAplicada:'', 
+    tipoUsuario: '',
+    motivo: '' });
+    const rechazar = (documento) => {
+         formRechazo.value.idDocumento = documento.row.idDocumento;
+         formRechazo.value.codigoFirmaAplicada =  "Rechazado";
+         formRechazo.value.tipoUsuario = "firmante"
+    };
+const submit_rechazo = () => {
+  is_submit_rechazo.value = true;
+         if (formRechazo.value.motivo) {
+           //Falta el nuevo servicio que contenga el motivo
+           firmaStore.rechazarDocumento(formRechazo.value,token);
+           rechazoModal.hide();
+         }
+    };
 </script>
 <template>
     <div class="layout-px-spacing">
@@ -453,6 +464,16 @@ const initPopup = () => {
                                     <IconEdit></IconEdit>
                                 </a>
                                 <a href="javascript:;"
+                                    id="btn-rechazo"
+                                    class="btn dropdown-toggle btn-icon-only ms-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#rechazoModal"
+                                    title="Rechazar"
+                                    @click="rechazar(props)">
+                                    <IconXOctagon></IconXOctagon>
+                                    
+                                </a>
+                                <!-- <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
                                     data-bs-toggle="tooltip"
@@ -460,7 +481,7 @@ const initPopup = () => {
                                     @click="rechazar(props)">
                                     <IconXOctagon></IconXOctagon>
                                     
-                                </a>
+                                </a> -->
                                 <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
@@ -762,6 +783,51 @@ const initPopup = () => {
                   </div>
                 </div>
                 <!-- Termina Modal Firma -->
+                <!-- Modal Rechazo -->
+                <div id="rechazoModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                  <div class="modal-dialog modal-md modal-dialog-centered">
+                    <div class="modal-content mailbox-popup">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Rechazar documento</h5>
+                        <button
+                          type="button"
+                          data-dismiss="modal"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                          class="btn-close"
+                        ></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="compose-box">
+                          <div class="compose-content">
+                            <form>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <form novalidate class="simple-example" @submit.stop.prevent="submit_rechazo">
+                                      <div class="row">
+                                          <div class="col-md-12 form-group">
+                                              <label for="fullName">Motivo del rechazo</label>
+                                              <input v-model="formRechazo.motivo" id="fullName" type="text" class="form-control form-control-sm" :class="[is_submit_rechazo ? (formRechazo.motivo ? 'is-valid' : 'is-invalid') : '']" />
+                                              <!-- <div class="valid-feedback">Looks good!</div> -->
+                                              <div class="invalid-feedback">Ingresar el motivo del rechazo</div>
+                                          </div>
+                                      </div>
+                                      <div class="row justify-content-end">
+                                        <div class="col-6">
+                                          <button id="btn-modal-rechazo" type="submit" class="btn btn-danger btn-send p-3">Rechazar documento</button>
+                                        </div>
+                                      </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Termina Modal Rechazo -->
 </template>
 <style>
 .font-list{

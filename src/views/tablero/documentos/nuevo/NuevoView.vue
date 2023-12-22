@@ -363,26 +363,45 @@ const opcionInputContenido = (idData, campoValido) => {
     form.txtAreaContenido = campoValido;
   }
 };
-const tablaFirmantes = (data, campoValido) => {
-  //console.log(data)
-  //params.value.firmantes = data;
+const empleadosRepetidos = ref(null);
+const tablaFirmantes = (data, campoValido, dataCompleto) => {
+  empleadosRepetidos.value = null
   paramsEnviar.value.firmantes = data;
-   if (data == 0) {
-     form.tablaFirmantes = false;
+  if(paramsEnviar.value.destinatarios.length > 0){
+    if(paramsEnviar.value.destinatarios[0].idEmpleado != '' && dataCompleto){
+      empleadosRepetidos.value = dataCompleto.filter((empleado1) => paramsEnviar.value.destinatarios.some((empleado2)=> empleado1.idEmpleado === empleado2.idEmpleado))
+      if(empleadosRepetidos.value.length != 0 ){
+        modalEmpDuplicado.show();
+      }
+    }
+  }
+   if (data == 0 || dataCompleto == undefined) {
+     if(paramsEnviar.value.destinatarios-length > 0){
+        form.tablaFirmantes = false;
+      }
    } else {
      form.tablaFirmantes = campoValido;
    }
 };
-const tablaDestinatarios = (data, campoValido) => {
-  //params.value.destinatarios = data;
+const tablaDestinatarios = (data, campoValido, dataCompleto) => {
+  empleadosRepetidos.value = null
   paramsEnviar.value.destinatarios = data;
-  if (data == 0) {
-     form.tablaDestinatarios = false;
+  if(paramsEnviar.value.firmantes.length > 0){
+    if(paramsEnviar.value.firmantes[0].idEmpleado != '' && dataCompleto){
+      empleadosRepetidos.value = dataCompleto.filter((empleado1) => paramsEnviar.value.firmantes.some((empleado2)=> empleado1.idEmpleado === empleado2.idEmpleado))
+      if(empleadosRepetidos.value.length != 0 ){
+        modalEmpDuplicado.show();
+      }
+    }
+  }
+  if (data == 0 || dataCompleto == undefined) {
+    if(paramsEnviar.value.destinatarios.length > 0){
+      form.tablaDestinatarios = false;
+    }
    } else {
      form.tablaDestinatarios = campoValido;
    }
 };
-const arrConfig= ref([]);
 const opcionSwitchOrdenFirma = (idData) => {
   //params.value.configuracion.ordenFirma = idData;
   paramsEnviar.value.configuraciones.ordenFirma = idData;
@@ -431,6 +450,7 @@ const opcionDateLimiteFirma = (date, campoValido) => {
 let certificadoModal = ref(null);
 let modalCamposRequeridos = ref(null);
 let addExpedienteModal = ref(null);
+let modalEmpDuplicado = ref(null);
 const arrayCampos = ref([]);
 
 const submit_formulario = () => {
@@ -515,6 +535,12 @@ const submit_formulario = () => {
        if (!form.inputPDF) {
          arrayCampos.value.push("Documento(s) a firmar");
        }
+
+       if(empleadosRepetidos.value != null){
+        if(empleadosRepetidos.value.length > 0){
+          arrayCampos.value.push("Al menos un usuario está registrado tanto en la lista de firmantes como en la lista de destinatarios");
+        }
+        }
        if (!arrayCampos.value.length == 0) {
          modalCamposRequeridos.show();
        } else {
@@ -550,6 +576,7 @@ const documentos = ref([]);
 const change_file = async(event) => {
   //selected_file.value = event.target.files[0];
   //params.value.documentos = selected_file.value;
+  paramsEnviar.value.documentosAdjuntos = [];
   documentos.value = [];
   selected_file.value = event.target.files;
   //console.log(selected_file)
@@ -698,7 +725,7 @@ const enviaCaptura = async() => {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
               }}).then((response) => {
-                console.log(response)
+                //console.log(response)
                 if (confirm(response.data.message)) {
                   router.push('/');
                 }
@@ -815,6 +842,10 @@ const initPopup = () => {
   addExpedienteModal = new window.bootstrap.Modal(
     document.getElementById("addExpedienteModal")
   );
+  modalEmpDuplicado = new window.bootstrap.Modal(
+    document.getElementById("modalEmpDuplicado")
+  );
+  
 };
 
 const is_submit_form_cer = ref(false);
@@ -1338,5 +1369,36 @@ const decodeToken = () => {
         </div>
     </div>
 </div>
+<!-- Modal Firmante-Destinatario duplicado -->
+<div class="modal fade" id="modalEmpDuplicado" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Empleado duplicado</h5>
+          <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close" ></button>
+        </div>
+        <div class="modal-body">
+          <!-- <h5 class="modal-heading mb-4 mt-2">
+            No se puede agregar un empleado como firmante y como destinatario
+          </h5> -->
+          <p class="modal-text">
+            No es posible asignar doble función,firmante y destinatario, a un empleado simultaneamente.
+          </p>
+          <div class="toast-body text-dark">
+            <ul>
+              <li v-for="empleado in empleadosRepetidos">
+                {{ empleado.usuario.nombre }} {{ empleado.usuario.apellido1 }} {{ empleado.usuario.apellido2 }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal">
+            <i class="flaticon-cancel-12"></i> Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <style></style>

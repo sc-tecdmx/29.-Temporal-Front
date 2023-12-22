@@ -241,7 +241,7 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
     fileReader.readAsArrayBuffer(file);
   });
 }
-//botones
+//Activar/Bloquear botones
 const btnEnviar = ref(false);
 const btnFirmar = ref(false);
 const btnRechazado = ref(false);
@@ -249,7 +249,7 @@ const btnRechazado = ref(false);
 const status_btn = () => {
   //revisar 
   //revisar statusFirma
-  console.log("Etapa",documento.value.etapaDocumento)
+  //console.log("Etapa",documento.value.etapaDocumento)
   switch(documento.value.etapaDocumento){
     case 'Creado':
       btnEnviar.value = true;
@@ -294,7 +294,7 @@ const submit_rechazo = () => {
               "tipoUsuario": "firmante",
               "motivo": formRechazo.value.motivo
           }
-          console.log(post)
+          //console.log(post)
           //Falta el nuevo servicio que contenga el motivo
           firmaStore.rechazarDocumento(post,token);
         }

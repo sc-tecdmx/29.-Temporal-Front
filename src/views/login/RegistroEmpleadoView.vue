@@ -56,7 +56,7 @@ const urlSexo = import.meta.env.VITE_CAT_GET_SEXO;
    return await catalogoStore.getCatalogo(url, token);
  }
 
-console.log("AREAS --- ",catArea.value);
+//console.log("AREAS --- ",catArea.value);
 
 //Inicializa Modal
 const initPopup = () => {
@@ -70,7 +70,7 @@ onMounted(async () => {
     catArea.value = await getCatalogo(urlArea);
     catPuesto.value = await getCatalogo(urlPuesto);
     catSexo.value = await getCatalogo(urlSexo);
-    console.log("AREAS-HIjas",catArea.value[0].AreasHijas);
+    //console.log("AREAS-HIjas",catArea.value[0].AreasHijas);
     loadingCat.value = true;
   } catch (error) {
     console.log(error);

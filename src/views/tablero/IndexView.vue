@@ -30,17 +30,6 @@ import { onMounted, ref } from 'vue';
 const bind_task_list = async () => {
   userDocuments.value = await obtenerDocumentos(urlUserDocs);
   listaDocs.value = userDocuments.value.data;
-  // creado = contarPorEtapa('Creado');
-  // enviado = contarPorEtapa("Enviado");
-  // enFirma = contarPorEtapa("En Firma");
-  // rechazado = contarPorEtapa("Rechazado");
-  // terminado = contarPorEtapa("Terminado");
-
-  // console.log("CREADO---",creado.value)
-  // console.log("CREADO---",rechazado.value)
-  // console.log("CREADO---",enFirma.value)
-  // console.log("CREADO---",enviado.value)
-  // console.log("CREADO---",terminado.value)
 };
 
 onMounted(() => {
@@ -88,8 +77,8 @@ const clicWidget = (etapa) => {
             <WidgetSimpleKpi  :cantidad="contarPorEtapa('En Firma').value" mensaje="Firmados" color="firmado" etapa="En Firma" @activaEtapa="clicWidget"/>
             <WidgetSimpleKpi  :cantidad="contarPorEtapa('Rechazado').value" mensaje="Rechazados" color="rechazado" etapa="Rechazado" @activaEtapa="clicWidget"/>
             <!-- <WidgetSimpleKpi  :cantidad="terminado" mensaje="terminado" color="rechazado"/> -->
-            <WidgetSimpleKpi  cantidad='5' mensaje="Atención" color="atencion" etapa="" @activaEtapa="clicWidget"/>
-            <WidgetSimpleKpi  cantidad='25' mensaje="Conocimiento" color="conocimiento" etapa="" @activaEtapa="clicWidget"/>
+            <WidgetSimpleKpi  :cantidad= 5 mensaje="Atención" color="atencion" etapa="" @activaEtapa="clicWidget"/>
+            <WidgetSimpleKpi  :cantidad= 2 mensaje="Conocimiento" color="conocimiento" etapa="" @activaEtapa="clicWidget"/>
         </div>
         <!------------------------------------- Interfaz Firmas-->
         <TableroLayoutFirmas :activarFiltro="activarFiltrado"></TableroLayoutFirmas>

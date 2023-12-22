@@ -408,6 +408,52 @@ const submit_rechazo = () => {
            rechazoModal.hide();
          }
     };
+
+//Activar/Bloquear botones
+const status_btnRechazo = (etapa) => {
+  switch(etapa){
+    case 'Creado':
+      return false;
+      break;
+    case 'Enviado':
+      return true;
+      break;
+    case 'En Firma':
+      return false;
+      break;
+    case 'Rechazado':
+      return true;
+      break;
+    case 'Terminado':
+      return true;
+      break;
+    default:
+      alert("No se encuentra etapa de documento");
+      break;
+  }
+};
+const status_btnFirma = (etapa) => {
+  switch(etapa){
+    case 'Creado':
+      return false;
+      break;
+    case 'Enviado':
+      return true;
+      break;
+    case 'En Firma':
+      return false;
+      break;
+    case 'Rechazado':
+      return true;
+      break;
+    case 'Terminado':
+      return true;
+      break;
+    default:
+      alert("No se encuentra etapa de documento");
+      break;
+  }
+};
 </script>
 <template>
     <div class="layout-px-spacing">
@@ -417,10 +463,10 @@ const submit_rechazo = () => {
                     <div class="custom-table">
                         <v-client-table :data="props.filtered_task_list" :columns="columns" :options="table_option">
                             <template #beforeFilter>
-                                <div class="checkbox-primary custom-control custom-checkbox me-2 mt-2">
+                                <!-- <div class="checkbox-primary custom-control custom-checkbox me-2 mt-2">
                                     <input type="checkbox" class="custom-control-input" id="chk_primary" @change="buscarFecha()"/>
                                     <label class="custom-control-label" for="chk_primary"> Buscar por rango de fecha</label>
-                                </div>
+                                </div> -->
                                 <div class="custom-dropdown dropdown btn-group">
                                     <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <button aria-haspopup="true" aria-expanded="false" type="button" class="btn dropdown-toggle btn-outline-primary">
@@ -454,25 +500,26 @@ const submit_rechazo = () => {
                             </template>
                             <template #acciones="props">
                                 <div class="text-center">
-                                    <a href="javascript:;"
-                                    id="ddlPriority"
-                                    class="btn dropdown-toggle btn-icon-only ms-2"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#certificadoModal"
-                                    title="Firmar Ahora"
-                                    @click="firmar(props)">
-                                    <IconEdit></IconEdit>
-                                </a>
-                                <a href="javascript:;"
-                                    id="btn-rechazo"
-                                    class="btn dropdown-toggle btn-icon-only ms-2"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#rechazoModal"
-                                    title="Rechazar"
-                                    @click="rechazar(props)">
-                                    <IconXOctagon></IconXOctagon>
-                                    
-                                </a>
+                                    <button href="javascript:;"
+                                        id="ddlPriority"
+                                        class="btn dropdown-toggle btn-icon-only ms-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#certificadoModal"
+                                        title="Firmar Ahora"
+                                        :disabled="status_btnFirma(props.row.etapa)"
+                                        @click="firmar(props)">
+                                        <IconEdit></IconEdit>
+                                    </button>
+                                    <button href="javascript:;"
+                                        id="btn-rechazo"
+                                        class="btn dropdown-toggle btn-icon-only ms-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#rechazoModal"
+                                        title="Rechazar"
+                                        :disabled="status_btnRechazo(props.row.etapa)"
+                                        @click="rechazar(props)">
+                                        <IconXOctagon></IconXOctagon>
+                                    </button>
                                 <!-- <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"

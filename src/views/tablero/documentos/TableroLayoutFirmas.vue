@@ -291,6 +291,23 @@ const showMessage = (msg = "", type = "success") => {
 
           <!-- Content Tablero -->
           <div id="todo-inbox" class="accordion todo-inbox">
+            <div class="d-flex align-items-center justify-content-end" @click="is_show_task_menu = !is_show_task_menu">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-menu mail-menu d-lg-none">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </div>
             <TableroTablaListado
               :filtered_task_list="filtered_task_list"
               :url= "urlBase + '/api/documento/documentos-usuario'"
@@ -316,5 +333,7 @@ const showMessage = (msg = "", type = "success") => {
   <!-- ./Tablero de Firmas -->
 </template>
 <style>
-
+.todo-list .todo-inbox .mail-menu {
+    border-bottom: 0;
+}
 </style>

@@ -397,7 +397,7 @@ const verificaArray = () => {
       <div class="modal-content mailbox-popup">
         <div class="modal-header">
           <h5 class="modal-title">
-            {{ selected.id_tabla || params.id_tabla ? "Editar firmante" : "Agregar Firmante" }}
+            {{ selected.id_tabla || params.id_tabla ? "Editar integrante" : "Agregar integrante" }}
           </h5>
           <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
         </div>

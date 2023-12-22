@@ -81,19 +81,19 @@ const loginSubmit = async() =>{
                                     <div class="d-sm-flex justify-content-center">
                                         <div class="field-wrapper row">
                                             <div class="col-6">
-                                                <button type="submit" :disabled="authStore.loadingUser" class="btn btn-primary">Judicial</button>
+                                                <button type="submit"  class="btn btn-primary">Judicial</button>
                                             </div>
                                             <div class="col-6">
-                                                <button type="submit" :disabled="authStore.loadingUser" class="btn btn-primary">Administrativo</button>
+                                                <button type="submit"  class="btn btn-primary">Administrativo</button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="division">
+                                    <!-- <div class="division">
                                         <span>O</span>
-                                    </div>
+                                    </div> -->
 
-                                    <div class="social">
+                                    <!-- <div class="social">
                                         <a href="javascript:void(0);" class="btn social-fb">
                                             <IconLogoGoogle></IconLogoGoogle>
                                             <span class="brand-name">Google</span>
@@ -102,7 +102,7 @@ const loginSubmit = async() =>{
                                             <IconMicrosoftLogo></IconMicrosoftLogo>
                                             <span class="brand-name ms-1">Microsoft</span>
                                         </a>
-                                    </div>
+                                    </div> -->
 
                                     <p class="signup-link">¿No estas registrado? <router-link to="/account/registro">Crea una cuenta</router-link></p>
                                 </div>

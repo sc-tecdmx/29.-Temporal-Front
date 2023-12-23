@@ -67,7 +67,7 @@ async function obtenerCatalogo(url) {
 }
 const delete_row = (item) => {
   if (confirm("¿Desea borrar este registro?")) {
-    let urlCat = import.meta.env.VITE_CAT_DEL_EXP + item.id;
+    let urlCat = import.meta.env.VITE_CAT_DEL_PUESTOS + item.id;
 
     catalogoStore.deleteCatalogo(urlCat, token);
     //items.value = items.value.filter((d) => d.id != item.id);
@@ -84,13 +84,13 @@ const edit_user = (item) => {
 };
 const guardar_item = () => {
   //console.log("SAVE-PARAMS -- ", params);
-  if (!params.value.numExpediente) {
-    alert("Ingresar número de expediente");
+  if (!params.value.nombramiento) {
+    alert("Ingresar nombramiento");
     //showMessage('Name is required.', 'error');
     return true;
   }
-  if (!params.value.descripcion) {
-    alert("Ingresar descripción");
+  if (!params.value.tipoUsuario) {
+    alert("Ingresar tipo de usuario");
     //showMessage('Email is required.', 'error');
     return true;
   }
@@ -99,19 +99,19 @@ const guardar_item = () => {
     //console.log("edit");
     //update user
     let editItem = {
-        numExpediente: params.value.numExpediente,
-        descripcion: params.value.descripcion,
+      descripcion: params.value.nombramiento,
+      //tipoUsuario: params.value.descripcion,
     };
-    const urlCat = import.meta.env.VITE_CAT_EDIT_EXP + params.value.id;
+    const urlCat = import.meta.env.VITE_CAT_EDIT_PUESTOS + params.value.id;
     catalogoStore.editCatalogo(urlCat, editItem, token);
     errorAb.value = false;
   } else {
     //add user
     //console.log("add");
-    const urlCat = import.meta.env.VITE_CAT_ADD_EXP;
+    const urlCat = import.meta.env.VITE_CAT_ADD_PUESTOS;
     let saveItem = {
-        numExpediente: params.value.numExpediente,
-        descripcion: params.value.descripcion,
+      descripcion: params.value.nombramiento,
+      tipo: params.value.tipoUsuario,
     };
     catalogoStore.saveCatalogo(urlCat, saveItem, token);
   }
@@ -123,6 +123,7 @@ onMounted(async () => {
   try {
     catalogo.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_PUESTOS);
     catDisponible.value = true;
+    console.log("CAT",catalogo)
   } catch (error) {
     console.log(error);
   }
@@ -147,7 +148,7 @@ onMounted(async () => {
                 <div class="invoice-detail-body">
                   <div class="invoice-detail-title mb-0">
                     <div class="col-xl-5 invoice-address-company">
-                      <h3>Catálogo expediente</h3>
+                      <h3>Catálogo de puestos</h3>
                     </div>
                   </div>
                   <div class="layout-px-spacing">
@@ -242,25 +243,25 @@ onMounted(async () => {
                                   <div class="add-contact-content">
                                     <form id="addContactModalTitle">
                                       <div class="row">
-                                        <div class="col-md-5">
+                                        <div class="col-md-7">
                                           <div class="form-group mb-4">
                                             <label>Nombramiento</label>
                                             <input
                                               type="text"
                                               v-model="params.nombramiento"
                                               class="form-control form-control-sm"
-                                              placeholder="Ingrese número de expediente"
+                                              placeholder="Ingrese descripción del puesto"
                                             />
                                           </div>
                                         </div>
-                                        <div class="col-md-7">
+                                        <div class="col-md-5">
                                           <div class="form-group mb-4">
                                             <label>Tipo de usuario</label>
                                             <input
                                               type="text"
                                               v-model="params.tipoUsuario"
                                               class="form-control form-control-sm"
-                                              placeholder="Ingrese la decripción"
+                                              placeholder="Ingrese tipo de usuario"
                                             />
                                           </div>
                                         </div>

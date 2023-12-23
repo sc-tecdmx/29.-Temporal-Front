@@ -593,7 +593,8 @@ const change_file = async(event) => {
     //params.value.documentos.push(objeto);
     paramsEnviar.value.documentosAdjuntos.push(objeto);
   }
-  certificado.value.documento = event.target.files[0];
+  //certificado.value.documento = event.target.files[0];
+  certificado.value.documento = event.target.files;
   form.inputPDF = true;
 };
 
@@ -771,12 +772,19 @@ const enviaFirma = async () => {
   if(certFileData.file!=null){
     const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
     const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
-    const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
     const codigoFirmaAplicada = 'Firmado';
+
+    for (let i = 0; i < certificado.value.documento.length; i++) {
+      console.log(certificado.value.documento[i]);
+      const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento[i]);
+      console.log("DOCFILE",pdfFileObj);
+      await main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+    }
+    //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
     //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
     // console.log(certificado.value.contrasenaCer);
     // console.log(token);
-    main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+    //main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
 
   }else if(pfxFileData.file!=null){
     const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);

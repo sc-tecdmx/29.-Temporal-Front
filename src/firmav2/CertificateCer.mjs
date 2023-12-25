@@ -22,6 +22,8 @@ export class CertificateCer {
         this.cerBase64 = cerBase64;
         this.keyBase64 = keyBase64;
         this.password = password;
+
+        this.loadFirma; //PAO
         this.loadData();
     }
 
@@ -34,15 +36,22 @@ export class CertificateCer {
         //LLave privada
         const pemEncryptedPrivateKey = `-----BEGIN ENCRYPTED PRIVATE KEY-----\n${this.keyBase64}\n-----END ENCRYPTED PRIVATE KEY-----\n`;
         this.privateKey = forge.pki.decryptRsaPrivateKey(pemEncryptedPrivateKey, this.password); //rsaPrivateKeyParameters
-
-        //Generación de pfx
-        const keypem = forge.pki.privateKeyToPem(this.privateKey);
-        const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
-        this.p12 = forge.pkcs12.toPkcs12Asn1(privateKeyDecrypted, this.x509Cert, this.password,
-            { generateLocalKeyId: true, friendlyName: 'test', algorithm: '3des' }
-        );
-        const p12Der = forge.asn1.toDer(this.p12).getBytes();
-        this.pfx = new Uint8Array(p12Der).buffer;
+        
+        //PAO
+        if(this.privateKey == null){
+            if (confirm("Contraseña incorrecta")) {
+                this.loadFirma = false;
+              }
+        }else{
+            //Generación de pfx
+            const keypem = forge.pki.privateKeyToPem(this.privateKey);
+            const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
+            this.p12 = forge.pkcs12.toPkcs12Asn1(privateKeyDecrypted, this.x509Cert, this.password,
+                { generateLocalKeyId: true, friendlyName: 'test', algorithm: '3des' }
+            );
+            const p12Der = forge.asn1.toDer(this.p12).getBytes();
+            this.pfx = new Uint8Array(p12Der).buffer;
+        }
     }
 
     isCertificadoVigente(responseBody) {

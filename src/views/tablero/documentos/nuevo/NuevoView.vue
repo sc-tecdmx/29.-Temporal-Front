@@ -574,6 +574,7 @@ onMounted(async() => {
 const documentos = ref([]);
 /* Obtener documentos */
 const change_file = async(event) => {
+  //console.log("FILES",event.target.files)
   //selected_file.value = event.target.files[0];
   //params.value.documentos = selected_file.value;
   paramsEnviar.value.documentosAdjuntos = [];
@@ -584,7 +585,7 @@ const change_file = async(event) => {
   for (let i = 0; i < selected_file.value.length; i++) {
     //console.log(selected_file.value[i].name);
     documentos.value.push(selected_file.value[i].name);
-    const docFileObj = await getMimeTypeAndArrayBufferFromFile(selected_file.value[i]);
+    const docFileObj = await getMimeTypeAndArrayBufferFromFile_v2(selected_file.value[i]);
     //console.log(docFileObj)
     let objeto = {
       fileType: 'PDF',
@@ -630,6 +631,7 @@ const setContrasena = (contrasena) => {
 };
 
 const enviaModoFirma = async() => {
+  loadFirma.value = true;
   console.log('enviar enviaModoFirma---------');
   //let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
   let urlAltaDoc = urlPKI + "/api/documento/alta-documento-modo-firmar-ahora";
@@ -768,17 +770,22 @@ const enviaFirma = async () => {
 
   //getCertificadoData( certFileData, keyFileData, docFileData, certificado.value.contrasenaCer );
   
-  console.log(certFileData.file);
+  //console.log(certFileData.file);
   if(certFileData.file!=null){
     const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
     const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
     const codigoFirmaAplicada = 'Firmado';
 
     for (let i = 0; i < certificado.value.documento.length; i++) {
-      console.log(certificado.value.documento[i]);
+      //console.log(certificado.value.documento[i]);
       const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento[i]);
-      console.log("DOCFILE",pdfFileObj);
-      await main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+      //console.log("DOCFILE",pdfFileObj);
+      const resultado = await main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+      //console.log("Resultado Main-refactor",resultado)
+       if(resultado == false){
+         loadFirma.value = false;
+       }
+      
     }
     //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
     //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
@@ -860,7 +867,7 @@ const is_submit_form_cer = ref(false);
 const is_submit_form_key = ref(false);
 const is_submit_form_pass = ref(false);
 const is_submit_form_doc = ref(false);
-
+const loadFirma = ref(false);
 const alertFirma = ref(false);
 
 const submit_formFirma = async () => {
@@ -1386,9 +1393,6 @@ const decodeToken = () => {
           <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close" ></button>
         </div>
         <div class="modal-body">
-          <!-- <h5 class="modal-heading mb-4 mt-2">
-            No se puede agregar un empleado como firmante y como destinatario
-          </h5> -->
           <p class="modal-text">
             No es posible asignar doble función,firmante y destinatario, a un empleado simultaneamente.
           </p>
@@ -1408,5 +1412,28 @@ const decodeToken = () => {
       </div>
     </div>
   </div>
+  <!-- Spinner Firmando -->
+  <div id="spinner-overlay" class="z-3 position-fixed top-50 start-50 translate-middle p-5 rounded-3 d-flex justify-content-center align-items-center" v-if="loadFirma">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Firmando...</span>
+      </div>
+    </div>
+  <!-- Termina Spinner -->
 </template>
-<style></style>
+<style>
+.custom-alert-1 {
+    background-color: #194891;
+    border-color: #759090;
+    border-radius: 5px;
+    color: #fff;
+}
+#spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 1050;
+}
+</style>

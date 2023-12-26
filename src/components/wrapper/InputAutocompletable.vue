@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
     import { defineProps, defineEmits } from 'vue'
     import '@/assets/sass/scrollspyNav.scss';
     import axios from 'axios';
@@ -28,23 +28,24 @@
     const props= defineProps({
          idName: String,
          label: String,
+         value: String,
          placeholder: String,
          disabled: Boolean
      });
     const emit = defineEmits(['inputData'])
-
     const selected = ref('');
-    const des_selected = ref('');
-    
-    //const form1 = ref({ name: '' });
+
+    watch(() => props.value, async (nuevoValue) => {
+      await limpiarInput(nuevoValue);
+    });
+    const limpiarInput = async (valor = props.value) => {
+      selected.value = valor;
+    };
+
     const is_submit_form1 = ref(false);
 
     const submit_form1 = () => {
         is_submit_form1.value = true;
-        // if (form1.value.name) {
-        //     //form validated success
-        //     //showMessage('Form submitted successfully.');
-        // }
     };
 
     const showMessage = (msg = '', type = 'success') => {
@@ -55,10 +56,7 @@
     const getExpediente = async (num_exp) => {
               const url_exp = import.meta.env.VITE_API_LARURL + "/api/autocompletado?query=" + num_exp;
               try {
-                //const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
                   const { data } = await axios.get(url_exp, getAuthorizationHeadersForLaravel(token));
-                //   console.log("data");
-                //   console.log(data);
                   catExpedientes.value = data;
               } catch (error) {
                   console.log(error);

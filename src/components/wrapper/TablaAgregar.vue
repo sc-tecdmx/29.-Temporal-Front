@@ -454,7 +454,7 @@ const verificaArray = () => {
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group mb-0">
-                      <label>Firmante</label>
+                      <label class="text-capitalize">{{ props.label }}</label>
                       <!-- {{ catEmpleados }} -->
                       <select v-model="selected" class="form-select form-select-sm" @change="verificaDuplicado(selected)" :disabled="usuarioSelected">
                         <option value="0">--Seleccionar--</option>

@@ -36,6 +36,7 @@ const is_submit_form_doc = ref(false);
 const alertFirma = ref(false);
 let certificadoModal = ref(null);
 let rechazoModal = ref(null);
+const loadFirma = ref(false);
 
 
 const urlDetalle = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
@@ -151,63 +152,74 @@ if(archivoEsCer.value){
 
 if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
     || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
-  //await enviaFirma();
-  await firmaStore.enviaFirma(
-    certificado.value.archivoCer, 
-    certificado.value.archivoCer, 
-    certificado.value.archivoKey,
-    certificado.value.contrasenaCer, 
-    documento.value.documentosAdjuntos, 
-    archivoEsCer.value,
-    token
-    );
+   await goFirma();
+   await enviaFirma();
+  // await firmaStore.enviaFirma(
+  //    certificado.value.archivoCer, 
+  //    certificado.value.archivoCer, 
+  //    certificado.value.archivoKey,
+  //    certificado.value.contrasenaCer, 
+  //    documento.value.documentosAdjuntos, 
+  //    archivoEsCer.value,
+  //    token
+  //    );
+  
 }
 };
-// const enviaFirma = async () => {
-//   const certFileData = {
-//                         file: certificado.value.archivoCer,
-//                         buffer: null,
-//                         base64: null,
-//                         iscer: archivoEsCer.value,
-//                       };
-//   const pfxFileData = {
-//                         file: certificado.value.archivoCer,
-//                         buffer: null,
-//                         base64: null,
-//                         iscer: archivoEsCer.value,
-//                       };
-//   const keyFileData = {
-//                         file: certificado.value.archivoKey,
-//                         buffer: null,
-//                         base64: null,
-//                       };
-//   const docFileData = {
-//                         file: certificado.value.documento,
-//                         buffer: null,
-//                         base64: null,
-//                       };
+
+const goFirma = async () => {
+  loadFirma.value = true;
+  firmaStore.goToFirma(documento.value.idDocumento, token);
+};
+ const enviaFirma = async () => {
+   const certFileData = {
+                         file: certificado.value.archivoCer,
+                         buffer: null,
+                         base64: null,
+                         iscer: archivoEsCer.value,
+                       };
+   const pfxFileData = {
+                         file: certificado.value.archivoCer,
+                         buffer: null,
+                         base64: null,
+                         iscer: archivoEsCer.value,
+                       };
+   const keyFileData = {
+                         file: certificado.value.archivoKey,
+                         buffer: null,
+                         base64: null,
+                       };
+   const docFileData = {
+                         file: certificado.value.documento,
+                         buffer: null,
+                         base64: null,
+                       };
   
-//    if(certFileData.file!=null){
-//      const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
-//      const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
-//      const codigoFirmaAplicada = 'Firmado';
+    if(certFileData.file!=null){
+      const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+      const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
+      const codigoFirmaAplicada = 'Firmado';
 
-//      documento.value.documentosAdjuntos.forEach(doc => {
-//       const pdfFileObj = doc.docBase64;
-//       main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
-//     });
+      documento.value.documentosAdjuntos.forEach(doc => {
+       const pdfFileObj = doc.docBase64;
+       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+       if(resultado == false){
+         loadFirma.value = false;
+       }
+     });
 
-//    }else if(pfxFileData.file!=null){
-//      const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
-//      const pdfFileObj = documento.value.documentosAdjuntos[0].docBase64;
-//      //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
-//      const codigoFirmaAplicada = 'Firmado';
-//      main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
-//      //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
-//    }
-//   certificadoModal.hide();
+    }else if(pfxFileData.file!=null){
+      const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+      const pdfFileObj = documento.value.documentosAdjuntos[0].docBase64;
+      //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
+      const codigoFirmaAplicada = 'Firmado';
+      main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+      //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+    }
+   certificadoModal.hide();
 
-// };
+ };
+
 function arrayBufferToBase64(arrayBuffer) {
   const binary = new Uint8Array(arrayBuffer);
   let base64 = '';
@@ -725,6 +737,13 @@ const submit_rechazo = () => {
                   </div>
                 </div>
                 <!-- Termina Modal Rechazo -->
+      <!-- Spinner Firmando -->
+    <div id="spinner-overlay" class="z-3 position-fixed top-50 start-50 translate-middle p-5 rounded-3 d-flex justify-content-center align-items-center" v-if="loadFirma">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Firmando...</span>
+      </div>
+    </div>
+  <!-- Termina Spinner -->
 </template>
 <style>
 .pStyle {
@@ -741,5 +760,14 @@ const submit_rechazo = () => {
 .btn-accion-rechazar{
   padding: 8px 85px;
   margin-bottom: 20px;
+}
+#spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 1050;
 }
 </style>

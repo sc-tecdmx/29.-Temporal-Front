@@ -126,7 +126,7 @@ const valueExpediente =  ref('-');
                 valueExpediente.value = ' ';
                 //const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
                 const { data } = await axios.get(url_exp, getAuthorizationHeadersForLaravel(token));
-                  console.log(data);
+                  //console.log(data);
                   params.value.nombreExpediente = data[0].s_descripcion;
                   valueExpediente.value = data[0].s_num_expediente;
                   catExpedientes.value = data;

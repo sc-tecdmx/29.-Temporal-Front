@@ -45,6 +45,24 @@ export const useFirmaStore = defineStore('firmaStore',() => {
              console.log(error)
            }
     }
+    const goToFirma = async(idDoc, token) => {
+      const url = urlPKI + "/api/documento/go-to-firmar";
+      let data = {
+        idDocumento: idDoc
+      }
+      try {
+           await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
+           console.log(response)
+                //  if (confirm(response.data.message)) {
+                //       window.location.reload();
+                //     }
+              });
+          
+         } catch (error) {
+           console.log(error)
+         }
+    }
+
     const enviaFirma = async(fileCER, filePFX, fileKEY, contrasena, fileDocs, archivoEsCer, token) => {
       console.log("Envia Firma");
        const certFileData = {
@@ -81,6 +99,7 @@ export const useFirmaStore = defineStore('firmaStore',() => {
          const pdfFileObj = doc.docBase64;
         //  console.log(pdfFileObj);
          main_cer(certFileObj.base64, keyFileObj.base64, contrasena, pdfFileObj, codigoFirmaAplicada, token, null);
+         
        });
 
        }else if(pfxFileData.file!=null){
@@ -129,6 +148,7 @@ export const useFirmaStore = defineStore('firmaStore',() => {
     return { 
         catState, 
         rechazarDocumento,
+        goToFirma,
         enviaFirma,
        }
 })

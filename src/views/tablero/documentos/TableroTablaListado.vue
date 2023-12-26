@@ -57,6 +57,9 @@
     const alertFirma = ref(false);
     let certificadoModal = ref(null);
     let rechazoModal = ref(null);
+    const idDocumento =  ref(null);
+    const adjuntos =  ref(null);
+    const loadFirma = ref(false);
 
     // const bind_data = () => {
     //     //console.log("bind_data");
@@ -257,6 +260,9 @@
     //Firmar documento
     const firmar = async(documento) => {
         certificado.value.documento = documento.row.documentosAdjuntos
+        //console.log(documento)
+        idDocumento.value = documento.row.idDocumento;
+        adjuntos.value = documento.row.documentosAdjuntos;
     };
 
     const formatDate = (date) => {
@@ -302,54 +308,75 @@ if(archivoEsCer.value){
 
 if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
     || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
+  await goFirma();   
   await enviaFirma();
+  // await firmaStore.enviaFirma(
+  //     certificado.value.archivoCer, 
+  //     certificado.value.archivoCer, 
+  //     certificado.value.archivoKey,
+  //     certificado.value.contrasenaCer, 
+  //     adjuntos.value, 
+  //     archivoEsCer.value,
+  //     token
+  //     );
 }
 };
-const enviaFirma = async () => {
-  const certFileData = {
-                        file: certificado.value.archivoCer,
-                        buffer: null,
-                        base64: null,
-                        iscer: archivoEsCer.value,
-                      };
-  const pfxFileData = {
-                        file: certificado.value.archivoCer,
-                        buffer: null,
-                        base64: null,
-                        iscer: archivoEsCer.value,
-                      };
-  const keyFileData = {
-                        file: certificado.value.archivoKey,
-                        buffer: null,
-                        base64: null,
-                      };
-  const docFileData = {
-                        file: certificado.value.documento,
-                        buffer: null,
-                        base64: null,
-                      };
-  
-   if(certFileData.file!=null){
-     const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
-     const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
-     //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
-     console.log(certificado.value);
-     const pdfFileObj = certificado.value.documento[0].docBase64;
-     const codigoFirmaAplicada = 'Firmado';
-     //main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
-     main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
-
-   }else if(pfxFileData.file!=null){
-     const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
-     const pdfFileObj = certificado.value.documento[0].docBase64;
-     //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
-     const codigoFirmaAplicada = 'Firmado';
-     main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
-     //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
-   }
-  certificadoModal.hide();
-
+const goFirma = async () => {
+  //console.log("goto Firma- DOC", idDocumento);
+  loadFirma.value = true;
+  firmaStore.goToFirma(idDocumento.value, token);
 };
+ const enviaFirma = async () => {
+   const certFileData = {
+                         file: certificado.value.archivoCer,
+                         buffer: null,
+                         base64: null,
+                         iscer: archivoEsCer.value,
+                       };
+   const pfxFileData = {
+                         file: certificado.value.archivoCer,
+                         buffer: null,
+                         base64: null,
+                         iscer: archivoEsCer.value,
+                       };
+   const keyFileData = {
+                         file: certificado.value.archivoKey,
+                         buffer: null,
+                         base64: null,
+                       };
+   const docFileData = {
+                         file: certificado.value.documento,
+                         buffer: null,
+                         base64: null,
+                       };
+  
+    if(certFileData.file!=null){
+      const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+      const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
+      //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
+      console.log(certificado.value);
+      const codigoFirmaAplicada = 'Firmado';
+      certificado.value.documento.forEach(doc => {
+       const pdfFileObj = doc.docBase64;
+       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+       if(resultado == false){
+         loadFirma.value = false;
+       }
+     });
+      //const pdfFileObj = certificado.value.documento[0].docBase64;
+      //main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+      //main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+
+    }else if(pfxFileData.file!=null){
+      const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+      const pdfFileObj = certificado.value.documento[0].docBase64;
+      //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
+      const codigoFirmaAplicada = 'Firmado';
+      main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+      //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
+    }
+   certificadoModal.hide();
+ };
 function arrayBufferToBase64(arrayBuffer) {
   const binary = new Uint8Array(arrayBuffer);
   let base64 = '';
@@ -875,6 +902,13 @@ const status_btnFirma = (etapa) => {
                   </div>
                 </div>
                 <!-- Termina Modal Rechazo -->
+                <!-- Spinner Firmando -->
+    <div id="spinner-overlay" class="z-3 position-fixed top-50 start-50 translate-middle p-5 rounded-3 d-flex justify-content-center align-items-center" v-if="loadFirma">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Firmando...</span>
+      </div>
+    </div>
+  <!-- Termina Spinner -->
 </template>
 <style>
 .font-list{
@@ -918,5 +952,14 @@ const status_btnFirma = (etapa) => {
     width: 15px;
     height: 15px;
     vertical-align: bottom;
+}
+#spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 1050;
 }
 </style>

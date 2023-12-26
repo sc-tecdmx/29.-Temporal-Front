@@ -457,7 +457,7 @@ const status_btnRechazo = (etapa) => {
       return false;
       break;
     case 'Enviado':
-      return true;
+      return false;
       break;
     case 'En Firma':
       return false;
@@ -479,7 +479,7 @@ const status_btnFirma = (etapa) => {
       return false;
       break;
     case 'Enviado':
-      return true;
+      return false;
       break;
     case 'En Firma':
       return false;

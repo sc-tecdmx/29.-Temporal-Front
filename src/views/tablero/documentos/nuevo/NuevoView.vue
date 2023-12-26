@@ -731,9 +731,12 @@ const enviaCaptura = async() => {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
               }}).then((response) => {
-                //console.log(response)
-                if (confirm(response.data.message)) {
-                  router.push('/');
+                if(response.data.status === 'fail'){
+                  alert(response.data.message);
+                }else{
+                  if (confirm(response.data.message)) {
+                    router.push('/');
+                  }
                 }
                  //console.log(response)
                  //msjAlert.value = response.data.message;
@@ -1214,12 +1217,12 @@ const decodeToken = () => {
               <div class="invoice-actions-btn d-flex flex-row-reverse mt-1">
                 <div class="invoice-action-btn">
                   <div class="row">
-                    <div class="col-xl-3 col-md-3">
+                    <div class="col-xl-4 col-md-4">
                       <a href="javascript:;" class="btn btn-danger btn-send p-3"
                         >Cancelar</a
                       >
                     </div>
-                    <div class="col-xl-3 col-md-3">
+                    <div class="col-xl-4 col-md-4">
                       <a
                         href="javascript:;"
                         class="btn btn-primary btn-send"
@@ -1227,7 +1230,7 @@ const decodeToken = () => {
                         >Guardar captura</a
                       >
                     </div>
-                    <div class="col-xl-3 col-md-3">
+                    <div class="col-xl-4 col-md-4">
                       <a
                         id="btn-certificado"
                         class="btn btn-secondary btn-send p-3"
@@ -1238,7 +1241,7 @@ const decodeToken = () => {
                       </a>
                     </div>
                     <!-- Hacer una distincion entre "firmar" y "firmar y enviar" -->
-                    <div class="col-xl-3 col-md-3">
+                    <!-- <div class="col-xl-3 col-md-3">
                       <a
                         href="javascript:;"
                         class="btn btn-success btn-download"
@@ -1246,7 +1249,7 @@ const decodeToken = () => {
                       >
                         Enviar a firmantes</a
                       >
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>

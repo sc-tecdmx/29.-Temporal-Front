@@ -294,8 +294,8 @@ const status_btn = () => {
       //Si firmante, deshabilitados
       //Si destinatario habilitados
       btnEnviar.value = true;
-      btnFirmar.value = true;
-      btnRechazado.value = true;
+      btnFirmar.value = false;
+      btnRechazado.value = false;
       break;
     case 'En Firma':
       btnEnviar.value = false;

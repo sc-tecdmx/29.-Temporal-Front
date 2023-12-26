@@ -308,8 +308,8 @@ if(archivoEsCer.value){
 
 if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
     || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
-  await goFirma();   
-  await enviaFirma();
+  await goFirma();
+  
   // await firmaStore.enviaFirma(
   //     certificado.value.archivoCer, 
   //     certificado.value.archivoCer, 
@@ -324,8 +324,22 @@ if(selected_file_cer.value && selected_file_key.value && certificado.value.contr
 const goFirma = async () => {
   //console.log("goto Firma- DOC", idDocumento);
   loadFirma.value = true;
-  firmaStore.goToFirma(idDocumento.value, token);
+  try {
+    const verificaGoFirma = await firmaStore.goToFirma(idDocumento.value, token);
+    console.log("GO-FIRMA", verificaGoFirma);
+
+    if (verificaGoFirma === 'Success') {
+      await enviaFirma();
+    } else {
+      //fail
+      alert("No se puede firmar");
+      //window.location.reload();
+    }
+  } catch (error) {
+    console.error("Error al llamar a goToFirma:", error);
+  }
 };
+
  const enviaFirma = async () => {
    const certFileData = {
                          file: certificado.value.archivoCer,

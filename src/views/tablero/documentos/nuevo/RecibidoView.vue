@@ -122,6 +122,15 @@ const motivoRechazo = () => {
   firmaStore.rechazarDocumento(post,token);
 };
 /* Termina Modal Rechazo*/
+/* Enviar a Firmantes*/
+const enviarFirmantes = () => {
+  let data ={
+      "idDocumento": documento.value.idDocumento,
+  }
+  firmaStore.enviarFirmantes(data,token);
+};
+/* Enviar a Firmantes */
+
 
 const pathdocumento = ref("");
 // const pdf_view = (adjuntos) => {
@@ -153,7 +162,7 @@ if(archivoEsCer.value){
 if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
     || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
    await goFirma();
-   await enviaFirma();
+   //await enviaFirma();
   // await firmaStore.enviaFirma(
   //    certificado.value.archivoCer, 
   //    certificado.value.archivoCer, 
@@ -169,7 +178,20 @@ if(selected_file_cer.value && selected_file_key.value && certificado.value.contr
 
 const goFirma = async () => {
   loadFirma.value = true;
-  firmaStore.goToFirma(documento.value.idDocumento, token);
+  //firmaStore.goToFirma(documento.value.idDocumento, token);
+  try {
+    const verificaGoFirma = await firmaStore.goToFirma(documento.value.idDocumento, token);
+    console.log("GO-FIRMA", verificaGoFirma);
+
+    if (verificaGoFirma === 'Success') {
+      await enviaFirma();
+    } else {
+      alert("No se puede firmar");
+      window.location.reload();
+    }
+  } catch (error) {
+    console.error("Error al llamar a goToFirma:", error);
+  }
 };
  const enviaFirma = async () => {
    const certFileData = {
@@ -541,6 +563,7 @@ const submit_rechazo = () => {
                             href="javascript:;"
                             class="btn btn-primary btn-send btn-accion-enviar"
                             :disabled="btnEnviar"
+                            @click="enviarFirmantes()"
                             >Enviar/Transferir</button>
                         </div>
                         <div class="col-xl-12 col-md-3 col-sm-6">

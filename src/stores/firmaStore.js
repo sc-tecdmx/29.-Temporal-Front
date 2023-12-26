@@ -45,19 +45,33 @@ export const useFirmaStore = defineStore('firmaStore',() => {
              console.log(error)
            }
     }
+    const enviarFirmantes = async(data, token) => {
+      const url = urlPKI + "/api/documento/enviar-documento";
+      
+      try {
+           await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
+           console.log(response)
+                 if (confirm(response.data.message)) {
+                      //window.location.reload();
+                    }
+              });
+          
+         } catch (error) {
+           console.log(error)
+         }
+  }
     const goToFirma = async(idDoc, token) => {
       const url = urlPKI + "/api/documento/go-to-firmar";
       let data = {
         idDocumento: idDoc
       }
       try {
-           await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
-           console.log(response)
+        const response = await axios.post(url, data, getAuthorizationHeadersForLaravel(token));
+        console.log("GO-TO-FIRMA", response);
+        return response.data.status;
                 //  if (confirm(response.data.message)) {
                 //       window.location.reload();
                 //     }
-              });
-          
          } catch (error) {
            console.log(error)
          }
@@ -150,5 +164,6 @@ export const useFirmaStore = defineStore('firmaStore',() => {
         rechazarDocumento,
         goToFirma,
         enviaFirma,
+        enviarFirmantes,
        }
 })

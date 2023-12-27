@@ -81,6 +81,7 @@ const envApp = import.meta.env.VITE_ENV_APP;
   }
 }
 
+
 async function obtenerCatNuevoDoc(url) {
   return await catalogoStore.getNuevoDocumento(url, token);
 }
@@ -675,14 +676,13 @@ const enviaModoFirma = async() => {
                "Access-Control-Allow-Origin": "*",
            });
              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-             //await axios.post(urlAltaDoc, post, {headers:{"bearertoken": `${token}`}}).then((response) => {
-               //console.log(response)    
-               
-               //if (confirm(response.data.message)) {
-                    //certificadoModal.hide();
-
-                    //router.push('/');
-                  //}
+               console.log(response);
+               if(response.data.status === 'fail'){
+                  alert(response.data.message);
+                  loadFirma.value = false;
+                }else{
+                  enviaFirma();
+                }
               });
             
            } catch (error) {
@@ -893,7 +893,7 @@ const submit_formFirma = async () => {
       || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
     console.log("campos llenos");
     await enviaModoFirma();//here 
-    await enviaFirma();//here
+    //await enviaFirma();//here
   }
 };
 const numExpediente = ref(null);

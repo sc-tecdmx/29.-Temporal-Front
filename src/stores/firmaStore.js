@@ -34,7 +34,8 @@ export const useFirmaStore = defineStore('firmaStore',() => {
         // console.log(data)
         // console.log(token)
         try {
-             await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
+          await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
              console.log(response)
                    if (confirm(response.data.message)) {
                         window.location.reload();
@@ -49,7 +50,8 @@ export const useFirmaStore = defineStore('firmaStore',() => {
       const url = urlPKI + "/api/documento/enviar-documento";
       
       try {
-           await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
+           await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+            //await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
            console.log(response)
                  if (confirm(response.data.message)) {
                       //window.location.reload();
@@ -66,7 +68,8 @@ export const useFirmaStore = defineStore('firmaStore',() => {
         idDocumento: idDoc
       }
       try {
-        const response = await axios.post(url, data, getAuthorizationHeadersForLaravel(token));
+        const response = await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}});
+        //const response = await axios.post(url, data, getAuthorizationHeadersForLaravel(token));
         console.log("GO-TO-FIRMA", response);
         return response.data.status;
                 //  if (confirm(response.data.message)) {

@@ -38,7 +38,7 @@ onMounted(async() => {
                 urlEditCat.value = import.meta.env.VITE_CAT_EDIT_PRIOR
                 urlDelCat.value = import.meta.env.VITE_CAT_DEL_PRIOR
                 break;
-            case 'destino':
+            case 'destino-de-documento':
                 headers.value = ["id", "destino", "acciones"];
                 urlGetCat.value = import.meta.env.VITE_CAT_GET_DEST
                 urlSaveCat.value = import.meta.env.VITE_CAT_ADD_DEST

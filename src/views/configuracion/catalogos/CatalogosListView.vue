@@ -43,7 +43,7 @@ const authStore = useAuthStore();
                         <h5 class="card-title">Destino de documento</h5>
                         <p class="card-text">
                         </p>
-                        <router-link to="/config/catalogo/destino" class="btn btn-primary">Administrar</router-link>
+                        <router-link to="/config/catalogo/destino-de-documento" class="btn btn-primary">Administrar</router-link>
                         </div>
                     </div>
                 </div>

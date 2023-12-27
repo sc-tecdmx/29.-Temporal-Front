@@ -164,15 +164,15 @@ if(selected_file_cer.value && selected_file_key.value && certificado.value.contr
    await goFirma();
    //await enviaFirma();
   // await firmaStore.enviaFirma(
-  //    certificado.value.archivoCer, 
-  //    certificado.value.archivoCer, 
+  //    certificado.value.archivoCer,
+  //    certificado.value.archivoCer,
   //    certificado.value.archivoKey,
-  //    certificado.value.contrasenaCer, 
-  //    documento.value.documentosAdjuntos, 
+  //    certificado.value.contrasenaCer,
+  //    documento.value.documentosAdjuntos,
   //    archivoEsCer.value,
   //    token
   //    );
-  
+
 }
 };
 
@@ -216,7 +216,7 @@ const goFirma = async () => {
                          buffer: null,
                          base64: null,
                        };
-  
+
     if(certFileData.file!=null){
       const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
       const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
@@ -279,28 +279,42 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
 const btnEnviar = ref(false);
 const btnFirmar = ref(false);
 const btnRechazado = ref(false);
-
+const data = JSON.parse(localStorage.getItem('data'));
 const status_btn = () => {
-  //revisar 
-  //revisar statusFirma
-  //console.log("Etapa",documento.value.etapaDocumento)
+  //console.log("data",data)
   switch(documento.value.etapaDocumento){
     case 'Creado':
+      if(!documento.value.statusFirma){
+        btnFirmar.value = false;
+        btnRechazado.value = false;
+      }
       btnEnviar.value = true;
-      btnFirmar.value = false;
-      btnRechazado.value = false;
       break;
     case 'Enviado':
       //Si firmante, deshabilitados
       //Si destinatario habilitados
+      if(documento.value.statusFirma){
+        btnFirmar.value = true;
+        btnRechazado.value = true;
+      }else{
+        btnFirmar.value = false;
+        btnRechazado.value = false;
+      }
       btnEnviar.value = true;
-      btnFirmar.value = false;
-      btnRechazado.value = false;
       break;
     case 'En Firma':
-      btnEnviar.value = false;
-      btnFirmar.value = false;
-      btnRechazado.value = false;
+      if(documento.value.statusFirma){
+        btnFirmar.value = true;
+        btnRechazado.value = true;
+      }else{
+        btnFirmar.value = false;
+        btnRechazado.value = false;
+      }
+      if(data == documento.value.idEmpleadoCreador){
+        btnEnviar.value = false;
+      }else{
+        btnEnviar.value = true;
+      }
       break;
     case 'Rechazado':
       btnEnviar.value = true;
@@ -598,7 +612,7 @@ const submit_rechazo = () => {
                   </div>
                 </div>
                 <!-- Boton de firmar -->
-                
+
                 <!-- Modal PDF-->
                 <div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
                   <div class="modal-dialog modal-xl" role="document">
@@ -684,7 +698,7 @@ const submit_rechazo = () => {
                                     id="contrasenaCer"
                                     class="form-control form-control-sm"
                                     placeholder="Introduzca su contraseña"
-                                    :class="[is_submit_form_pass ? (certificado.contrasenaCer ? 'is-valid' : 'is-invalid') : '']" 
+                                    :class="[is_submit_form_pass ? (certificado.contrasenaCer ? 'is-valid' : 'is-invalid') : '']"
                                   />
                                   <!-- <div class="valid-feedback">Looks good!</div> -->
                                   <div class="invalid-feedback">Ingresa contrase&ntilde;a</div>

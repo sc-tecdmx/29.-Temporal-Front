@@ -60,7 +60,8 @@
     const idDocumento =  ref(null);
     const adjuntos =  ref(null);
     const loadFirma = ref(false);
-
+    const data = JSON.parse(localStorage.getItem('data'));
+    //console.log("data",data)
     // const bind_data = () => {
     //     //console.log("bind_data");
     //     const axiosInstance = axios.create({
@@ -451,16 +452,26 @@ const submit_rechazo = () => {
     };
 
 //Activar/Bloquear botones
-const status_btnRechazo = (etapa) => {
+const status_btnRechazo = (etapa, status) => {
   switch(etapa){
     case 'Creado':
-      return false;
+      if(!status){
+        return false;
+      }
       break;
     case 'Enviado':
-      return false;
+      if(status){
+        return true;
+      }else{
+        return false;
+      }
       break;
     case 'En Firma':
-      return false;
+      if(status){
+        return true;
+      }else{
+        return false;
+      }
       break;
     case 'Rechazado':
       return true;
@@ -473,16 +484,26 @@ const status_btnRechazo = (etapa) => {
       break;
   }
 };
-const status_btnFirma = (etapa) => {
+const status_btnFirma = (etapa, status) => {
   switch(etapa){
     case 'Creado':
-      return false;
+      if(!status){
+        return false;
+      }
       break;
     case 'Enviado':
-      return false;
+    if(status){
+        return true;
+      }else{
+        return false;
+      }
       break;
     case 'En Firma':
-      return false;
+      if(status){
+        return true;
+      }else{
+        return false;
+      }
       break;
     case 'Rechazado':
       return true;
@@ -547,7 +568,7 @@ const status_btnFirma = (etapa) => {
                                         data-bs-toggle="modal"
                                         data-bs-target="#certificadoModal"
                                         title="Firmar Ahora"
-                                        :disabled="status_btnFirma(props.row.etapa)"
+                                        :disabled="status_btnFirma(props.row.etapa, props.row.statusFirma)"
                                         @click="firmar(props)">
                                         <IconEdit></IconEdit>
                                     </button>
@@ -557,7 +578,7 @@ const status_btnFirma = (etapa) => {
                                         data-bs-toggle="modal"
                                         data-bs-target="#rechazoModal"
                                         title="Rechazar"
-                                        :disabled="status_btnRechazo(props.row.etapa)"
+                                        :disabled="status_btnRechazo(props.row.etapa, props.row.statusFirma)"
                                         @click="rechazar(props)">
                                         <IconXOctagon></IconXOctagon>
                                     </button>

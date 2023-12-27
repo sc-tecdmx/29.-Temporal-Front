@@ -20,14 +20,11 @@ export const useAuthStore = defineStore('authStore',()=>{
              }
              try {
               const response = await axios.post(urlLogin, post);
-              const token = response.headers.authorization;
-              const decodedToken =  parseJwt(token);
-              const idEmpleado = decodedToken.sub;
-              // console.log("Token:", token);
-              // console.log("Idempleado:", idEmpleado);
-              // console.log("Encabezados:", response.headers)
+              //console.log(response.data);
+
               const usuario = ref({});
               usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
+              localStorage.setItem('data', JSON.stringify(response.data.data));
               state.value.user = JSON.parse(localStorage.getItem('user'));
               if (response.data.status === "failed" || response.data.token == null) {
                 alert("Usuario o contraseña incorrecta");

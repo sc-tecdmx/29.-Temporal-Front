@@ -224,7 +224,7 @@ const goFirma = async () => {
 
       documento.value.documentosAdjuntos.forEach(doc => {
        const pdfFileObj = doc.docBase64;
-       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
        if(resultado == false){
          loadFirma.value = false;
        }
@@ -235,7 +235,7 @@ const goFirma = async () => {
       const pdfFileObj = documento.value.documentosAdjuntos[0].docBase64;
       //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
       const codigoFirmaAplicada = 'Firmado';
-      main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, null);
+      main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
       //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
     }
    certificadoModal.hide();

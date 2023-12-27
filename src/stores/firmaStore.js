@@ -112,7 +112,7 @@ export const useFirmaStore = defineStore('firmaStore',() => {
        fileDocs.forEach(doc => {
          const pdfFileObj = doc.docBase64;
         //  console.log(pdfFileObj);
-         main_cer(certFileObj.base64, keyFileObj.base64, contrasena, pdfFileObj, codigoFirmaAplicada, token, null);
+         main_cer(certFileObj.base64, keyFileObj.base64, contrasena, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
          
        });
 
@@ -121,7 +121,7 @@ export const useFirmaStore = defineStore('firmaStore',() => {
        const pdfFileObj = fileDocs[0].docBase64;
        //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
        const codigoFirmaAplicada = 'Firmado';
-       main_pfx(pfxFileObj.base64, contrasena, pdfFileObj, codigoFirmaAplicada, token, null);
+       main_pfx(pfxFileObj.base64, contrasena, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
        //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
        }
     }

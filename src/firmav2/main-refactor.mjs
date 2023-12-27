@@ -54,7 +54,8 @@ async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDO
     const isCertVigente = await certificate.isCertificadoVigente(responseBody);
     if(isCertVigente){//Validamos vigencia solo con datos del certificado
         console.log('--------------Es certVigente')
-        const hasTransaccion = await firma.getTransaccion(document.hash, certificate.cerBase64, urlTransaccion, token, responseBody);//Obtenemos la transacción
+        const docHashed = hashDOc?hashDOc:document.hash;
+        const hasTransaccion = await firma.getTransaccion(docHashed, certificate.cerBase64, urlTransaccion, token, responseBody);//Obtenemos la transacción
         if(responseBody.message != undefined){
             if (confirm(responseBody.message)) {
                 window.location.href = "/";

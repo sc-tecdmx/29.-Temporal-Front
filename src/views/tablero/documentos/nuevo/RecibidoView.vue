@@ -224,7 +224,8 @@ const goFirma = async () => {
 
       documento.value.documentosAdjuntos.forEach(doc => {
        const pdfFileObj = doc.docBase64;
-       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
+       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.hash);
+       //const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
        if(resultado == false){
          loadFirma.value = false;
        }

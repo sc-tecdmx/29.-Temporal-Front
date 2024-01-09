@@ -120,7 +120,7 @@ const submit_formulario = () => {
                   <div id="password-field" class="field-wrapper input mb-2">
                     <div class="d-flex justify-content-between">
                       <label for="password">CONTRASEÑA</label>
-                      <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
+                      <!-- <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link> -->
                     </div>
                     <IconFeatherLock></IconFeatherLock>
                     <input
@@ -170,11 +170,11 @@ const submit_formulario = () => {
                     </div>
                   </div>
 
-                  <div class="division">
+                  <!-- <div class="division">
                     <span>O</span>
-                  </div>
+                  </div> -->
 
-                  <div class="social">
+                  <!-- <div class="social">
                     <a href="javascript:void(0);" class="btn social-fb">
                       <IconLogoGoogle></IconLogoGoogle>
                       <span class="brand-name">Google</span>
@@ -183,7 +183,7 @@ const submit_formulario = () => {
                       <IconMicrosoftLogo></IconMicrosoftLogo>
                       <span class="brand-name ms-1">Microsoft</span>
                     </a>
-                  </div>
+                  </div> -->
                 </div>
               </form>
             </div>

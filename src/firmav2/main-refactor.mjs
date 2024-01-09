@@ -74,10 +74,12 @@ async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDO
                         const docHashed = hashDOc?hashDOc:document.hash;
                         const firmado = await firma.buildAndSavePDF(codigoFirmaAplicada, docHashed, certificate.cerBase64, docToSign, urlBuildAndStoreFirma, token, responseBody);
                         console.log('Documento firmado');
-                        //PAO
-                        if (confirm("Documento firmado")) {
-                            window.location.href = "/";
-                        }
+                        //PAO - Documento firmado
+                        //console.log("RESPONSE",responseBody);
+                        // if (confirm("Documento firmado")) {
+                        //     window.location.href = "/";
+                        // }
+                        return true;
                     }else{
                         console.log(responseBody);
                     }
@@ -103,7 +105,11 @@ export async function main_cer(cerBase64, keyBase64, password,
     const certificate = new CertificateCer(cerBase64, keyBase64, password);
     //console.log("certicade----------",certificate.loadFirma) //PAO
     if(certificate.loadFirma == undefined){
-        firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc);
+        let firmado = await firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc);
+        if(firmado){
+            console.log("Firmado",firmado)
+            return firmado;
+        }
     }else{
         return false;
     }

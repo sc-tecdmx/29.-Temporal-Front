@@ -23,8 +23,12 @@ import { ClientTable } from 'v-tables-3';
 // vue input mask
 import Maska from 'maska';
 
+//Sweetalert
+import Swal from 'sweetalert2';
+window.Swal = Swal;
+
 //config Servicios
-import config from './config';
+//import config from './config';
 
 //-- Establecer configuración inicial por default
 /*import appInit from './app-init';
@@ -39,6 +43,6 @@ app.use(router)
 app.use(PerfectScrollbar)
 app.use(createHead())
 app.use(Maska)
-app.provide('config', config)
+//app.provide('config', config)
 app.mount('#app')
 app.use(ClientTable)

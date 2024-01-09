@@ -61,29 +61,7 @@
     const adjuntos =  ref(null);
     const loadFirma = ref(false);
     const data = JSON.parse(localStorage.getItem('data'));
-    //console.log("data",data)
-    // const bind_data = () => {
-    //     //console.log("bind_data");
-    //     const axiosInstance = axios.create({
-    //         "Access-Control-Allow-Origin": "*",
-    //     });
-
-    //     const datosTabla = async () => {
-    //         const url = props.url;
-    //         try {
-    //             const { data } = await axiosInstance.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-    //             //console.log(data.data)
-    //             items.value = data.data;
-    //             //console.log("AXIOS:" + items.value);
-    //         } catch (error) {
-    //             console.log(error);
-    //             alert(error);
-    //         }
-    //     };
-    //     datosTabla();
-    // };
-    /* fin getData */
-//console.log("items: ", items)
+    
     //Configuración de tabla
     const table_option = ref({
         perPage: 10,
@@ -113,10 +91,6 @@
         initPopup();
     });
 
-    //Detalle
-    // const verDetalle = (item) => {
-    //     alert("Detalle" + item.folio_documento);
-    // };
     //Archivo adjunto
     const pathdocumento = ref("")
     const documentosAdjuntos = ref([]);
@@ -310,16 +284,6 @@ if(archivoEsCer.value){
 if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
     || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
   await goFirma();
-  
-  // await firmaStore.enviaFirma(
-  //     certificado.value.archivoCer, 
-  //     certificado.value.archivoCer, 
-  //     certificado.value.archivoKey,
-  //     certificado.value.contrasenaCer, 
-  //     adjuntos.value, 
-  //     archivoEsCer.value,
-  //     token
-  //     );
 }
 };
 const goFirma = async () => {
@@ -329,11 +293,14 @@ const goFirma = async () => {
     const verificaGoFirma = await firmaStore.goToFirma(idDocumento.value, token);
     console.log("GO-FIRMA", verificaGoFirma);
 
-    if (verificaGoFirma === 'Success') {
+    if (verificaGoFirma.data.status === 'Success') {
+      //console.log("Success")
       await enviaFirma();
     } else {
       //fail
-      alert("No se puede firmar");
+      showMessage("No se puede firmar", 'error');
+      loadFirma.value = false;
+      //alert("No se puede firmar");
       //window.location.reload();
     }
   } catch (error) {
@@ -342,6 +309,7 @@ const goFirma = async () => {
 };
 
  const enviaFirma = async () => {
+  console.log("enviaFirma")
    const certFileData = {
                          file: certificado.value.archivoCer,
                          buffer: null,
@@ -369,14 +337,26 @@ const goFirma = async () => {
       const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
       const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
       //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
-      console.log(certificado.value);
+      //console.log(certificado.value);
       const codigoFirmaAplicada = 'Firmado';
-      certificado.value.documento.forEach(doc => {
+      let countDoc = 0;
+      let logArray = certificado.value.documento.length;
+
+      certificado.value.documento.forEach(async (doc, index) => {
        const pdfFileObj = doc.docBase64;
-       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
-       if(resultado == false){
-         loadFirma.value = false;
-       }
+       const resultado = await main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
+       if(resultado){
+          countDoc ++;
+        }else{
+          loadFirma.value = false;
+        }
+        if (index === logArray - 1) {
+          showAlert(countDoc);
+          // if (confirm(countDoc + " Documento(s) firmado")) {
+          //   loadFirma.value = false;
+          //   window.location.href = "/";
+          // }
+        }
      });
       //const pdfFileObj = certificado.value.documento[0].docBase64;
       //main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
@@ -437,7 +417,7 @@ const initPopup = () => {
     codigoFirmaAplicada:'', 
     tipoUsuario: '',
     motivo: '' });
-    const rechazar = (documento) => {
+  const rechazar = (documento) => {
          formRechazo.value.idDocumento = documento.row.idDocumento;
          formRechazo.value.codigoFirmaAplicada =  "Rechazado";
          formRechazo.value.tipoUsuario = "firmante"
@@ -480,7 +460,8 @@ const status_btnRechazo = (etapa, status) => {
       return true;
       break;
     default:
-      alert("No se encuentra etapa de documento");
+      // alert("No se encuentra etapa de documento");
+      showMessage("No se encuentra etapa de documento", 'error');
       break;
   }
 };
@@ -512,10 +493,40 @@ const status_btnFirma = (etapa, status) => {
       return true;
       break;
     default:
-      alert("No se encuentra etapa de documento");
+      // alert("No se encuentra etapa de documento");
+      showMessage("No se encuentra etapa de documento", 'error');
       break;
   }
 };
+
+const showAlert = async (count) => {
+      new window.Swal({
+          icon: 'success',
+          title: 'Firmado',
+          text: "Se han firmado " + count + " documentos",
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar',
+          padding: '2em',
+        }).then((result) => {
+            if (result.value) {
+              loadFirma.value = false;
+              window.location.reload();
+            }
+        });
+  };
+  const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    };
 </script>
 <template>
     <div class="layout-px-spacing">
@@ -582,15 +593,6 @@ const status_btnFirma = (etapa, status) => {
                                         @click="rechazar(props)">
                                         <IconXOctagon></IconXOctagon>
                                     </button>
-                                <!-- <a href="javascript:;"
-                                    id="ddlPriority"
-                                    class="btn dropdown-toggle btn-icon-only ms-2"
-                                    data-bs-toggle="tooltip"
-                                    title="Rechazar"
-                                    @click="rechazar(props)">
-                                    <IconXOctagon></IconXOctagon>
-                                    
-                                </a> -->
                                 <a href="javascript:;"
                                     id="ddlPriority"
                                     class="btn dropdown-toggle btn-icon-only ms-2"
@@ -599,19 +601,6 @@ const status_btnFirma = (etapa, status) => {
                                     @click="router.push(`/documento/recibido/${props.row.idDocumento}`)">
                                     <IconEye></IconEye>
                                 </a>
-                                <!-- <a href="javascript:;"
-                                    id="ddlPriority"
-                                    class="btn dropdown-toggle btn-icon-only ms-2"
-                                    :class="[class_estado(props.row.etapa)]"
-                                    data-bs-toggle="tooltip"
-                                    :title="titulo"
-                                >
-                                    <IconFilePlus v-if="docCreado"></IconFilePlus>
-                                    <IconSend v-if="docEnviado"></IconSend>
-                                    <IconSignature v-if="docFirma"></IconSignature>
-                                    <IconFeatherX v-if="docRechazado"></IconFeatherX>
-                                    <IconFeatherCheck v-if="docTerminado"></IconFeatherCheck>
-                                </a> -->
                                 <a class="btn dropdown-toggle btn-icon-only text-truncate ms-2" 
                                     href="#" role="button" 
                                     id="pendingTask" 
@@ -664,66 +653,12 @@ const status_btnFirma = (etapa, status) => {
                                     </div>
                                 </div>
                             </template>
-                            <!-- <template #e="props">
-                                <div class="priority-dropdown">
-                                    <div class="dropdown btn-group">
-                                        <a href="javascript:;"
-                                            id="ddlPriority"
-                                            class="btn dropdown-toggle btn-icon-only"
-                                            :class="[class_estado(props.row.id_etapa_documento)]">
-                                            <div title="Creado"><IconFilePlus v-if="docCreado"></IconFilePlus></div>
-                                            <div title="Enviado"><IconSend v-if="docEnviado"></IconSend></div>
-                                            <div title="En Firma"><IconSignature v-if="docFirma"></IconSignature></div>
-                                            <div title="Rechazado"><IconFeatherX v-if="docRechazado"></IconFeatherX></div>
-                                            <div title="Terminado"><IconFeatherCheck v-if="docTerminado"></IconFeatherCheck></div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </template> -->
-                            <!-- <template #d="props"> -->
-                                <!-- <a href="javascript:;"
-                                    class="btn dropdown-toggle btn-icon-only"
-                                    @click="pdf_view(props.row.documentosAdjuntos)"
-                                    v-if="props.row.documentosAdjuntos.length > 0"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalxl">
-                                    <IconFeatherFileText></IconFeatherFileText>
-                                </a> -->
-                                <!-- <a class="btn dropdown-toggle btn-icon-only text-truncate" 
-                                    href="#" role="button" 
-                                    id="pendingTask" 
-                                    v-if="props.row.documentosAdjuntos.length > 0"
-                                    data-bs-toggle="dropdown" 
-                                    aria-haspopup="true" 
-                                    aria-expanded="false" 
-                                    @click="pdf_view(props.row.documentosAdjuntos)"
-                                    style="font-size: 12px;">
-                                    <IconFeatherFileText></IconFeatherFileText>
-                                </a>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li class="font-list" v-for="doc in documentosAdjuntos">
-                                            <a href="javascript:;"
-                                                class="btn dropdown-toggle btn-icon-only"
-                                                @click="pathdocumento = doc.path"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalPDF">
-                                                {{ doc.nombre }}
-                                            </a>
-                                        </li>
-                                    </ul> -->
-                            <!-- </template> -->
                             <template #folio="props">
                                 <div class="text-center">
                                     {{ props.row.folioDocumento }}
                                 </div>
                             </template>
-                            
                             <template #asunto="props">
-                                <!-- <div :title="props.row.s_asunto" class="">
-                                    <span class="d-inline-block text-truncate" style="max-width: 200px;">
-                                        {{ props.row.s_asunto }}
-                                    </span>
-                                </div> -->
                                 <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
                                     <span class="d-inline-block text-truncate" style="max-width: 200px;">
                                         {{ props.row.asunto }}

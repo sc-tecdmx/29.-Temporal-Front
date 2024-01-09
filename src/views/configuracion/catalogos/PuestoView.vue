@@ -85,13 +85,13 @@ const edit_user = (item) => {
 const guardar_item = () => {
   //console.log("SAVE-PARAMS -- ", params);
   if (!params.value.nombramiento) {
-    alert("Ingresar nombramiento");
-    //showMessage('Name is required.', 'error');
+    //alert("Ingresar nombramiento");
+    showMessage('Ingresar nombramiento.', 'error');
     return true;
   }
   if (!params.value.tipoUsuario) {
-    alert("Ingresar tipo de usuario");
-    //showMessage('Email is required.', 'error');
+    //alert("Ingresar tipo de usuario");
+    showMessage('Ingresar tipo de usuario.', 'error');
     return true;
   }
 
@@ -134,6 +134,19 @@ onMounted(async () => {
     initTooltip();
   }, 500);
 });
+const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    };
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -153,7 +166,7 @@ onMounted(async () => {
                   </div>
                   <div class="layout-px-spacing">
                     <div class="row d-flex justify-content-center">
-                      <div class="col-lg-10 col-sm-12 layout-spacing">
+                      <div class="col-lg-11 col-sm-12 layout-spacing">
                         <div
                           class="d-flex justify-content-sm-end justify-content-end mb-3"
                         >

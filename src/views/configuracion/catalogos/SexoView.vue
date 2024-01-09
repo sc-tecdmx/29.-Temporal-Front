@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 //Componentes
-import TablaCatalogo from "../../../components/wrapper/TablaCatalogo.vue";
+import TablaCatalogo from "@/components/wrapper/TablaCatalogo.vue";
 //Stores
 import { useAuthStore } from "@/stores/authStore.js";
 import { useCatalogoStore } from "@/stores/catalogoStore";
@@ -95,13 +95,13 @@ const validarAbreviatura = () => {
 const guardar_item = () => {
   //console.log("SAVE-PARAMS -- ", params);
   if (!params.value.sexo) {
-    alert("Ingresar descripción");
-    //showMessage('Name is required.', 'error');
+    //alert("Ingresar descripción");
+    showMessage('Ingresar descripción.', 'error');
     return true;
   }
   if (!params.value.abreviatura) {
-    alert("Ingresar abreviatura");
-    //showMessage('Email is required.', 'error');
+    //alert("Ingresar abreviatura");
+    showMessage('Ingresar abreviatura.', 'error');
     return true;
   }
 
@@ -143,6 +143,19 @@ onMounted(async () => {
     initTooltip();
   }, 500);
 });
+const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    };
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">

@@ -499,7 +499,6 @@ const selected_area = ref("");
                       <GenericSelect
                         idName="catArea"
                         label="Área:"
-                        :is_submit_form="is_submit_form"
                         :items="catArea[0].AreasHijas"
                         v-if="loadingCat"
                         v-model="selected_area"
@@ -514,7 +513,6 @@ const selected_area = ref("");
                       <GenericSelect
                         idName="catPuesto"
                         label="Puesto:"
-                        :is_submit_form="is_submit_form"
                         :items="catPuesto"
                         v-if="loadingCat"
                         v-model="selected_option"

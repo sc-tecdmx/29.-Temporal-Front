@@ -88,37 +88,7 @@ async function obtenerCatNuevoDoc(url) {
 async function obtenerCatalogos(url) {
   return await catalogoStore.getCatalogo(url, token);
 }
-//  const bind_data = () => {
-//            const axiosInstance = axios.create({
-//                "Access-Control-Allow-Origin": "*",
-//            });
 
-//           const datosTabla = async () => {
-//               const url = urlLAR + "/api/get-catalogo-pantalla/nuevo-documento";
-//               //const url = "https://nekdu.com/j/nuevo_documento.php";
-//               try {
-                
-//                 const { data } = await axios.get(url, {headers:{"bearertoken": `${token}`}});
-//                   //const { data } = await axios.get(url, {headers:{"Authorization": `Bearer ${token}`}});
-                
-
-//                   //console.log(data)
-//                   catDestino.value = data.data.catDestino;
-//                   catTipoDocumento.value = data.data.catTipoDocumento;
-//                   catInstruccion.value = data.data.catInstruccionFirmantes;
-//                   catPrioridad.value = data.data.catPrioridad;
-//                   catInstruccionDest.value =  data.data.catInstruccionDestinatarios;
-//                   setTimeout(()=>{
-//                       catDisponible.value = true;
-//                     }, 10);
-//               } catch (error) {
-//                   console.log(error);
-//                   alert(error.response.data.message)
-//               }
-//           };
-          
-//           datosTabla();
-//  };
 const catExpedientes = ref([])
 const valueExpediente =  ref('-');
  const getExpediente = async (num_exp) => {
@@ -371,6 +341,7 @@ const empleadosRepetidos = ref(null);
 const tablaFirmantes = (data, campoValido, dataCompleto) => {
   empleadosRepetidos.value = null
   paramsEnviar.value.firmantes = data;
+  //console.log("Firmantes",paramsEnviar.value.firmantes);
   if(paramsEnviar.value.destinatarios.length > 0){
     if(paramsEnviar.value.destinatarios[0].idEmpleado != '' && dataCompleto){
       empleadosRepetidos.value = dataCompleto.filter((empleado1) => paramsEnviar.value.destinatarios.some((empleado2)=> empleado1.idEmpleado === empleado2.idEmpleado))
@@ -379,17 +350,21 @@ const tablaFirmantes = (data, campoValido, dataCompleto) => {
       }
     }
   }
-   if (data == 0 || dataCompleto == undefined) {
-     if(paramsEnviar.value.destinatarios-length > 0){
+  // console.log("DATOS", data, dataCompleto)
+  //  //if (data == 0 || dataCompleto == undefined) {
+   if (data == 0) {
+     if(paramsEnviar.value.firmantes.length > 0){
         form.tablaFirmantes = false;
       }
    } else {
      form.tablaFirmantes = campoValido;
    }
+   //console.log("VAlida", form.tablaFirmantes)
 };
 const tablaDestinatarios = (data, campoValido, dataCompleto) => {
   empleadosRepetidos.value = null
   paramsEnviar.value.destinatarios = data;
+  //console.log("Destinatarios",paramsEnviar.value.destinatarios);
   if(paramsEnviar.value.firmantes.length > 0){
     if(paramsEnviar.value.firmantes[0].idEmpleado != '' && dataCompleto){
       empleadosRepetidos.value = dataCompleto.filter((empleado1) => paramsEnviar.value.firmantes.some((empleado2)=> empleado1.idEmpleado === empleado2.idEmpleado))
@@ -501,9 +476,9 @@ const submit_formulario = () => {
          is_submit_form_doc.value = true;
        }
 
-    //  //Alerts
+      //Alerts
        if (!form.selectDestino) {
-         arrayCampos.value.push("Destino de Oficio");
+         arrayCampos.value.push("Destino de documento");
        }
        if (!form.selectTipoDocumento) {
          arrayCampos.value.push("Tipo de documento");
@@ -531,7 +506,7 @@ const submit_formulario = () => {
         arrayCampos.value.push("Lista de Destinatario(s)");
        }
        if (!form.txtAreaContenido) {
-         arrayCampos.value.push("Contenido:");
+         arrayCampos.value.push("Contenido");
        }
        if (!form.chkPrioridad) {
          arrayCampos.value.push("Prioridad");
@@ -636,6 +611,7 @@ const setContrasena = (contrasena) => {
 
 const enviaModoFirma = async() => {
   loadFirma.value = true;
+  certificadoModal.hide();
   console.log('enviar enviaModoFirma---------');
   //let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
   let urlAltaDoc = urlPKI + "/api/documento/alta-documento-modo-firmar-ahora";
@@ -678,7 +654,7 @@ const enviaModoFirma = async() => {
              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
                console.log(response);
                if(response.data.status === 'fail'){
-                  alert(response.data.message);
+                  showMessage(response.data.message, 'error');
                   loadFirma.value = false;
                 }else{
                   enviaFirma();
@@ -692,7 +668,7 @@ const enviaModoFirma = async() => {
 
 /* Guarda Captura */
 const enviaCaptura = async() => {
-
+  loadFirma.value = true;
   let urlAltaDoc = urlPKI + "/api/documento/alta-documento-modo-captura";
   const post = {
     /*"folio": paramsEnviar.value.folio,*/
@@ -732,17 +708,12 @@ const enviaCaptura = async() => {
                 "Content-Type": "application/json"
               }}).then((response) => {
                 if(response.data.status === 'fail'){
-                  alert(response.data.message);
+                  loadFirma.value = false;
+                  showMessage(response.data.message, 'error');
                 }else{
-                  if (confirm(response.data.message)) {
-                    router.push('/');
-                  }
+                  loadFirma.value = false;
+                  showAlert('guardar');
                 }
-                 //console.log(response)
-                 //msjAlert.value = response.data.message;
-                 //enableAlert.value = true;
-                 //alertTop();
-                 //alert(response.data.message);
                });
            } catch (error) {
              console.log(error)
@@ -776,41 +747,37 @@ const enviaFirma = async () => {
 
   //getCertificadoData( certFileData, keyFileData, docFileData, certificado.value.contrasenaCer );
   
-  //console.log(certFileData.file);
   if(certFileData.file!=null){
     const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
     const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
     const codigoFirmaAplicada = 'Firmado';
-
-    for (let i = 0; i < certificado.value.documento.length; i++) {
-      //console.log(certificado.value.documento[i]);
+    let countDoc = 0;
+    let logArray = certificado.value.documento.length;
+    for (let i = 0; i < logArray; i++) {
       const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento[i]);
-      //console.log("DOCFILE",pdfFileObj);
       const resultado = await main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
-      //console.log("Resultado Main-refactor",resultado)
-       if(resultado == false){
-         loadFirma.value = false;
+       if(resultado){
+         countDoc ++;
+       }else{
+        loadFirma.value = false;
        }
-      
+       if (i === logArray - 1) {
+        loadFirma.value = false;
+        showAlert('firmar',countDoc);
+      }
     }
-    //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
-    //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
-    // console.log(certificado.value.contrasenaCer);
-    // console.log(token);
-    //main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
 
   }else if(pfxFileData.file!=null){
     const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
     const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
     const codigoFirmaAplicada = 'Firmado';
-    //const token = 'eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MDAxNzg3ODMsImlzcyI6Imh0dHBzOi8vd3d3LnRlY2RteC5vcmcubXgvIiwic3ViIjoiZ3JhY2llbGEuaWxsZXNjYXNAdGVjZG14Lm9yZy5teCIsImV4cCI6MTcwMTA0Mjc4M30.bAhe5njTfaYLMZSn4_T6rdmESHV9oavbZ55uc4SxZ7K7PdEx8dMC8CtJlE2sTcX4QNTouziEPSIBTp5qXVtFXw';
     console.log(certificado.value.contrasenaCer);
     console.log(token);
     main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
     
   }
 
-  certificadoModal.hide();
+//  certificadoModal.hide();
 
 };
 
@@ -908,48 +875,21 @@ const addExpediente = async()=>{
           };
   
           try {
-              
-            //await axios.post(urlExpediente, post, {headers:{"Authorization": `Bearer ${authStore.userData}`}}).then((response) => {
             await axios.post(urlExpediente, post, getAuthorizationHeadersForLaravel(token)).then((response) => {
-              //console.log(response)
+              //console.log("RESPONSE",response)
               if (confirm(response.data.mensaje)) {
                 addExpedienteModal.hide();
               }
             });
             
           } catch (error) {
-            console.log(error)
+            console.log("ERROR",error)
+            showMessage(error.response.data.mensaje, 'error');
+            numExpediente.value = "";
+            descExpediente.value = "";
           }
   
 };
-// Listado de archivos
-//const inputValue = ref('');
-
-// // Ref para almacenar la lista de archivos
-// const archivos = ref([]);
-// // Ref para acceder al input de tipo file
-// const inputFile = ref(null);
-// Método para mostrar los archivos seleccionados
-// const mostrarArchivos = () => {
-//       const archivosSeleccionados = inputFile.value.files;
-
-//       // Limpiar la lista de archivos antes de mostrar la nueva selección
-//       archivos.value = [];
-
-//       // Iterar sobre los archivos seleccionados y agregarlos a la lista
-//       for (let i = 0; i < archivosSeleccionados.length; i++) {
-//         const archivo = {
-//           nombre: archivosSeleccionados[i].name,
-//           // Puedes agregar más propiedades según tus necesidades
-//         };
-//         archivos.value.push(archivo);
-//       }
-//     };
-
-    // Método para eliminar un archivo de la lista
-    // const eliminarArchivo = (index) => {
-    //   archivos.value.splice(index, 1);
-    // };
 
     const usuarioSesion = ref(null);
     usuarioSesion.value = VueJwtDecode.decode(token);
@@ -964,6 +904,58 @@ const decodeToken = () => {
   //console.log(idEmpleado)
 };
 
+//Alerts
+  const showAlert = async (tipo,count) => {
+    switch(tipo){
+    case 'guardar':
+      new window.Swal({
+          icon: 'success',
+          title: 'Guardado',
+          text: "Se ha guardado el documento",
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar',
+          padding: '2em',
+        }).then((result) => {
+            if (result.value) {
+              router.push('/');
+            }
+        });
+      break;
+    case 'firmar':
+      new window.Swal({
+          icon: 'success',
+          title: 'Firmado',
+          text: "Se han firmado " + count + " documentos",
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar',
+          padding: '2em',
+        }).then((result) => {
+            if (result.value) {
+              router.push('/');
+            }
+        });
+      break;
+    default:
+      alert("Sin alerta");
+      break;
+  }
+  };
+  const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    };
+    const cancelar = () => {
+      router.push('/');
+    };
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -982,7 +974,7 @@ const decodeToken = () => {
                 <div class="invoice-detail-body">
                   <div class="invoice-detail-title mb-0">
                     <div class="col-xl-5 invoice-address-company">
-                      <h3>Nuevo documento a firmar</h3>
+                      <h3>Nuevo documento para firma</h3>
                     </div>
                   </div>
                   <!-- Título del documento -->
@@ -1015,7 +1007,7 @@ const decodeToken = () => {
                           <div class="col-12" :class="[otroDocumento ? 'col-lg-4' : 'col-md-6']">
                             <SelectValidado
                               idName="catDestino"
-                              label="Destino de oficio:"
+                              label="Destino de documento:"
                               :is_submit_form="is_submit_form"
                               :opciones="catDestino"
                               v-if="catDisponible"
@@ -1192,7 +1184,7 @@ const decodeToken = () => {
                 </div>
 
                 <div class="invoice-action-discount ms-5">
-                  <h4>Documento(s) a firmar</h4>
+                  <h4>Documento(s) para firmar</h4>
                   <div class="row">
                     <div class="col-12 col-sm-8 col-lg-6">
                       <div class="mb-3">
@@ -1218,9 +1210,9 @@ const decodeToken = () => {
                 <div class="invoice-action-btn">
                   <div class="row">
                     <div class="col-xl-4 col-md-4">
-                      <a href="javascript:;" class="btn btn-danger btn-send p-3"
-                        >Cancelar</a
-                      >
+                      <a href="javascript:;" class="btn btn-danger btn-send p-3" @click="cancelar()">
+                        Cancelar
+                      </a>
                     </div>
                     <div class="col-xl-4 col-md-4">
                       <a
@@ -1428,12 +1420,12 @@ const decodeToken = () => {
   <!-- Termina Spinner -->
 </template>
 <style>
-.custom-alert-1 {
+/* .custom-alert-1 {
     background-color: #194891;
     border-color: #759090;
     border-radius: 5px;
     color: #fff;
-}
+} */
 #spinner-overlay {
   position: fixed;
   top: 0;

@@ -6,6 +6,7 @@ import "@/assets/sass/scrollspyNav.scss";
 import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
 import "@/assets/sass/forms/file-upload-with-preview.min.css";
 import IconFeatherFileText from "@/components/icons/IconFeatherFileText.vue";
+import router from "@/router";
 
 //PDF viewer
 import PDF from "pdf-vue3";
@@ -183,17 +184,23 @@ const goFirma = async () => {
     const verificaGoFirma = await firmaStore.goToFirma(documento.value.idDocumento, token);
     console.log("GO-FIRMA", verificaGoFirma);
 
-    if (verificaGoFirma === 'Success') {
+    if (verificaGoFirma.data.status === 'Success') {
       await enviaFirma();
     } else {
-      alert("No se puede firmar");
-      window.location.reload();
+      console.log(verificaGoFirma)
+      //alert("No se puede firmar");
+      showMessage(verificaGoFirma.data.message, 'error');
+      setTimeout(()=>{
+        window.location.reload();
+      }, 1800);
+      
     }
   } catch (error) {
     console.error("Error al llamar a goToFirma:", error);
   }
 };
  const enviaFirma = async () => {
+  certificadoModal.hide();
    const certFileData = {
                          file: certificado.value.archivoCer,
                          buffer: null,
@@ -221,15 +228,26 @@ const goFirma = async () => {
       const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
       const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
       const codigoFirmaAplicada = 'Firmado';
+      let countDoc = 0;
+      let logArray = documento.value.documentosAdjuntos.length;
 
-      documento.value.documentosAdjuntos.forEach(doc => {
-       const pdfFileObj = doc.docBase64;
-       const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.hash);
-       //const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
-       if(resultado == false){
-         loadFirma.value = false;
-       }
-     });
+      documento.value.documentosAdjuntos.forEach(async (doc, index) => {
+        const pdfFileObj = doc.docBase64;
+        const resultado = await main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.hash);
+        //const resultado = main_cer(certFileObj.base64, keyFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
+        if(resultado){
+          countDoc ++;
+        }else{
+          loadFirma.value = false;
+        }
+        if (index === logArray - 1) {
+          showAlert(countDoc);
+          // if (confirm(countDoc + " Documento(s) firmado")) {
+          //   loadFirma.value = false;
+          //   window.location.href = "/";
+          // }
+        }
+      });
 
     }else if(pfxFileData.file!=null){
       const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
@@ -239,8 +257,6 @@ const goFirma = async () => {
       main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
       //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
     }
-   certificadoModal.hide();
-
  };
 
 function arrayBufferToBase64(arrayBuffer) {
@@ -305,15 +321,19 @@ const status_btn = () => {
       break;
     case 'En Firma':
       if(documento.value.statusFirma){
+        //console.log("STATUS-true: ", documento.value.statusFirma)
         btnFirmar.value = true;
         btnRechazado.value = true;
+        if(data == documento.value.idEmpleadoCreador){
+          //console.log("EMP-CREADOR", data == documento.value.idEmpleadoCreador)
+          btnEnviar.value = false;
+        }else{
+          btnEnviar.value = true;
+        }
       }else{
+        //console.log("STATUS-false: ", documento.value.statusFirma)
         btnFirmar.value = false;
         btnRechazado.value = false;
-      }
-      if(data == documento.value.idEmpleadoCreador){
-        btnEnviar.value = false;
-      }else{
         btnEnviar.value = true;
       }
       break;
@@ -328,7 +348,8 @@ const status_btn = () => {
       btnRechazado.value = true;
       break;
     default:
-      alert("No se encuentra etapa de documento");
+      showMessage("No se encuentra etapa de documento", 'error');
+      //alert("No se encuentra etapa de documento");
       break;
   }
 };
@@ -348,6 +369,37 @@ const submit_rechazo = () => {
           firmaStore.rechazarDocumento(post,token);
         }
         rechazoModal.hide();
+    };
+    const showAlert = async (count) => {
+      new window.Swal({
+          icon: 'success',
+          title: 'Firmado',
+          text: "Se han firmado " + count + " documentos",
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar',
+          padding: '2em',
+        }).then((result) => {
+            if (result.value) {
+              loadFirma.value = false;
+              setTimeout(()=>{
+                  window.location.reload();
+                }, 10);
+              //router.push('/');
+            }
+        });
+  };
+  const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
     };
 </script>
 <template>
@@ -371,14 +423,14 @@ const submit_rechazo = () => {
                           <div class="content-section">
                             <div class="inv--head-section inv--detail-section">
                               <div class="row">
-                                <div class="col-sm-6 col-12 me-auto">
+                                <div class="col-sm-8 col-12 me-auto">
                                   <div class="d-flex">
-                                    <h3 class="align-self-center">
+                                    <h5 class="align-self-center">
                                       {{ documento.asunto }}
-                                    </h3>
+                                    </h5>
                                   </div>
                                 </div>
-                                <div class="col-sm-6 text-sm-end">
+                                <div class="col-sm-4 text-sm-end">
                                   <p class="inv-list-number">
                                     <span class="inv-title">Folio : </span>
                                     <span class="inv-number">{{
@@ -573,7 +625,7 @@ const submit_rechazo = () => {
                   <div class="invoice-actions-btn">
                     <div class="invoice-action-btn">
                       <div class="row">
-                        <div class="col-xl-12 col-md-3 col-sm-6">
+                        <div class="col-xl-12 col-lg-3 col-md-6 col-12">
                           <button
                             href="javascript:;"
                             class="btn btn-primary btn-send btn-accion-enviar"
@@ -581,12 +633,12 @@ const submit_rechazo = () => {
                             @click="enviarFirmantes()"
                             >Enviar/Transferir</button>
                         </div>
-                        <div class="col-xl-12 col-md-3 col-sm-6">
+                        <div class="col-xl-12 col-lg-3 col-md-6 col-12">
                           <button
                             data-bs-toggle="modal"
                             data-bs-target="#certificadoModal"
                             id="btn-certificado"
-                            class="btn btn-success btn-send btn-accion-firmar"
+                            class="btn btn-secondary btn-send btn-accion-firmar"
                             :disabled="btnFirmar"
                             href="javascript:void(0);"
                             @click=""
@@ -594,7 +646,7 @@ const submit_rechazo = () => {
                             Firmar
                           </button>
                         </div>
-                        <div class="col-xl-12 col-md-3 col-sm-6">
+                        <div class="col-xl-12 col-lg-3 col-md-6 col-12">
                           <button
                             data-bs-toggle="modal"
                             data-bs-target="#rechazoModal"
@@ -616,7 +668,7 @@ const submit_rechazo = () => {
 
                 <!-- Modal PDF-->
                 <div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-                  <div class="modal-dialog modal-xl" role="document">
+                  <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button

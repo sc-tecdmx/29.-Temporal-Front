@@ -91,8 +91,8 @@ const edit_user = (item) => {
 const guardar_item = () => {
   //console.log("SAVE-PARAMS -- ", params);
   if (!params.value.descripcion) {
-    alert("Ingresar tipo de documento");
-    //showMessage('Name is required.', 'error');
+    //alert("Ingresar tipo de documento");
+    showMessage('Ingresar tipo de documento.', 'error');
     return true;
   }
   // if (!params.value.areaId) {
@@ -142,6 +142,19 @@ onMounted(async () => {
     initTooltip();
   }, 500);
 });
+const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    };
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -159,7 +172,7 @@ onMounted(async () => {
                   </div>
                   <div class="layout-px-spacing">
                     <div class="row d-flex justify-content-center">
-                      <div class="col-lg-10 col-sm-12 layout-spacing">
+                      <div class="col-lg-11 col-sm-12 layout-spacing">
                         <div class="d-flex justify-content-sm-end justify-content-end mb-3">
                               <a href="javascript:;" @click="edit_user">
                                 <svg

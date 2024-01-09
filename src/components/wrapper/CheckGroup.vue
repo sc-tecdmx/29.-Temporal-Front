@@ -7,7 +7,7 @@
 
     const props= defineProps({
             label: String,
-            picked: String,
+            //picked: String,
             opPrioridad: Object
         });
     const emit = defineEmits(['opcionCheck']);

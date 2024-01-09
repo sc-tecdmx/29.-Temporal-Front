@@ -8,6 +8,7 @@ import RegistroEmpleadoView from '../views/login/RegistroEmpleadoView.vue';
 import PersonalRolAppViewVue from '../views/configuracion/PersonalRolAppView.vue';
 import AreasAdscripcionView from '../views/configuracion/catalogos/AreasAdscripcionView.vue';
 import PersonalView from '../views/configuracion/catalogos/PersonalView.vue';
+import EmpleadoPuestoView from '../views/configuracion/catalogos/EmpleadoPuestoView.vue';
 import RolesView from '../views/configuracion/catalogos/RolesView.vue';
 import TiposDocumentoView from '../views/configuracion/catalogos/TiposDocumentoView.vue';
 import SexoView from '../views/configuracion/catalogos/SexoView.vue';
@@ -35,6 +36,7 @@ export default {
         { path: '/config/catalogos', name:'catalogosList', component:CatalogosListView },
         { path: '/config/catalogo/areas', name:'catalogoAreas', component:AreasAdscripcionView },
         { path: '/config/catalogo/personal', name:'catalogoPersonal', component: PersonalView },
+        { path: '/config/catalogo/empleado-puesto', name:'catalogoEmpleadoPuesto', component: EmpleadoPuestoView },
         { path: '/config/catalogo/roles', name:'catalogoRoles', component: RolesView },
         { path: '/config/catalogo/tipoDocumento', name:'catalogoTipoDocumento', component: TiposDocumentoView},
         { path: '/config/catalogo/sexo', name:'catalogoSexo', component: SexoView},

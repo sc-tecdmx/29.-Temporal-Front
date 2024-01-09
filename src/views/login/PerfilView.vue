@@ -72,7 +72,7 @@ const enviaFirma = () => {
 </script>
 <template>
   <div class="row no-gutters justify-content-center">
-    <div class="col-12 col-xxl-10">
+    <div class="col-8">
       <div class="user-profile layout-spacing m-5">
         <div class="panel">
           <div class="panel-body">

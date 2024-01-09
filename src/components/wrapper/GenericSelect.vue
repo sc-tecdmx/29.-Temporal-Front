@@ -9,7 +9,7 @@
     'value', 
     'idName', 
     'label', 
-    'is_submit_form'
+    //'is_submit_form'
   ]);
 //console.log("PROPS", props)
   const selectedValue = ref(props.value);
@@ -47,7 +47,7 @@
               :id="idName"
               @change="submit_form3(); emit('opcionSelect', selectedValue)">
           <option value="">-- Seleccionar --</option>
-          <option v-for="option in options" :key="option[props.valueField]" :value="option[props.valueField]">
+          <option v-for="option in options" :key="option[props.keyField]" :value="option[props.valueField]">
             {{ option[props.labelField] }}
           </option>
         </select>

@@ -77,8 +77,8 @@ const clicWidget = (etapa) => {
             <WidgetSimpleKpi  :cantidad="contarPorEtapa('En Firma').value" mensaje="Firmados" color="firmado" etapa="En Firma" @activaEtapa="clicWidget"/>
             <WidgetSimpleKpi  :cantidad="contarPorEtapa('Rechazado').value" mensaje="Rechazados" color="rechazado" etapa="Rechazado" @activaEtapa="clicWidget"/>
             <!-- <WidgetSimpleKpi  :cantidad="terminado" mensaje="terminado" color="rechazado"/> -->
-            <WidgetSimpleKpi  :cantidad= 5 mensaje="Atención" color="atencion" etapa="" @activaEtapa="clicWidget"/>
-            <WidgetSimpleKpi  :cantidad= 2 mensaje="Conocimiento" color="conocimiento" etapa="" @activaEtapa="clicWidget"/>
+            <WidgetSimpleKpi  :cantidad="contarPorEtapa('Atencion').value" mensaje="Atención" color="atencion" etapa="" @activaEtapa="clicWidget"/>
+            <WidgetSimpleKpi  :cantidad="contarPorEtapa('Conocimiento').value" mensaje="Conocimiento" color="conocimiento" etapa="" @activaEtapa="clicWidget"/>
         </div>
         <!------------------------------------- Interfaz Firmas-->
         <TableroLayoutFirmas :activarFiltro="activarFiltrado"></TableroLayoutFirmas>

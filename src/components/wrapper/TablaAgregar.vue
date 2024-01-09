@@ -331,6 +331,7 @@ const delete_row = (item) => {
   //console.log(item)
   if (confirm('¿Desea eliminar este registro?')) {
     arrayTabla.value = arrayTabla.value.filter((d) => d.id_tabla != item.id_tabla);
+    arrayEnviado.value = arrayEnviado.value.filter((d) => d.idEmpleado != item.idEmpleado);
       if (arrayTabla.value.length == 0) {
         submit_listado.value = false;
       }

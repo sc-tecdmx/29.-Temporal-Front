@@ -121,18 +121,18 @@ const guardar_item = () => {
    //console.log("SAVE-PARAMS -- ", params.value);
 //   console.log(arrayIntegrantes);
   if (!params.value.nombreGrupo) {
-    alert("Ingresar nombre de grupo");
-    //showMessage('Name is required.', 'error');
+    //alert("Ingresar nombre de grupo");
+    showMessage('Ingresar nombre de grupo.', 'error');
     return true;
   }
   if (!params.value.tipoGrupo) {
-    alert("Ingresar el tipo de grupo");
-    //showMessage('Name is required.', 'error');
+    //alert("Ingresar el tipo de grupo");
+    showMessage('Ingresar el tipo de grupo.', 'error');
     return true;
   }
   if (arrayIntegrantes.value == null) {
-    alert("Ingresar integrantes del grupo");
-    //showMessage('Email is required.', 'error');
+    //alert("Ingresar integrantes del grupo");
+    showMessage('Ingresar integrantes del grupo.', 'error');
     return true;
   }
 
@@ -303,6 +303,19 @@ const check_all_checkbox = computed(() => {
     return false;
   }
 });
+const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    };
 </script>
 <template>
   <div class="layout-px-spacing apps-invoice-add">
@@ -315,7 +328,7 @@ const check_all_checkbox = computed(() => {
                 <div class="invoice-detail-body">
                   <div class="invoice-detail-title mb-0">
                     <div class="col-xl-5 invoice-address-company">
-                      <h3>Mis grupos</h3>
+                      <h3>Grupos</h3>
                     </div>
                   </div>
                   <div class="layout-px-spacing">

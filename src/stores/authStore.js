@@ -33,6 +33,7 @@ export const useAuthStore = defineStore('authStore',()=>{
               }
              } catch (error) {
                  console.log(error);
+                 alert("Error al iniciar sesión");
              }finally{
                 loadingUser.value = false;
              }

@@ -5,41 +5,19 @@ import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
 
 const urlPKI = import.meta.env.VITE_API_PKIURL;
 
-const envApp = import.meta.env.VITE_ENV_APP;
-
-  function getAuthorizationHeadersForLaravel(token) {
-    
-  if(envApp=='prod'){
-    return {
-      headers: {
-        "bearertoken": `${token}`
-      }
-    };
-  }else{
-    return {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    };
-  }
-}
-
 export const useFirmaStore = defineStore('firmaStore',() => {
     const catState = ref({
     });
 
     const rechazarDocumento = async(data, token) => {
         const url = urlPKI + "/api/documento/rechazar-documento";
-        // console.log("rechazarDocumento")
-        // console.log(data)
-        // console.log(token)
         try {
           await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-            //await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
              console.log(response)
-                   if (confirm(response.data.message)) {
-                        window.location.reload();
-                      }
+             showAlert('rechazar', response.data.message);
+                  //  if (confirm(response.data.message)) {
+                  //       window.location.reload();
+                  //     }
                 });
             
            } catch (error) {
@@ -51,15 +29,17 @@ export const useFirmaStore = defineStore('firmaStore',() => {
       
       try {
            await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-            //await axios.post(url, data, getAuthorizationHeadersForLaravel(token)).then((response) => {
            console.log(response)
-                 if (confirm(response.data.message)) {
-                      //window.location.reload();
-                    }
+           if(response.data.status === 'fail'){
+            showMessage(response.data.message, 'error');
+           }else{
+              showAlert('enviarFirmantes', response.data.message);
+           }
+           
               });
           
          } catch (error) {
-           console.log(error)
+           console.log("ERROR",error)
          }
   }
     const goToFirma = async(idDoc, token) => {
@@ -69,9 +49,8 @@ export const useFirmaStore = defineStore('firmaStore',() => {
       }
       try {
         const response = await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}});
-        //const response = await axios.post(url, data, getAuthorizationHeadersForLaravel(token));
-        console.log("GO-TO-FIRMA", response);
-        return response.data.status;
+        //console.log("GO-TO-FIRMA", response);
+        return response;
                 //  if (confirm(response.data.message)) {
                 //       window.location.reload();
                 //     }
@@ -80,93 +59,65 @@ export const useFirmaStore = defineStore('firmaStore',() => {
          }
     }
 
-    const enviaFirma = async(fileCER, filePFX, fileKEY, contrasena, fileDocs, archivoEsCer, token) => {
-      console.log("Envia Firma");
-       const certFileData = {
-               file: fileCER,
-               buffer: null,
-               base64: null,
-               iscer: archivoEsCer,
-             };
-       const pfxFileData = {
-               file: filePFX,
-               buffer: null,
-               base64: null,
-               iscer: archivoEsCer,
-             };
-       const keyFileData = {
-               file: fileKEY,
-               buffer: null,
-               base64: null,
-             };
-       const docFileData = {
-               file: fileDocs,
-               buffer: null,
-               base64: null,
-             };
 
-       if(certFileData.file!=null){
-       const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(fileCER);
-       const keyFileObj = await getMimeTypeAndArrayBufferFromFile_v2(fileKEY);
-       const codigoFirmaAplicada = 'Firmado';
-      //  console.log("certFileObj", certFileObj);
-      //  console.log("keyFileObj", keyFileObj);
-
-       fileDocs.forEach(doc => {
-         const pdfFileObj = doc.docBase64;
-        //  console.log(pdfFileObj);
-         main_cer(certFileObj.base64, keyFileObj.base64, contrasena, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
-         
-       });
-
-       }else if(pfxFileData.file!=null){
-       const pfxFileObj = await getMimeTypeAndArrayBufferFromFile_v2(filePFX);
-       const pdfFileObj = fileDocs[0].docBase64;
-       //const pdfFileObj = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento);
-       const codigoFirmaAplicada = 'Firmado';
-       main_pfx(pfxFileObj.base64, contrasena, pdfFileObj, codigoFirmaAplicada, token, doc.originalHash);
-       //main_pfx(pfxFileObj.base64, certificado.value.contrasenaCer, pdfFileObj.base64, codigoFirmaAplicada, token, null);
-       }
-    }
-
-    //Funciones internas del store
-    async function getMimeTypeAndArrayBufferFromFile_v2(file) {
-      return new Promise((resolve, reject) => {
-        const fileReader = new FileReader();
-    
-        fileReader.onload = () => {
-          const arrayBuffer = fileReader.result;
-          const base64 = arrayBufferToBase64(arrayBuffer);
-          const uint8 = new Uint8Array(arrayBuffer);
-          //const blob = new Blob([arrayBuffer]);
-          resolve({
-            //mimeType: blob.type,
-            arrayBuffer: arrayBuffer,
-            base64: base64,
-            uint8: uint8
+    //Alerts
+    const showAlert = async (tipo, mensaje) => {
+      console.log(mensaje)
+      switch(tipo){
+      case 'rechazar':
+        new window.Swal({
+            icon: 'warning',
+            title: '¿Desea rechazar este documento?',
+            text: "El documento será rechazado para todos los firmantes",
+            showCancelButton: true,
+            confirmButtonText: 'Rechazar',
+            padding: '2em',
+        }).then((result) => {
+            if (result.value) {
+                new window.Swal('¡Rechazado!', mensaje, 'success');
+                setTimeout(()=>{
+                  window.location.reload();
+                }, 10);
+            }
+        });
+        break;
+      case 'enviarFirmantes':
+        new window.Swal({
+            icon: 'success',
+            title: 'Enviar',
+            text: mensaje,
+            showCancelButton: false,
+            confirmButtonText: 'Aceptar',
+            padding: '2em',
+          }).then((result) => {
+              if (result.value) {
+                window.location.href = "/";
+              }
           });
-        };
-    
-        fileReader.onerror = () => {
-          reject(new Error('No se pudo leer el archivo.'));
-        };
-    
-        fileReader.readAsArrayBuffer(file);
-      });
+        break;
+      default:
+        alert("Sin alerta");
+        break;
     }
-    function arrayBufferToBase64(arrayBuffer) {
-      const binary = new Uint8Array(arrayBuffer);
-      let base64 = '';
-      binary.forEach((byte) => {
-        base64 += String.fromCharCode(byte);
+    };
+    const showMessage = (msg = '', type = 'success') => {
+      const toast = window.Swal.mixin({
+          toast: true,
+          position: 'top',
+          showConfirmButton: false,
+          timer: 3000,
       });
-      return btoa(base64);
-    }
+      toast.fire({
+          icon: type,
+          title: msg,
+          padding: '10px 20px',
+      });
+  };
+
     return { 
         catState, 
         rechazarDocumento,
         goToFirma,
-        enviaFirma,
         enviarFirmantes,
        }
 })

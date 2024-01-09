@@ -7,35 +7,41 @@ import { useCatalogoStore } from "@/stores/catalogoStore";
 import IconEdit2 from "@/components/icons/IconEdit2.vue";
 import IconFeatherTrashVue from "@/components/icons/IconFeatherTrash.vue";
 import { useMeta } from "@/composables/use-meta";
+import FechaGeneric from "@/components/wrapper/FechaGeneric.vue";
 import router from "@/router";
+
+//flatpickr
+import flatPickr from 'vue-flatpickr-component';
+    import 'flatpickr/dist/flatpickr.css';
+    import '@/assets/sass/forms/custom-flatpickr.css';
 
 useMeta({ title: "Catálogo empleados" });
 const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
 const token = authStore.state.user.token;
 const catalogo = ref(null);
+const catArea = ref(null);
+const catPuesto = ref(null);
 const catDisponible = ref(false);
-const headers= ref(["id", "acciones", "nombre", "apellido1", "apellido2", "area", "puesto", "sexo", "emailP", "emailI","telPers", "telInst", "curp", "rfc", "fotografia", "idUsuario"]);
+const selectedArea = ref("");
+const selectedPuesto = ref("");
+const selectedFechaAlta = ref("");
+const selectedFechaConclusion = ref("");
+const headers= ref(["id", "acciones", "empleado", "unidadA", "area", "puesto", "fechaAlta", "fechaConclusion"]);
+const is_submit_form1 = ref(false);
 let addContactModal = ref(null);
+
 const params = ref({ 
     id: null,
-	nombre: "",
-	apellido1:"",
-	apellido2:"",
-	codigoSexo:"",
-	emailPers:"",
-	emailInst:"",
-	telPers: null,
-	telInst: null,
-	curp: "",
-	rfc: "",
-	pathFotografia:null,
-	codigoArea: "",
-	codigoPuesto: "",
-    fechaAltaEmpleado: "",
-    esTitular: false,
-    fechainicioTitular:""
-    });
+    empleado: "",
+    apellido1:"",
+    apellido2:"",
+    unidadA:"",
+    area:"",
+    puesto:"",
+    fechaAlta: null,
+    fechaConclusion: "",
+  });
 
 const table_option = ref({
   headings: {
@@ -47,7 +53,7 @@ const table_option = ref({
   perPageValues: [5, 10, 20, 50],
   skin: "table table-hover",
   columnsClasses: { actions: "actions text-center" },
-  sortable: headers,
+  sortable: [ "empleado", "apellido1", "apellido1", "unidadA", "area", "puesto", "fechaAlta", "fechaConclusion"],
   sortIcon: {
     base: "sort-icon-none",
     up: "sort-icon-asc",
@@ -80,72 +86,79 @@ async function obtenerCatalogo(url) {
 }
 const delete_row = (item) => {
   if (confirm("¿Desea borrar este registro?")) {
-    let urlCat = import.meta.env.VITE_CAT_DEL_TIPDOC + item.id;
+    let urlCat = import.meta.env.VITE_CAT_DEL_EMP_PUESTO + item.id;
     catalogoStore.deleteCatalogo(urlCat, token);
   }
 };
 const edit_user = (item) => {
-  console.log(item);
+  //console.log(item);
   if (item) {
-    //params.value = JSON.parse(JSON.stringify(item));
-    params.value = { 
-      id: item.id,  
-      descripcion: item.tipoDocumento,
-      area: item.area,
-      areaId: item.id
-      //areaId: 5
-    };
+    params.value = JSON.parse(JSON.stringify(item));
     addContactModal.show();
-  }else{
-    router.push('/account/registroEmpleado');
-  }
+   }
+   //else{
+  //   router.push('/account/registroEmpleado');
+  // }
 };
 const guardar_item = () => {
-  //console.log("SAVE-PARAMS -- ", params);
-  if (!params.value.descripcion) {
-    //alert("Ingresar número de expediente");
-    showMessage('Ingresar número de expediente.', 'error');
+  
+  if (selectedArea.value === "") {
+    //alert("Seleccionar área");
+    showMessage('Seleccionar área', 'error');
     return true;
   }
-  if (!params.value.areaId) {
-    //alert("Ingresar descripción");
-    showMessage('Ingresar descripción.', 'error');
+  if (selectedPuesto.value === "") {
+    //alert("Seleccionar puesto");
+    showMessage('Seleccionar puesto', 'error');
     return true;
   }
-
-  if (params.value.id) {
-    //console.log("edit");
-    //update user
-    let editItem = {
-      descripcion: params.value.descripcion,
-      areaId: params.value.areaId,
-    };
-    console.log(editItem)
-    const urlCat = import.meta.env.VITE_CAT_EDIT_TIPDOC + params.value.id;
-    catalogoStore.editCatalogo(urlCat, editItem, token);
-  } else {
-    //add user
-    //console.log("add");
-    const urlCat = import.meta.env.VITE_CAT_ADD_TIPDOC;
-    let saveItem = {
-        descripcion: params.value.descripcion,
-        areaId: params.value.areaId,
-    };
-    console.log(saveItem)
-    catalogoStore.saveCatalogo(urlCat, saveItem, token);
+  if (selectedFechaAlta.value === "") {
+    //alert("Seleccionar fecha de alta");
+    showMessage('Seleccionar fecha de alta', 'error');
+    return true;
   }
+   if (params.value.id) {
+     //console.log("edit");
+     //update
+     let editItem = {
+        "area": selectedArea.value,
+        "puesto": selectedPuesto.value,
+        "fechaAlta": selectedFechaAlta.value,
+        "fechaConclusion": selectedFechaConclusion.value
+    };
+     //console.log(editItem)
+     const urlCat = import.meta.env.VITE_CAT_EDIT_EMP_PUESTO + params.value.id;
+     catalogoStore.editCatalogo(urlCat, editItem, token);
+     selectedArea.value = "";
+     selectedPuesto.value = "";
+     selectedFechaAlta.value = "";
+     selectedFechaConclusion.value = "";
+   }
 
-  //showMessage('User saved successfully.');
+  //showMessage('Puesto actualizado.');
   addContactModal.hide();
 };
+
 onMounted(async() => {
-    catalogo.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_EMPLEADOS);
+    catalogo.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_EMP_PUESTO);
+    catArea.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_AREA);
+    catPuesto.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_PUESTOS);
     catDisponible.value = true; 
     initPopup();
   setTimeout(() => {
     initTooltip();
   }, 500);
 });
+
+const opcionDateAlta = (date, campoValido) => {
+  //console.log("fechaAlta", date);
+  selectedFechaAlta.value = date;
+};
+const opcionDateConclusion = (date, campoValido) => {
+  //console.log("fechaConclusion",date);
+  selectedFechaConclusion.value = date;
+};
+
 const showMessage = (msg = '', type = 'success') => {
         const toast = window.Swal.mixin({
             toast: true,
@@ -171,14 +184,14 @@ const showMessage = (msg = '', type = 'success') => {
                 <div class="invoice-detail-body">
                   <div class="invoice-detail-title mb-0">
                     <div class="col-xl-5 invoice-address-company">
-                      <h3>Catálogo de personal</h3>
+                      <h3>Catálogo empleado-puesto</h3>
                     </div>
                   </div>
                   <div class="layout-px-spacing">
                     <div class="row d-flex justify-content-center">
                       <div class="col-lg-11 col-sm-12 layout-spacing">
                         <div class="d-flex justify-content-sm-end justify-content-end mb-3">
-                              <a href="javascript:;" @click="edit_user(null)">
+                              <!-- <a href="javascript:;" @click="edit_user(null)">
                                 <svg
                                   id="btn-add-contact"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +208,7 @@ const showMessage = (msg = '', type = 'success') => {
                                   <line x1="12" y1="5" x2="12" y2="19"></line>
                                   <line x1="5" y1="12" x2="19" y2="12"></line>
                                 </svg>
-                              </a>
+                              </a> -->
                             </div>
                         
                         <div class="panel p-0">
@@ -241,6 +254,9 @@ const showMessage = (msg = '', type = 'success') => {
                                   <IconFeatherTrashVue></IconFeatherTrashVue>
                                 </a>
                               </template>
+                              <template #empleado="props">
+                                {{ props.row.empleado }} {{ props.row.apellido1 }} {{ props.row.apellido2 }}
+                              </template>
                             </v-client-table>
                           </div>
                         </div>
@@ -252,7 +268,7 @@ const showMessage = (msg = '', type = 'success') => {
 
                         <!-- Modal -->
                         <div id="addContactModal" class="modal fade" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog modal-md modal-dialog-centered">
+                          <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content mailbox-popup">
                               <div class="modal-header">
                                 <h5 class="modal-title">
@@ -265,27 +281,63 @@ const showMessage = (msg = '', type = 'success') => {
                                   <div class="add-contact-content">
                                     <form id="addContactModalTitle">
                                       <div class="row">
+                                        <div class="col-12">
+                                          <div class="fw-bold text-dark">{{ params.empleado }} {{ params.apellido1 }} {{ params.apellido2 }}</div>
+                                          <div class="ms-2">Unidad de Adscripción: {{ params.unidadA }}</div>
+                                          <div class="ms-2">Área: {{ params.area }}</div>
+                                          <div class="ms-2">Puesto: {{ params.puesto }}</div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <h4 class="mt-3">Nuevo puesto</h4>
                                         <div class="col-md-6">
-                                          <div class="form-group mb-4">
-                                            <label>Tipo de documento</label>
-                                            <input
-                                              type="text"
-                                              v-model="params.descripcion"
-                                              class="form-control form-control-sm"
-                                              placeholder="Ingrese número de expediente"
-                                            />
-                                          </div>
+                                            <div id="select_menu" class="form-group form-group mt-2" v-if="catDisponible">
+                                              <label for="areaSelect">Selecciona una área:</label>
+                                              <select id="areaSelect" v-model="selectedArea" class="form-select form-select-sm">
+                                                <option value="">Selecciona...</option>
+                                                <template v-for="area in catArea">
+                                                  <optgroup :label="area.area">
+                                                    <template v-if="area.AreasHijas && area.AreasHijas.length">
+                                                      <option v-for="subArea in area.AreasHijas" :key="subArea.id" :value="subArea.id">
+                                                        {{ subArea.area }}
+                                                      </option>
+                                                    </template>
+                                                    <template v-else>
+                                                      <option :value="area.id">{{ area.area }}</option>
+                                                    </template>
+                                                  </optgroup>
+                                                </template>
+                                              </select>
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
-                                          <div class="form-group mb-4">
-                                            <label>Área</label>
-                                            <input
-                                              type="text"
-                                              v-model="params.area"
-                                              class="form-control form-control-sm"
-                                              placeholder="Ingrese la decripción"
-                                            />
+                                          <div id="select_menu" class="form-group form-group mt-2" v-if="catDisponible">
+                                            <label for="puestoSelect">Selecciona un puesto:</label>
+                                            <select id="areaSelect" v-model="selectedPuesto" class="form-select form-select-sm">
+                                                <option value="">Selecciona...</option>
+                                                <option v-for="puesto in catPuesto" :key="puesto.id" :value="puesto.id">{{ puesto.nombramiento }}</option>
+                                            </select>
                                           </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <FechaGeneric
+                                            label="Fecha de alta:"
+                                            :date="selectedFechaAlta"
+                                            @dateSelected="opcionDateAlta"
+                                            :dias="0"
+                                            :obligatorio="false"
+                                          ></FechaGeneric>
+                                        </div>
+                                        <div class="col-md-6">
+                                          <FechaGeneric
+                                            label="Fecha de conclusión:"
+                                            :date="selectedFechaConclusion"
+                                            @dateSelected="opcionDateConclusion"
+                                            :dias="0"
+                                            :obligatorio="false"
+                                          ></FechaGeneric>
                                         </div>
                                       </div>
                                     </form>
@@ -316,4 +368,8 @@ const showMessage = (msg = '', type = 'success') => {
   </div>
 </template>
 <style>
+.flatpickr-calendar.open {
+    display: inline-block;
+    z-index: 99999 !important;
+}
 </style>

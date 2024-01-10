@@ -89,7 +89,7 @@
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-firmado{
-    border: solid #009688;
+    border: solid #759090; /*009688*/
     border-width: 10px 1px 1px 1px;
   }
   .border-widget-atencion{

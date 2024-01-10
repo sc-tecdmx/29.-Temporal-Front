@@ -241,11 +241,7 @@ const goFirma = async () => {
           loadFirma.value = false;
         }
         if (index === logArray - 1) {
-          showAlert(countDoc);
-          // if (confirm(countDoc + " Documento(s) firmado")) {
-          //   loadFirma.value = false;
-          //   window.location.href = "/";
-          // }
+          showAlert(logArray);
         }
       });
 
@@ -668,7 +664,7 @@ const submit_rechazo = () => {
 
                 <!-- Modal PDF-->
                 <div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-                  <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button
@@ -680,7 +676,10 @@ const submit_rechazo = () => {
                         ></button>
                       </div>
                       <div class="modal-body">
-                        <PDF :src="pathdocumento"></PDF>
+                        <!-- <PDF :src="pathdocumento"></PDF> -->
+                        <embed
+                            :src="'data:application/pdf;base64,'+ pathdocumento"
+                            type="application/pdf" width="100%" height="600px"/>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal" @click="closeModal">

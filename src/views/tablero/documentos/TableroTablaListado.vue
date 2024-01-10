@@ -291,7 +291,7 @@ const goFirma = async () => {
   loadFirma.value = true;
   try {
     const verificaGoFirma = await firmaStore.goToFirma(idDocumento.value, token);
-    console.log("GO-FIRMA", verificaGoFirma);
+    //console.log("GO-FIRMA", verificaGoFirma);
 
     if (verificaGoFirma.data.status === 'Success') {
       //console.log("Success")
@@ -351,7 +351,7 @@ const goFirma = async () => {
           loadFirma.value = false;
         }
         if (index === logArray - 1) {
-          showAlert(countDoc);
+          showAlert(logArray);
           // if (confirm(countDoc + " Documento(s) firmado")) {
           //   loadFirma.value = false;
           //   window.location.href = "/";
@@ -635,7 +635,7 @@ const showAlert = async (count) => {
                                             data-bs-toggle="tooltip"
                                             :title="titlePrioriodad"
                                         >
-                                            <IconAlertOctagon></IconAlertOctagon>
+                                            <IconAlertOctagon />
                                         </a>
                                         <a href="javascript:;"
                                             id="ddlPriority"
@@ -742,7 +742,10 @@ const showAlert = async (count) => {
             </div>
             <div class="modal-body">
                 <p v-if="pathdocumento.docBase64 == null">base64 null</p>
-                <PDF :src="pathdocumento.docBase64" v-else></PDF>
+                <!-- <PDF :src="pathdocumento.docBase64" v-else></PDF> -->
+                <embed
+                :src="'data:application/pdf;base64,'+ pathdocumento.docBase64"
+                type="application/pdf" width="100%" height="600px"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i class="flaticon-cancel-12"></i>Cerrar</button>

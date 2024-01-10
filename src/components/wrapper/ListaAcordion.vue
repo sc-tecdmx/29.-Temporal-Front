@@ -5,7 +5,7 @@ import { defineProps } from 'vue';
 import { useMeta } from '@/composables/use-meta';
 import { useGetData } from "@/composables/getData";
 //Iconos
-import IconDropDownVue from "@/components/icons/IconDropDown.vue";
+import IconDropDown from "@/components/icons/IconDropDown.vue";
 
     
 useMeta({ title: props.title });
@@ -61,7 +61,7 @@ onMounted(() => {
                   >
                     {{ rol.nombre }}
                     <div class="icons" v-if="rol.permisos">
-                      <IconDropDownVue></IconDropDownVue>
+                      <IconDropDown />
                     </div>
                   </div>
                 </section>

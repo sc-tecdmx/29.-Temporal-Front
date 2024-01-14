@@ -95,7 +95,6 @@ const valueExpediente =  ref('-');
               const url_exp = urlLAR + "/api/autocompletado?query=" + num_exp;
               try {
                 valueExpediente.value = ' ';
-                //const { data } = await axios.get(url_exp, {headers:{"Authorization": `Bearer ${token}`}});
                 const { data } = await axios.get(url_exp, getAuthorizationHeadersForLaravel(token));
                   //console.log(data);
                   params.value.nombreExpediente = data[0].s_descripcion;
@@ -113,9 +112,7 @@ const valueExpediente =  ref('-');
 /* Variable para Catálogos */
 
 const thFirmantes = ["Nombre", "Instrucción","Estado","Editar", ""];
-//const thFirmantes = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
 const thDestinatarios = ["Nombre", "Instrucción","Estado","Editar", ""];
-//const thDestinatarios = ["Nombre", "Instrucción", "Prioridad","Estado","Editar", ""];
 
 /* Fin catálogos */
 
@@ -233,8 +230,9 @@ const is_submit_form = ref(false);
 
 /* Set params */
 const opcionSelectDestino = (idOpcion, campoValido) => {
+  //console.log("DEST", idOpcion)
   //params.value.tipoDestino = idOpcion;
-  paramsEnviar.value.tipoDestino = idOpcion;
+  paramsEnviar.value.tipoDestino = idOpcion.label;
   if (idOpcion == 0) {
     form.selectDestino = false;
   } else {
@@ -244,15 +242,16 @@ const opcionSelectDestino = (idOpcion, campoValido) => {
 const otroDocumento = ref(false);
 const expDesc = ref(false);
 const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
+  //console.log("TIPO-DOC", idOpcion);
   otroDocumento.value = false;
   //console.log(idOpcion)
-  if(idOpcion === 'Otro'){
+  if(idOpcion.label === 'Otro'){
     otroDocumento.value = true;
   }else{
-    params.value.tipoDocumento = idOpcion;
+    //params.value.tipoDocumento = idOpcion;
+    paramsEnviar.value.tipoDocumento = idOpcion.id;
   }
   
-  paramsEnviar.value.tipoDocumento = idOpcion;
   if (idOpcion == 0) {
     form.selectTipoDocumento = false;
   } else {
@@ -609,6 +608,7 @@ const setContrasena = (contrasena) => {
   alertFirma.value = false;
 };
 
+//Firma de Documento
 const enviaModoFirma = async() => {
   loadFirma.value = true;
   certificadoModal.hide();
@@ -646,24 +646,24 @@ const enviaModoFirma = async() => {
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-  //console.log(post);
-           try {
-            const axiosInstance = axios.create({
-               "Access-Control-Allow-Origin": "*",
-           });
-             await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-               console.log(response);
-               if(response.data.status === 'fail'){
-                  showMessage(response.data.message, 'error');
-                  loadFirma.value = false;
-                }else{
-                  enviaFirma();
-                }
-              });
+  console.log("Firmar",post);
+            try {
+             const axiosInstance = axios.create({
+                "Access-Control-Allow-Origin": "*",
+            });
+              await axios.post(urlAltaDoc, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+                console.log(response);
+                if(response.data.status === 'fail'){
+                   showMessage(response.data.message, 'error');
+                   loadFirma.value = false;
+                 }else{
+                   enviaFirma();
+                 }
+               });
             
-           } catch (error) {
-             console.log(error)
-           }
+            } catch (error) {
+              console.log(error)
+            }
 };
 
 /* Guarda Captura */
@@ -701,23 +701,23 @@ const enviaCaptura = async() => {
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
-   //console.log(post);
-           try {
-               await axios.post(urlAltaDoc, post, {headers:{
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-              }}).then((response) => {
-                if(response.data.status === 'fail'){
-                  loadFirma.value = false;
-                  showMessage(response.data.message, 'error');
-                }else{
-                  loadFirma.value = false;
-                  showAlert('guardar');
-                }
-               });
-           } catch (error) {
-             console.log(error)
-           }
+   console.log("Guardar",post);
+            try {
+                await axios.post(urlAltaDoc, post, {headers:{
+                 "Authorization": `Bearer ${token}`,
+                 "Content-Type": "application/json"
+               }}).then((response) => {
+                 if(response.data.status === 'fail'){
+                   loadFirma.value = false;
+                   showMessage(response.data.message, 'error');
+                 }else{
+                   loadFirma.value = false;
+                   showAlert('guardar');
+                 }
+                });
+            } catch (error) {
+              console.log(error)
+            }
 };
 /* Envia documento a firma */
 const enviaFirma = async () => {
@@ -960,7 +960,6 @@ const decodeToken = () => {
 <template>
   <div class="layout-px-spacing apps-invoice-add">
     <div class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center">
-      <!--PAO -->
       <div class="col-xxl-10 col-12">
         <div class="d-flex justify-content-center m-5" v-if="!catDisponible">
           <div class="spinner-border text-primary" role="status" >

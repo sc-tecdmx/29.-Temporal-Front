@@ -59,26 +59,24 @@ const clicWidget = (etapa) => {
       
       <p class="d-inline-flex gap-1 col-md-2 mt-3">
         <a class="" data-bs-toggle="collapse" href="#collapseWidget" role="button" aria-expanded="false" aria-controls="collapseWidget">
-            Indicadores <IconDropDown></IconDropDown>
+            Indicadores <IconDropDown />
         </a>
         </p>
   </div>
     <div class="layout-px-spacing todo-list"> 
         <!------------------------------------------- Widgets -->
-        <div class="row layout-top-spacing collapse" id="collapseWidget">
-            <!-- <WidgetSimpleKpi  cantidad="41" mensaje="En proceso de Firma" color="espera"/>
-            <WidgetSimpleKpi  cantidad="35" mensaje="Enviados a firmar" color="enviado"/>
-            <WidgetSimpleKpi  cantidad="35" mensaje="Devueltos" color="rechazado"/>
-            <WidgetSimpleKpi  cantidad="25" mensaje="Firmados" color="firmado"/>
-            <WidgetSimpleKpi  cantidad="5" mensaje="Atención" color="atencion"/>
-            <WidgetSimpleKpi  cantidad="25" mensaje="Conocimiento" color="conocimiento"/> -->
-            <WidgetSimpleKpi  :cantidad="contarPorEtapa('Creado').value" mensaje="Creado" color="espera" etapa="Creado" @activaEtapa="clicWidget"/>
-            <WidgetSimpleKpi  :cantidad="contarPorEtapa('Enviado').value" mensaje="Enviados a firmar" color="enviado" etapa="Enviado" @activaEtapa="clicWidget"/>
-            <WidgetSimpleKpi  :cantidad="contarPorEtapa('En Firma').value" mensaje="Firmados" color="firmado" etapa="En Firma" @activaEtapa="clicWidget"/>
-            <WidgetSimpleKpi  :cantidad="contarPorEtapa('Rechazado').value" mensaje="Rechazados" color="rechazado" etapa="Rechazado" @activaEtapa="clicWidget"/>
-            <!-- <WidgetSimpleKpi  :cantidad="terminado" mensaje="terminado" color="rechazado"/> -->
-            <WidgetSimpleKpi  :cantidad="contarPorEtapa('Atencion').value" mensaje="Atención" color="atencion" etapa="" @activaEtapa="clicWidget"/>
-            <WidgetSimpleKpi  :cantidad="contarPorEtapa('Conocimiento').value" mensaje="Conocimiento" color="conocimiento" etapa="" @activaEtapa="clicWidget"/>
+        <div class="row layout-top-spacing collapse no-gutters justify-content-center" id="collapseWidget">
+          <div class="col-12 col-xxl-10">
+            <div class="row">
+              <WidgetSimpleKpi  :cantidad="contarPorEtapa('Creado').value" mensaje="Creado" color="#0a2241" etapa="Creado" @activaEtapa="clicWidget"/>
+              <WidgetSimpleKpi  :cantidad="contarPorEtapa('Enviado').value" mensaje="Enviados a firmar" color="#194891" etapa="Enviado" @activaEtapa="clicWidget"/>
+              <WidgetSimpleKpi  :cantidad="contarPorEtapa('En Firma').value" mensaje="Firmados" color="#759090" etapa="En Firma" @activaEtapa="clicWidget"/>
+              <WidgetSimpleKpi  :cantidad="contarPorEtapa('Rechazado').value" mensaje="Rechazados" color="#e7515a" etapa="Rechazado" @activaEtapa="clicWidget"/>
+              <!-- <WidgetSimpleKpi  :cantidad="terminado" mensaje="terminado" color="rechazado"/> -->
+              <WidgetSimpleKpi  :cantidad="contarPorEtapa('Atencion').value" mensaje="Atención" color="#e7515a" etapa="" @activaEtapa="clicWidget"/>
+              <WidgetSimpleKpi  :cantidad="contarPorEtapa('Conocimiento').value" mensaje="Conocimiento" color="#197293" etapa="" @activaEtapa="clicWidget"/>
+            </div>
+          </div>
         </div>
         <!------------------------------------- Interfaz Firmas-->
         <TableroLayoutFirmas :activarFiltro="activarFiltrado"></TableroLayoutFirmas>

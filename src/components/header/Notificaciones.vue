@@ -69,7 +69,7 @@ getData(props.url);
 
 .navbar .navbar-item .nav-item.dropdown.notification-dropdown .dropdown-menu .media.doc-firma svg {
     color: #7b8c90;
-    fill: rgba(255, 130, 0, 0.2392156863);
+    fill: rgba(123, 140, 144, 0.2392156863);
 }
 
 .navbar .navbar-item .nav-item.dropdown.notification-dropdown .dropdown-menu .media.doc-atencion svg {

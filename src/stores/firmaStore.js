@@ -15,9 +15,6 @@ export const useFirmaStore = defineStore('firmaStore',() => {
           await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
              console.log(response)
              showAlert('rechazar', response.data.message);
-                  //  if (confirm(response.data.message)) {
-                  //       window.location.reload();
-                  //     }
                 });
             
            } catch (error) {
@@ -49,18 +46,14 @@ export const useFirmaStore = defineStore('firmaStore',() => {
       }
       try {
         const response = await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}});
-        //console.log("GO-TO-FIRMA", response);
         return response;
-                //  if (confirm(response.data.message)) {
-                //       window.location.reload();
-                //     }
          } catch (error) {
            console.log(error)
          }
     }
 
 
-    //Alerts
+    //Alerts 
     const showAlert = async (tipo, mensaje) => {
       console.log(mensaje)
       switch(tipo){

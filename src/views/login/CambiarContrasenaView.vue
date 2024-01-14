@@ -7,6 +7,7 @@
     
     
     const pwd_type = ref('password');
+    const pwd_typeA = ref('password');
     const is_contrasena_actual = ref(false);
     const is_contrasena_nueva = ref(false);
     const is_confirma_contrasena = ref(false);
@@ -18,6 +19,13 @@
             pwd_type.value = 'text';
         } else {
             pwd_type.value = 'password';
+        }
+    };
+    const set_pwd_typeA = () => {
+        if (pwd_typeA.value === 'password') {
+            pwd_typeA.value = 'text';
+        } else {
+            pwd_typeA.value = 'password';
         }
     };
     const form = ref({ contrasena_actual: '' , contrasena_nueva: '', confirma_contrasena:''});
@@ -105,7 +113,7 @@
                                             stroke-width="2"
                                             stroke-linecap="round"
                                             stroke-linejoin="round"
-                                            id="toggle-password"
+                                            id="toggle-password-a"
                                             class="feather feather-eye"
                                         >
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -124,14 +132,14 @@
                                             <label for="password">CONFIRMAR NUEVA CONTRASEÑA</label>
                                         </div>
                                         <IconFeatherLock></IconFeatherLock>
-                                        <input :type="pwd_type" 
+                                        <input :type="pwd_typeA" 
                                                 class="form-control" 
                                                 placeholder="Ingresa una nueva contraseña" 
                                                 v-model="form.confirma_contrasena" 
                                                 :class="[is_confirma_contrasena ? (form.confirma_contrasena ? 'is-valid' : 'is-invalid') : '']"
                                                 />
                                         <svg
-                                            @click="set_pwd_type"
+                                            @click="set_pwd_typeA"
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="24"
                                             height="24"

@@ -89,11 +89,11 @@ for (let i = 0; i < catalogo.value.length; i++) {
                     >
                         <option value="">-- Seleccionar --</option>
                          <!-- <option v-for="opcion in arrayOpciones" :value="opcion.id">{{ opcion.label }}</option>  -->
-                         <option v-for="opcion in arrayOpciones" :value="opcion.label">{{ opcion.label }}</option> 
+                         <option v-for="opcion in arrayOpciones" :value="opcion">{{ opcion.label }}</option> 
                     </select>
                     <!-- <div class="valid-feedback">Validado</div> -->
                     <div class="invalid-feedback">Selecciona una opción</div>
-                </div>
+                </div> 
             </div>
         </div>
 </div>

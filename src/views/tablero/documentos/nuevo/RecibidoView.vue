@@ -624,7 +624,7 @@ const submit_rechazo = () => {
                         <div class="col-xl-12 col-lg-3 col-md-6 col-12">
                           <button
                             href="javascript:;"
-                            class="btn btn-primary btn-send btn-accion-enviar"
+                            class="btn btn-primary btn-send"
                             :disabled="btnEnviar"
                             @click="enviarFirmantes()"
                             >Enviar/Transferir</button>
@@ -634,7 +634,7 @@ const submit_rechazo = () => {
                             data-bs-toggle="modal"
                             data-bs-target="#certificadoModal"
                             id="btn-certificado"
-                            class="btn btn-secondary btn-send btn-accion-firmar"
+                            class="btn btn-secondary btn-send"
                             :disabled="btnFirmar"
                             href="javascript:void(0);"
                             @click=""
@@ -647,7 +647,7 @@ const submit_rechazo = () => {
                             data-bs-toggle="modal"
                             data-bs-target="#rechazoModal"
                             id="btn-rechazo"
-                            class="btn btn-danger btn-send btn-accion-rechazar"
+                            class="btn btn-danger btn-send"
                             :disabled="btnRechazado"
                             href="javascript:void(0);"
                             @click=""
@@ -838,18 +838,11 @@ const submit_rechazo = () => {
 .pStyle {
   font-size: 13px;
 }
-.btn-accion-enviar{
-  padding: 8px 62px;
+.btn-send{
+  width: 100%;
   margin-bottom: 20px;
 }
-.btn-accion-firmar{
-  padding: 8px 93px;
-  margin-bottom: 20px;
-}
-.btn-accion-rechazar{
-  padding: 8px 85px;
-  margin-bottom: 20px;
-}
+
 #spinner-overlay {
   position: fixed;
   top: 0;

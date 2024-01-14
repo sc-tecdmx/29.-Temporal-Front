@@ -89,7 +89,7 @@ const enviaFirma = () => {
               <div class="d-flex justify-content-between">
                 <ul class="contacts-block list-unstyled">
                   <li class="contacts-block__item">
-                    <IconAward></IconAward>
+                    <IconAward />
                     {{ data?.puesto.s_desc_nombramiento }}
                   </li>
 

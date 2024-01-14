@@ -168,7 +168,6 @@ const view_task = (task) => {
                                         </div>
                                     </div>
                                 </div>
-    <!-- fin PAO -->
     
     </perfect-scrollbar>
   </div>

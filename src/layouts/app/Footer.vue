@@ -9,7 +9,7 @@
         <br />
         Copyright ©
         <a href="https://www.tecdmx.org.mx" target="_blank"
-          >Tribunal Electoral de la Cduad de México 2023</a
+          >Tribunal Electoral de la Ciudad de México 2023</a
         >
       </p>
     </div>

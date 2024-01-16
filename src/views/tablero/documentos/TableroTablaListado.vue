@@ -27,7 +27,7 @@
 
     const props=  defineProps({
         filtered_task_list: Object,
-        url: String,
+        //url: String,
     });
     //console.log("PROPS",props.filtered_task_list);
     const router = useRouter();

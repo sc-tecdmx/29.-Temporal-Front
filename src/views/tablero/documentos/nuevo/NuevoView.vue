@@ -33,8 +33,8 @@ import CheckGroup from "@/components/wrapper/CheckGroup.vue";
 //Iconos
 import IconPlus from '@/components/icons/IconPlus.vue'
 //Firma
-import { getCertificadoData } from "@/firma/main.mjs";
-import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
+// import { getCertificadoData } from "@/firma/main.mjs";
+// import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
 import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
 
 //useMeta({ title: 'Vue Multiselect' });
@@ -117,11 +117,11 @@ const thDestinatarios = ["Nombre", "Instrucción","Estado","Editar", ""];
 /* Fin catálogos */
 
 /* ..// Select 2 */
-const items = ref([]);
+// const items = ref([]);
 const selected_file = ref(null);
 const selected_file_cer = ref(null);
 const selected_file_key = ref(null);
-const contrasenaCer = ref(null);
+//const contrasenaCer = ref(null);
 
 const certificado = ref({
   archivoCer: "",
@@ -641,7 +641,8 @@ const enviaModoFirma = async() => {
         }
     ],
     "notificaciones":[],
-    "enOrden": true,
+    //"enOrden": true,
+    "enOrden": paramsEnviar.value.configuraciones.ordenFirma,
     "firmantes": paramsEnviar.value.firmantes,
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
@@ -696,7 +697,8 @@ const enviaCaptura = async() => {
         }
     ],
     "notificaciones":[],
-    "enOrden": true,
+    //"enOrden": true,
+    "enOrden": paramsEnviar.value.configuraciones.ordenFirma,
     "firmantes": paramsEnviar.value.firmantes,
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos

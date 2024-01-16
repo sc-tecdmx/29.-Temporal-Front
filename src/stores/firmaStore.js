@@ -11,15 +11,40 @@ export const useFirmaStore = defineStore('firmaStore',() => {
 
     const rechazarDocumento = async(data, token) => {
         const url = urlPKI + "/api/documento/rechazar-documento";
-        try {
-          await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-             console.log(response)
-             showAlert('rechazar', response.data.message);
-                });
+        //showAlert('rechazar');
+        // try {
+        //   await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+        //      console.log(response)
+        //      //showAlert('rechazar', response.data.message);
+        //         });
             
-           } catch (error) {
-             console.log(error)
-           }
+        //    } catch (error) {
+        //      console.log(error)
+        //    }
+        new window.Swal({
+          icon: 'warning',
+          title: '\u00BFDesea rechazar este documento?',
+          text: "El documento ser\u00E1 rechazado para todos los firmantes",
+          showCancelButton: true,
+          confirmButtonText: 'Rechazar',
+          padding: '2em',
+      }).then(async(result) => {
+          if (result.value) {
+            try {
+              await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+                 console.log(response)
+                 //showAlert('rechazar', response.data.message);
+                 new window.Swal('¡Rechazado!', response.data.message, 'success');
+                  setTimeout(()=>{
+                    window.location.reload();
+                  }, 500);
+                    });
+                
+               } catch (error) {
+                 console.log(error)
+               }
+          }
+      });
     }
     const enviarFirmantes = async(data, token) => {
       const url = urlPKI + "/api/documento/enviar-documento";
@@ -30,7 +55,19 @@ export const useFirmaStore = defineStore('firmaStore',() => {
            if(response.data.status === 'fail'){
             showMessage(response.data.message, 'error');
            }else{
-              showAlert('enviarFirmantes', response.data.message);
+              //showAlert('enviarFirmantes', response.data.message);
+              new window.Swal({
+                icon: 'success',
+                title: 'Enviar',
+                text: response.data.message,
+                showCancelButton: false,
+                confirmButtonText: 'Aceptar',
+                padding: '2em',
+              }).then((result) => {
+                  if (result.value) {
+                    window.location.href = "/";
+                  }
+              });
            }
            
               });
@@ -51,48 +88,72 @@ export const useFirmaStore = defineStore('firmaStore',() => {
            console.log(error)
          }
     }
+    const cargaCertificado = async(data, token) => {
+      const url = urlPKI + import.meta.env.VITE_ADD_CERTIFICADO;
+      try {
+        const response = await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}});
+        // console.log("CARGA-CERT",response)
+        if(response.data.status === 'fail'){
+          showMessage(response.data.message, 'error');
+        }else{
+          showMessage(response.data.message);
+        }
+        //return response;
+         } catch (error) {
+           console.log(error)
+         }
+    }
 
 
     //Alerts 
-    const showAlert = async (tipo, mensaje) => {
-      console.log(mensaje)
-      switch(tipo){
-      case 'rechazar':
-        new window.Swal({
-            icon: 'warning',
-            title: '¿Desea rechazar este documento?',
-            text: "El documento será rechazado para todos los firmantes",
-            showCancelButton: true,
-            confirmButtonText: 'Rechazar',
-            padding: '2em',
-        }).then((result) => {
-            if (result.value) {
-                new window.Swal('¡Rechazado!', mensaje, 'success');
-                setTimeout(()=>{
-                  window.location.reload();
-                }, 10);
-            }
-        });
-        break;
-      case 'enviarFirmantes':
-        new window.Swal({
-            icon: 'success',
-            title: 'Enviar',
-            text: mensaje,
-            showCancelButton: false,
-            confirmButtonText: 'Aceptar',
-            padding: '2em',
-          }).then((result) => {
-              if (result.value) {
-                window.location.href = "/";
-              }
-          });
-        break;
-      default:
-        alert("Sin alerta");
-        break;
-    }
-    };
+    // const showAlert = async (tipo, mensaje) => {
+    //   //console.log(mensaje)
+    //   switch(tipo){
+    //   case 'rechazar':
+    //     new window.Swal({
+    //         icon: 'warning',
+    //         title: '&#191;Desea rechazar este documento?',
+    //         text: "El documento será rechazado para todos los firmantes",
+    //         showCancelButton: true,
+    //         confirmButtonText: 'Rechazar',
+    //         padding: '2em',
+    //     }).then(async(result) => {
+    //         if (result.value) {
+    //           try {
+    //             await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+    //                console.log(response)
+    //                //showAlert('rechazar', response.data.message);
+    //                new window.Swal('¡Rechazado!', response.data.message, 'success');
+    //                 setTimeout(()=>{
+    //                   window.location.reload();
+    //                 }, 500);
+    //                   });
+                  
+    //              } catch (error) {
+    //                console.log(error)
+    //              }
+    //         }
+    //     });
+    //     break;
+    //   case 'enviarFirmantes':
+    //     new window.Swal({
+    //         icon: 'success',
+    //         title: 'Enviar',
+    //         text: mensaje,
+    //         showCancelButton: false,
+    //         confirmButtonText: 'Aceptar',
+    //         padding: '2em',
+    //       }).then((result) => {
+    //           if (result.value) {
+    //             window.location.href = "/";
+    //           }
+    //       });
+    //     break;
+    //   default:
+    //     alert("Sin alerta");
+    //     break;
+    // }
+    // };
     const showMessage = (msg = '', type = 'success') => {
       const toast = window.Swal.mixin({
           toast: true,
@@ -112,5 +173,6 @@ export const useFirmaStore = defineStore('firmaStore',() => {
         rechazarDocumento,
         goToFirma,
         enviarFirmantes,
+        cargaCertificado
        }
 })

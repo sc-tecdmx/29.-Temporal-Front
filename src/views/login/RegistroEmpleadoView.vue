@@ -36,27 +36,9 @@ const urlPuesto = import.meta.env.VITE_CAT_GET_PUESTOS;
 const urlSexo = import.meta.env.VITE_CAT_GET_SEXO;
 
 
-// const envApp = import.meta.env.VITE_ENV_APP;
-// function getAuthorizationHeadersForLaravel(token) {
-//   if(envApp=='prod'){
-//     return {
-//       headers: {
-//         "bearertoken": `${token}`
-//       }
-//     };
-//   }else{
-//     return {
-//       headers: {
-//         "Authorization": `Bearer ${token}`
-//       }
-//     };
-//   }
-// }
  async function getCatalogo(url) {
    return await catalogoStore.getCatalogo(url, token);
  }
-
-//console.log("AREAS --- ",catArea.value);
 
 //Inicializa Modal
 const initPopup = () => {
@@ -240,7 +222,6 @@ const opcionSwitchTitular = (idOpcion, campoValido) => {
   }
 };
 const opcionDateAlta = (date, campoValido) => {
-  //Es necesaria la hora?
   const fechaActual = new Date();
   const fechaConHora = new Date(`${date}T${fechaActual.toTimeString().slice(0, 8)}`);
   const fechaFormateada = formatDateWithTime(fechaConHora);
@@ -254,7 +235,6 @@ const opcionDateAlta = (date, campoValido) => {
   }
 };
 const opcionDateTitular = (date, campoValido) => {
-  //Es necesaria la hora?
   const fechaActual = new Date();
   const fechaConHora = new Date(`${date}T${fechaActual.toTimeString().slice(0, 8)}`);
   const fechaFormateada = formatDateWithTime(fechaConHora);

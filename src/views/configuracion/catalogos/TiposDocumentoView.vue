@@ -68,10 +68,8 @@ async function obtenerCatalogo(url) {
   return await catalogoStore.getCatalogo(url, token);
 }
 const delete_row = (item) => {
-  if (confirm("¿Desea borrar este registro?")) {
     let urlCat = import.meta.env.VITE_CAT_DEL_TIPDOC + item.id;
     catalogoStore.deleteCatalogo(urlCat, token);
-  }
 };
 const edit_user = (item) => {
   //console.log(item);
@@ -95,18 +93,12 @@ const guardar_item = () => {
     showMessage('Ingresar tipo de documento.', 'error');
     return true;
   }
-  // if (!params.value.areaId) {
-  //   alert("Ingresar descripción");
-  //   //showMessage('Email is required.', 'error');
-  //   return true;
-  // }
 
   if (params.value.id) {
     //console.log("edit");
     //update user
     let editItem = {
       descripcion: params.value.descripcion,
-      //areaId: params.value.areaId,
     };
     //console.log(editItem)
     const urlCat = import.meta.env.VITE_CAT_EDIT_TIPDOC + params.value.id;
@@ -117,7 +109,6 @@ const guardar_item = () => {
     const urlCat = import.meta.env.VITE_CAT_ADD_TIPDOC;
     let saveItem = {
         descripcion: params.value.descripcion,
-        //areaId: params.value.areaId,
     };
     //console.log(saveItem)
     catalogoStore.saveCatalogo(urlCat, saveItem, token);

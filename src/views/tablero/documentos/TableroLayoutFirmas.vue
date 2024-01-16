@@ -310,7 +310,6 @@ const showMessage = (msg = "", type = "success") => {
             </div>
             <TableroTablaListado
               :filtered_task_list="filtered_task_list"
-              :url= "urlBase + '/api/documento/documentos-usuario'"
             ></TableroTablaListado>
           </div>
           <!-- ./Content Tablero -->

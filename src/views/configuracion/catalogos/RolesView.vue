@@ -3,7 +3,7 @@ import { onMounted } from "vue";
 //composable
 import { useGetData } from "../../../composables/getData";
 //componentes
-import ListaAcordion from "../../../components/wrapper/ListaAcordion.vue"
+import ListaAcordion from "@/components/wrapper/ListaAcordion.vue"
 //Iconos
 import IconDropDownVue from "@/components/icons/IconDropDown.vue";
 
@@ -53,7 +53,7 @@ onMounted(() => {
                   >
                     {{ rol.nombre }}
                     <div class="icons" v-if="rol.permisos">
-                      <IconDropDownVue></IconDropDownVue>
+                      <IconDropDown />
                     </div>
                   </div>
                 </section>

@@ -21,19 +21,18 @@ export const useAuthStore = defineStore('authStore',()=>{
              try {
               const response = await axios.post(urlLogin, post);
               //console.log(response.data);
-
               const usuario = ref({});
               usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
               localStorage.setItem('data', JSON.stringify(response.data.data));
               state.value.user = JSON.parse(localStorage.getItem('user'));
               if (response.data.status === "failed" || response.data.token == null) {
-                alert("Usuario o contraseña incorrecta");
+                showMessage(response.data.message,'error');
               } else {
                 router.push('/');
               }
              } catch (error) {
                  console.log(error);
-                 alert("Error al iniciar sesión");
+                 showMessage("No se encuentra registrado", 'error');
              }finally{
                 loadingUser.value = false;
              }
@@ -60,8 +59,8 @@ export const useAuthStore = defineStore('authStore',()=>{
         let urlRegUser = import.meta.env.VITE_API_SEGURL + "/api/seguridad/registrar-usuario";
           try {
             await axios.post(urlRegUser, user).then((response) => {
-                console.log(response)    
-                alert(response.data.message);
+                //console.log(response)    
+                showMessage(response.data.message);
                 if(response.data.status === "Success"){
                     router.push('/account/login');
                 }else{
@@ -74,28 +73,20 @@ export const useAuthStore = defineStore('authStore',()=>{
           }
     }
     const registerEmpleado = async(user) => {
-    //   const axiosInstance = axios.create({
-    //     "Access-Control-Allow-Origin": "*",
-    // });
-        let urlRegUser = import.meta.env.VITE_API_SEGURL + "/api/seguridad/create-empleado";
+        let urlRegUser = import.meta.env.VITE_API_SEGURL + import.meta.env.VITE_CAT_ADD_EMPLEADOS;
         const token = state.value.user.token;
           try {
            await axios.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-            //await axiosInstance.post(urlRegUser, user, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-                //console.log(response)    
-                //alert(response.data.message);
+            
               if(response.data.status == "Fail"){
-                if (confirm(response.data.message)) {
-                  window.location.reload();
-                }
+                showMessage(response.data.message, 'error');
               }else{
-                if (confirm(response.data.message)) {
+                showMessage(response.data.message);
+                setTimeout(()=>{
                   router.push('/config/catalogo/personal');
-                }
+                }, 500);
               }
-                
             });
-          
           } catch (error) {
             console.log(error)
           }
@@ -109,8 +100,11 @@ export const useAuthStore = defineStore('authStore',()=>{
         }
             try {
              await axios.put(urlUpdatePass, post, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-               //console.log(response)    
-               alert(response.data.status);
+               console.log(response) 
+               showMessage(response.data.status); 
+               setTimeout(()=>{
+                  window.location.reload();
+                }, 500);
                  });
           
             } catch (error) {
@@ -122,13 +116,27 @@ export const useAuthStore = defineStore('authStore',()=>{
         
             try {
               const response = await axios.post(urlRestPass);
-              //console.log(response.data);
-              if (confirm(response.data.message)) {
-                router.push('/account/login');
-              }
+              console.log(response);
+              new window.Swal({
+                icon: 'success',
+                title: '\u00A1Enviado!',
+                text: response.data.message,
+                showCancelButton: false,
+                confirmButtonText: 'Aceptar',
+                padding: '2em',
+              }).then((result) => {
+                  if (result.value) {
+                    //window.location.href = "/";
+                    router.push('/account/login');
+                  }
+              });
+              // if (confirm(response.data.message)) {
+              //   router.push('/account/login');
+              // }
           
             } catch (error) {
-                alert('Error al solicitar reset de contraseña')
+                // alert('Error al solicitar reset de contraseña')
+                showMessage(error, 'error');
                 console.log('Error al solicitar reset de contraseña:',error)
             }
     }
@@ -152,5 +160,90 @@ export const useAuthStore = defineStore('authStore',()=>{
                 console.log('Error al solicitar reset de contraseña:',error)
             }
     }
-    return { loginUser, logoutUser, registerUser, registerEmpleado, cambiarPass, restablecerPass, resetPass, state, loadingUser }
+    const getMenuUser = async(token) => {
+      let urlMenuUser = import.meta.env.VITE_API_SEGURL + "/api/seguridad/get-menu";
+      let headers = {headers:{"Authorization": `Bearer ${token}`}};
+            try {
+              const response = await axios.get(urlMenuUser, headers);
+              //console.log(response);
+              return response;
+            } catch (error) {
+                console.log('Error al cargar menú:',error)
+            }
+    }
+
+    //Alerts 
+    // const showAlert = async (tipo, mensaje) => {
+    //   //console.log(mensaje)
+    //   switch(tipo){
+    //   case 'rechazar':
+    //     new window.Swal({
+    //         icon: 'warning',
+    //         title: '&#191;Desea rechazar este documento?',
+    //         text: "El documento será rechazado para todos los firmantes",
+    //         showCancelButton: true,
+    //         confirmButtonText: 'Rechazar',
+    //         padding: '2em',
+    //     }).then(async(result) => {
+    //         if (result.value) {
+    //           try {
+    //             await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
+    //                console.log(response)
+    //                //showAlert('rechazar', response.data.message);
+    //                new window.Swal('¡Rechazado!', response.data.message, 'success');
+    //                 setTimeout(()=>{
+    //                   window.location.reload();
+    //                 }, 500);
+    //                   });
+                  
+    //              } catch (error) {
+    //                console.log(error)
+    //              }
+    //         }
+    //     });
+    //     break;
+    //   case 'enviarFirmantes':
+    //     new window.Swal({
+    //         icon: 'success',
+    //         title: 'Enviar',
+    //         text: mensaje,
+    //         showCancelButton: false,
+    //         confirmButtonText: 'Aceptar',
+    //         padding: '2em',
+    //       }).then((result) => {
+    //           if (result.value) {
+    //             window.location.href = "/";
+    //           }
+    //       });
+    //     break;
+    //   default:
+    //     alert("Sin alerta");
+    //     break;
+    // }
+    // };
+    const showMessage = (msg = '', type = 'success') => {
+      const toast = window.Swal.mixin({
+          toast: true,
+          position: 'top',
+          showConfirmButton: false,
+          timer: 3000,
+      });
+      toast.fire({
+          icon: type,
+          title: msg,
+          padding: '10px 20px',
+      });
+  };
+    return { 
+      loginUser, 
+      logoutUser, 
+      registerUser, 
+      registerEmpleado, 
+      cambiarPass, 
+      restablecerPass, 
+      resetPass, 
+      state, 
+      loadingUser,
+      getMenuUser
+    }
 })

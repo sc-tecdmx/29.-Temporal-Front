@@ -66,12 +66,11 @@ async function obtenerCatalogo(url) {
   return await catalogoStore.getCatalogo(url, token);
 }
 const delete_row = (item) => {
-  if (confirm("¿Desea borrar este registro?")) {
+  //if (confirm("¿Desea borrar este registro?")) {
     let urlCat = import.meta.env.VITE_CAT_DEL_PUESTOS + item.id;
-
     catalogoStore.deleteCatalogo(urlCat, token);
     //items.value = items.value.filter((d) => d.id != item.id);
-  }
+  //}
 };
 const edit_user = (item) => {
   //console.log(item);

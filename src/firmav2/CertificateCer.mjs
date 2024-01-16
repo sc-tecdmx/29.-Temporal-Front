@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
    });
 
 export class CertificateCer {
-    constructor(cerBase64, keyBase64, password) {
+    constructor(cerBase64, keyBase64, password, responseBody) {
         this.x509Cert;
         this.publicKey;//Es el mismo que: rsaPublicKeyParameters
         this.privateKey;//Es el mismo que: rsaPrivateKeyParameters
@@ -24,10 +24,10 @@ export class CertificateCer {
         this.password = password;
 
         this.loadFirma; //PAO
-        this.loadData();
+        this.loadData(responseBody);
     }
 
-    loadData() {
+    loadData(responseBody) {
         //Certificado y llave pública
         const pemCertificate = `-----BEGIN CERTIFICATE-----\n${this.cerBase64}\n-----END CERTIFICATE-----\n`;
         this.x509Cert = forge.pki.certificateFromPem(pemCertificate);
@@ -41,7 +41,12 @@ export class CertificateCer {
         if(this.privateKey == null){
             if (confirm("Contraseña incorrecta")) {
                 this.loadFirma = false;
+                responseBody.status = "fail";
+                responseBody.message = 'La contraseña es incorrecta_';
               }
+              this.loadFirma = false;
+              responseBody.status = "fail";
+              responseBody.message = 'La contraseña es incorrecta';
         }else{
             //Generación de pfx
             const keypem = forge.pki.privateKeyToPem(this.privateKey);

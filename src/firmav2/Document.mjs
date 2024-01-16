@@ -1,7 +1,11 @@
 import { PDFDocument, rgb, degrees } from 'pdf-lib';
 import crypto from 'crypto';
 import CryptoJS from 'crypto-js';
+import axios from 'axios'
 
+const axiosInstance = axios.create({
+    "Access-Control-Allow-Origin": "*",
+  });
 export class Document {
     constructor(pdfBase64) {
         this.pdfBase64 = pdfBase64;
@@ -53,6 +57,26 @@ export class Document {
         return btoa(binary);
     }
 
+    async validateCurrentFirmanteHasAlreadySigned(numSerieList, responseBody){
+        console.log('validar si ha sido firmado')
+        const pdfDoc = await PDFDocument.load(this.bufferPDF);
+        const formFields = pdfDoc.getForm().getFields();
+        formFields.forEach(field => {
+            const part1 = field.getName().split(' ');
+            console.log(`Field Name: ${part1[0]}`);
+            console.log('certificateUser:', numSerieList)
+            // Aquí puedes verificar si el campo es un campo de firma
+            for(let i = 0 ; i < numSerieList.length; i++){
+                if (part1[0] === numSerieList[i]) {
+                    responseBody.status = 'fail';
+                    responseBody.message = 'Error ya fue firmado por este usuario';
+                    return false
+                }
+            }
+        });
+        return true;
+    }
+
     async pdfStamperHash() {
         console.log(this.bufferPDF);
         const pdfDoc = await PDFDocument.load(this.bufferPDF);
@@ -94,6 +118,27 @@ export class Document {
                     console.error('Error:', error);
                 }
             }
+        }
+    }
+
+    async getNumeroSerieUser(url, token, responseBody) {
+        const headers = {
+            'Authorization': 'Bearer '+token, // Reemplaza 'tuTokenAquí' con tu token real
+            'Content-Type': 'application/json'
+        };
+        try {
+            const response = await axiosInstance.get(url, { headers: headers });
+            
+            if ( response.data.status === 'fail') {
+                responseBody.status = "fail";
+                responseBody.message = response.data.message;
+                return null;
+            }
+            console.log(response.data);
+            return response.data.data;
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     }
 

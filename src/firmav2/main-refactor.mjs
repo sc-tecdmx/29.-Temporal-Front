@@ -18,6 +18,7 @@ const urlTransaccion = apiFirma+'/api/firma/transaccion/get-transaccion';
 const urlOCPS = apiFirma+'/api/ocsp-validar'
 const urlTSP = apiFirma+'/api/tsp-timestamp';
 const urlBuildAndStoreFirma = apiFirma+'/api/documento/firmar-documento';
+const urlgetSerialNumberUser = apiFirma+'/api/documento/numero-serie';
 
 class ResponseBody {
     constructor(data, message, status) {
@@ -98,11 +99,41 @@ export async function main_pfx(pfxBase64, password, pdfBase64, codigoFirmaAplica
     firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc);
 }
 
+export async function getCerFromPFX(pfxBase64, password){
+    const certificate = new CertificatePfx(pfxBase64, password);
+    return certificate.cerBase64;
+}
 
+export async function validationPreviousToStore(cerBase64, keyBase64, password, pdfBase64, token){
+    let responseBody = new ResponseBody();
+    const certificate = new CertificateCer(cerBase64, keyBase64, password, responseBody);
+    if(responseBody.status=='fail'){
+        console.log('Error: ', responseBody.message);
+        responseBody.data = false;
+        return responseBody;
+    }
+
+    const document = await new Document(pdfBase64);
+    await document.initialize();
+    const numSerieList = await document.getNumeroSerieUser(urlgetSerialNumberUser, token, responseBody);
+    const haFirmado = await document.validateCurrentFirmanteHasAlreadySigned(numSerieList, responseBody);
+    if(haFirmado){
+        responseBody.data = false;
+        return responseBody;
+    }
+    responseBody.data = true;
+    return responseBody;
+}
 
 export async function main_cer(cerBase64, keyBase64, password,
     pdfBase64, codigoFirmaAplicada, token, hashDOc){
-    const certificate = new CertificateCer(cerBase64, keyBase64, password);
+    
+    let responseBody = new ResponseBody();
+    const certificate = new CertificateCer(cerBase64, keyBase64, password, responseBody);
+    if(responseBody.status=='fail'){
+        console.log('Error: ', responseBody.message);
+        return false;
+    }
     //console.log("certicade----------",certificate.loadFirma) //PAO
     if(certificate.loadFirma == undefined){
         let firmado = await firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDOc);

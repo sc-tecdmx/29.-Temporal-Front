@@ -38,16 +38,16 @@ export class CertificateCer {
         this.privateKey = forge.pki.decryptRsaPrivateKey(pemEncryptedPrivateKey, this.password); //rsaPrivateKeyParameters
         
         //PAO
-        if(this.privateKey == null){
-            if (confirm("Contraseña incorrecta")) {
-                this.loadFirma = false;
-                responseBody.status = "fail";
-                responseBody.message = 'La contraseña es incorrecta_';
-              }
-              this.loadFirma = false;
-              responseBody.status = "fail";
-              responseBody.message = 'La contraseña es incorrecta';
-        }else{
+        // if(this.privateKey == null){
+        //     if (confirm("Contraseña incorrecta")) {
+        //         this.loadFirma = false;
+        //         responseBody.status = "fail";
+        //         responseBody.message = 'La contraseña es incorrecta_';
+        //       }
+        //       this.loadFirma = false;
+        //       responseBody.status = "fail";
+        //       responseBody.message = 'La contraseña es incorrecta';
+        // }else{
             //Generación de pfx
             const keypem = forge.pki.privateKeyToPem(this.privateKey);
             const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
@@ -56,7 +56,7 @@ export class CertificateCer {
             );
             const p12Der = forge.asn1.toDer(this.p12).getBytes();
             this.pfx = new Uint8Array(p12Der).buffer;
-        }
+        //}
     }
 
     isCertificadoVigente(responseBody) {

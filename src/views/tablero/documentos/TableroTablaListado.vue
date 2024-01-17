@@ -607,7 +607,8 @@ const showAlert = async (count) => {
                                     v-if="props.row.documentosAdjuntos.length > 0"
                                     data-bs-toggle="dropdown" 
                                     aria-haspopup="true" 
-                                    aria-expanded="false" 
+                                    aria-expanded="false"
+                                    title="Vista Previa"
                                     @click="pdf_view(props.row.documentosAdjuntos)"
                                     style="font-size: 12px;">
                                     <IconFeatherFileText></IconFeatherFileText>

@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import "@/assets/sass/scrollspyNav.scss";
 import "@/assets/sass/users/user-profile.scss";
+import { getCerFromPFX } from '@/firmav2/main-refactor.mjs';
 
 import { useMeta } from "@/composables/use-meta";
 useMeta({ title: "Perfil de usuario" });
@@ -21,12 +22,9 @@ import IconFeatherFileText from "@/components/icons/IconFeatherFileText.vue";
 let certificadoModal = ref(null);
 const { data, getData, loading, errorData } = useGetData();
 const archivoEsCer = ref(false);
-const selected_file_cer = ref(null);
-// const certificado = ref({
-//   archivoCer: "",
-//   archivoKey: "",
-//   contrasenaCer: "",
-// });
+const contrasenaCer = ref(null);
+const selected_file = ref(null);
+
 
 getData("http://localhost/j/perfil_usuario.php");
 
@@ -35,45 +33,45 @@ const firmaStore = useFirmaStore();
 const token = authStore.state.user.token;
 
 const change_file_cer = (event) => {
-  console.log(selected_file_cer)
-  selected_file_cer.value = event.target.files[0];
-  //certificado.value.archivoCer = selected_file_cer.value;
+  selected_file.value = event.target.files[0];
 
-  // const inputElement = document.getElementById("formFileCer");
-  // const nombreArchivo = inputElement.value.toLowerCase();
+  const inputElement = document.getElementById("formFileCer");
+  const nombreArchivo = inputElement.value.toLowerCase();
 
-  // if (nombreArchivo.endsWith(".cer")) {
-  //   archivoEsCer.value = true;
-  // } else {
-  //   archivoEsCer.value = false;
-  // }
+  if (nombreArchivo.endsWith(".pfx")) {
+    archivoEsCer.value = true;
+  } else {
+    archivoEsCer.value = false;
+  }
 };
 //Inicializa Modal
 const initPopup = () => {
   certificadoModal = new window.bootstrap.Modal(document.getElementById("certificadoModal"));
-  console.log("CET-MOD",certificadoModal)
 };
 onMounted(async() => {
   initPopup();
 });
-const cargaCertificado = async() => {
-  // console.log("Cargar certificado");
-  // console.log("CER",selected_file_cer.value)
-  // const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(selected_file_cer.value);
-  // console.log("certFileObj",certFileObj);
-  let tipoCertificado = "CertUsuario"
-  const formData = new FormData();
-  formData.append('certificado', selected_file_cer.value);
-  formData.append('tipoCertificado', tipoCertificado);
-  // let data = {
-  //       "certificado": certFileObj.base64,
-  //       "tipoCertificado": tipoCertificado   
-  //     }
-  
-  firmaStore.cargaCertificado(formData,token);
 
+const cargaCertificado = async() => {  
+  const certificado = ref(null)
+  const certFileObj = await getMimeTypeAndArrayBufferFromFile_v2(selected_file.value);
+
+  if(archivoEsCer.value){
+    const pfxFileObj = await getCerFromPFX(certFileObj.base64, contrasenaCer.value);
+    certificado.value = {
+      "certificate": pfxFileObj,
+      "tipoCertificado":"CertUsuario"
+    }
+  }else{
+    certificado.value = {
+      "certificate": certFileObj.base64,
+      "tipoCertificado":"CertUsuario"
+    }
+  }
+  firmaStore.cargaCertificado(certificado.value,token);
   certificadoModal.hide();
 };
+
 function arrayBufferToBase64(arrayBuffer) {
   const binary = new Uint8Array(arrayBuffer);
   let base64 = '';
@@ -90,10 +88,7 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
       const arrayBuffer = fileReader.result;
       const base64 = arrayBufferToBase64(arrayBuffer);
       const uint8 = new Uint8Array(arrayBuffer);
-      //const blob = new Blob([arrayBuffer]);
-      //console.log(base64);
       resolve({
-        //mimeType: blob.type,
         arrayBuffer: arrayBuffer,
         base64: base64,
         uint8: uint8
@@ -191,6 +186,24 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
                         </div>
                       </div>
                     </div>
+
+                    <div class="form-group row invoice-created-by">
+                      <div class="col-sm-12" v-if="archivoEsCer">
+                        <label
+                          for="contrasenaCer"
+                          class="col-sm-12 col-form-label col-form-label-sm pb-0"
+                          >Contraseña</label
+                        >
+                        <input
+                          type="password"
+                          v-model="contrasenaCer"
+                          id="contrasenaCer"
+                          class="form-control form-control-sm"
+                          placeholder="Introduzca su contraseña"
+                        />
+                      </div>
+                    </div>
+
                     <div class="row justify-content-end">
                       <div class="col-3">
                         <a

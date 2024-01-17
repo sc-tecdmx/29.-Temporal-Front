@@ -80,7 +80,8 @@ async function firmar(certificate, pdfBase64, codigoFirmaAplicada, token, hashDO
                         // if (confirm("Documento firmado")) {
                         //     window.location.href = "/";
                         // }
-                        return true;
+                        responseBody.data = true;
+                        return responseBody;
                     }else{
                         console.log(responseBody);
                     }
@@ -132,7 +133,8 @@ export async function main_cer(cerBase64, keyBase64, password,
     const certificate = new CertificateCer(cerBase64, keyBase64, password, responseBody);
     if(responseBody.status=='fail'){
         console.log('Error: ', responseBody.message);
-        return false;
+        responseBody.data = false;
+        return responseBody;
     }
     //console.log("certicade----------",certificate.loadFirma) //PAO
     if(certificate.loadFirma == undefined){
@@ -142,7 +144,8 @@ export async function main_cer(cerBase64, keyBase64, password,
             return firmado;
         }
     }else{
-        return false;
+        responseBody.data = false;
+        return responseBody;
     }
     
     

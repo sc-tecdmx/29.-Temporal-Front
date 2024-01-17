@@ -26,10 +26,8 @@ export class CertificatePfx {
     }
 
     loadData() {
-        // const buffer = Buffer.from(this.pfxBase64, 'base64');
-        // const pkcs12Asn1 = forge.asn1.fromDer(buffer.toString('binary'));
-        const buffer = new Uint8Array(atob(this.pfxBase64).split('').map(char => char.charCodeAt(0)));
-        const pkcs12Asn1 = forge.asn1.fromDer(String.fromCharCode.apply(null, buffer));
+        const buffer = Buffer.from(this.pfxBase64, 'base64');
+        const pkcs12Asn1 = forge.asn1.fromDer(buffer.toString('binary'));
 
         const bags = this.decryptPFX(pkcs12Asn1, this.password);
         let aliasBag = bags.certAliasBag;
@@ -65,6 +63,10 @@ export class CertificatePfx {
             return { certAliasBag, keyAliasBag };
         } catch (err) {
             console.log("La contraseña de la llave privada es incorrecta");
+            responseBody.data = false;
+            responseBody.status = "fail";
+            responseBody.message = 'La contraseña de la llave privada es incorrecta';
+            return responseBody;
         }
     }
 
@@ -106,9 +108,10 @@ export class CertificatePfx {
                 return true;
             }
         }
+        responseBody.data = false;
         responseBody.status = "fail";
         responseBody.message = 'El certificado no es vigente';
-        return false;
+        return responseBody;
     }
 
     ValidateMatchCerKey(responseBody) {
@@ -117,7 +120,9 @@ export class CertificatePfx {
                 (this.privateKey.n.toString(16) === this.publicKey.n.toString(16))
                 && (this.privateKey.e.toString(16) === this.publicKey.e.toString(16))) {
                 //console.log('La contraseña es correcta y la llave privada SI coincide con el certificado');
-                return true;
+                responseBody.data = true;
+                responseBody.status = "succes";
+                return responseBody;
             } else {
                 responseBody.status = "fail";
                 responseBody.message = 'La contraseña es correcta pero la llave privada NO coincide con el certificado';
@@ -144,9 +149,10 @@ export class CertificatePfx {
             this.numeroSerie = response.data.data.numeroSerie;
             this.indicador = response.data.data.indicador;
             if (this.indicador != 'GOOD') {
+                responseBody.data = false;
                 responseBody.status = "fail";
                 responseBody.message = response.message;
-                return false;
+                return responseBody;
             }
             return true;
         } catch (error) {

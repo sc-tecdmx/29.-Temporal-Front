@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const axiosInstance = axios.create({
     "Access-Control-Allow-Origin": "*"
-   });
+});
 
 export class CertificateCer {
     constructor(cerBase64, keyBase64, password, responseBody) {
@@ -36,27 +36,16 @@ export class CertificateCer {
         //LLave privada
         const pemEncryptedPrivateKey = `-----BEGIN ENCRYPTED PRIVATE KEY-----\n${this.keyBase64}\n-----END ENCRYPTED PRIVATE KEY-----\n`;
         this.privateKey = forge.pki.decryptRsaPrivateKey(pemEncryptedPrivateKey, this.password); //rsaPrivateKeyParameters
-        
-        //PAO
-        // if(this.privateKey == null){
-        //     if (confirm("Contraseña incorrecta")) {
-        //         this.loadFirma = false;
-        //         responseBody.status = "fail";
-        //         responseBody.message = 'La contraseña es incorrecta_';
-        //       }
-        //       this.loadFirma = false;
-        //       responseBody.status = "fail";
-        //       responseBody.message = 'La contraseña es incorrecta';
-        // }else{
-            //Generación de pfx
-            const keypem = forge.pki.privateKeyToPem(this.privateKey);
-            const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
-            this.p12 = forge.pkcs12.toPkcs12Asn1(privateKeyDecrypted, this.x509Cert, this.password,
-                { generateLocalKeyId: true, friendlyName: 'test', algorithm: '3des' }
-            );
-            const p12Der = forge.asn1.toDer(this.p12).getBytes();
-            this.pfx = new Uint8Array(p12Der).buffer;
-        //}
+
+        //Generación de pfx
+        const keypem = forge.pki.privateKeyToPem(this.privateKey);
+        const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
+        this.p12 = forge.pkcs12.toPkcs12Asn1(privateKeyDecrypted, this.x509Cert, this.password,
+            { generateLocalKeyId: true, friendlyName: 'test', algorithm: '3des' }
+        );
+        const p12Der = forge.asn1.toDer(this.p12).getBytes();
+        this.pfx = new Uint8Array(p12Der).buffer;
+      
     }
 
     isCertificadoVigente(responseBody) {
@@ -66,12 +55,14 @@ export class CertificateCer {
         if (currentDate >= this.notBeforeDate) {
             if (currentDate <= this.notAfterDate) {
                 //console.log('El certificado es vigente')
-                return true;
+                responseBody.data = true;
+                return responseBody;
             }
         }
+        responseBody.data = false;
         responseBody.status = "fail";
         responseBody.message = 'El certificado no es vigente';
-        return false;
+        return responseBody;
     }
 
     ValidateMatchCerKey(responseBody) {
@@ -80,7 +71,8 @@ export class CertificateCer {
                 (this.privateKey.n.toString(16) === this.publicKey.n.toString(16))
                 && (this.privateKey.e.toString(16) === this.publicKey.e.toString(16))) {
                 //console.log('La contraseña es correcta y la llave privada SI coincide con el certificado');
-                return true;
+                responseBody.data = true;
+                return responseBody;
             } else {
                 responseBody.status = "fail";
                 responseBody.message = 'La contraseña es correcta pero la llave privada NO coincide con el certificado';
@@ -89,12 +81,13 @@ export class CertificateCer {
             responseBody.status = "fail";
             responseBody.message = 'No se obtuvo el certificado';
         }
-        return false;
+        responseBody.data = false;
+        return responseBody;
     }
 
     async validateOCSP(idTransaccion, url, token, responseBody) {
         const headers = {
-            'Authorization': 'Bearer '+token, // Reemplaza 'tuTokenAquí' con tu token real
+            'Authorization': 'Bearer ' + token, // Reemplaza 'tuTokenAquí' con tu token real
             'Content-Type': 'application/json'
         };
         const data = {
@@ -109,7 +102,8 @@ export class CertificateCer {
             if (this.indicador != 'GOOD') {
                 responseBody.status = "fail";
                 responseBody.message = response.message;
-                return false;
+                responseBody.data = false;
+                return responseBody;
             }
             return true;
         } catch (error) {

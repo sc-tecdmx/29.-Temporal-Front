@@ -664,12 +664,15 @@ const showAlert = async (count) => {
                                 </div>
                             </template>
                             <template #asunto="props">
-                                <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
+                                <a v-if="props.row.asunto != null" class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
                                     <span class="d-inline-block text-truncate" style="max-width: 200px;">
                                         {{ props.row.asunto }}
                                     </span>
                                 </a>
-                                    <ul class="dropdown-menu dropdown-menu-end">
+                                <a v-else href="javascript:void(0);" role="button" id="pendingTask" style="font-size: 12px;">
+                                    Sin asunto
+                                </a>
+                                    <ul v-if="props.row.asunto != null" class="dropdown-menu dropdown-menu-end">
                                         <li class="font-list">
                                             {{ props.row.asunto }}
                                         </li>
@@ -696,15 +699,15 @@ const showAlert = async (count) => {
                             </template>
                             <template #destinatarios="props">
                                 <div class="me-2 custom-dropdown dropdown btn-group">
-                                    <!-- <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <IconMoreHorizontal></IconMoreHorizontal>
-                                    </a> -->
-                                    <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
+                                    <a v-if="props.row.destinatarios.length > 0" class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
                                         <span class="d-inline-block text-truncate" style="max-width: 100px;">
                                             {{ props.row.destinatarios[0].nombre }} {{ props.row.destinatarios[0].apellido1 }} {{ props.row.destinatarios[0].apellido2 }},
                                         </span>
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-end">
+                                    <a v-else href="javascript:void(0);" role="button" id="pendingTask" style="font-size: 12px;">
+                                      No hay destinatarios
+                                    </a>
+                                    <ul v-if="props.row.destinatarios.length > 0" class="dropdown-menu dropdown-menu-end">
                                         <li class="font-list" v-for="destinatario in props.row.destinatarios">
                                             {{ destinatario.nombre }} {{ destinatario.apellido1 }} {{ destinatario.apellido2 }}
                                         </li>
@@ -714,7 +717,6 @@ const showAlert = async (count) => {
                             </template>
                              <template #detalle="props">
                                 <a href="javascript:;" class="cancel" @click="verDetalle(props.row)">
-                                    
                                     <button type="button" class="btn btn-primary btn-sm">Ver</button>
                                 </a>
                             </template>

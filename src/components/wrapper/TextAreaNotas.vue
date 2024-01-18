@@ -5,6 +5,7 @@ import { defineProps, defineEmits } from "vue";
 const props = defineProps({
   label: String,
   placeholder: String,
+  maxlength: String
 });
 
 const emit = defineEmits(["txtArea"]);
@@ -27,6 +28,7 @@ const selected = ref("");
             id="invoice-detail-notes"
             class="form-control form-control-sm"
             :placeholder="placeholder"
+            :maxlength="props.maxlength"
             @change="emit('txtArea', selected)"
           ></textarea>
         </div>

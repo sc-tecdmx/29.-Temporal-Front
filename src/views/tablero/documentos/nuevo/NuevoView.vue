@@ -1050,6 +1050,7 @@ const decodeToken = () => {
                               idName="folio"
                               label="Folio especial:"
                               placeholder="folio"
+                              maxlength="50"
                               @inputData="opcionInputFolio"
                             ></InputValidado>
                           </div>
@@ -1083,6 +1084,7 @@ const decodeToken = () => {
                               idName="asuntoDocumento"
                               label="Asunto:"
                               placeholder="Asunto"
+                              maxlength="255"
                               @inputData="opcionInputAsunto"
                             ></InputValidado>
                           </div>
@@ -1092,6 +1094,7 @@ const decodeToken = () => {
                             <TextAreaValidado
                               label="Contenido:"
                               placeholder="Agregue el contenido"
+                              maxlength="2048"
                               @txtArea="opcionInputContenido"
                             ></TextAreaValidado>
                           </div>
@@ -1131,6 +1134,7 @@ const decodeToken = () => {
                     <TextAreaNotas
                       label="Notas:"
                       placeholder="Agregue sus observaciones"
+                      maxlength="1000"
                       @txtArea="opcionTxtAreaNotas"
                     ></TextAreaNotas>
                   </div>

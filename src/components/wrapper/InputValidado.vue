@@ -7,6 +7,7 @@
          idName: String,
          label: String,
          placeholder: String,
+         maxlength: String,
          disabled: Boolean
      });
     
@@ -42,6 +43,7 @@
                     class="form-control form-control-sm" 
                     :class="[is_submit_form1 ? (selected ? 'is-valid' : 'is-invalid') : '']" 
                     :placeholder=" placeholder "
+                    :maxlength="props.maxlength"
                     :disabled="props.disabled"
                     @change="submit_form1(); emit('inputData', selected, is_submit_form1)"
                     />

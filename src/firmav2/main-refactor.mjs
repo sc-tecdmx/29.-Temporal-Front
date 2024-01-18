@@ -128,7 +128,7 @@ export async function validationPreviousToStore(cerBase64, keyBase64, password, 
     await document.initialize();
     const numSerieList = await document.getNumeroSerieUser(urlgetSerialNumberUser, token, responseBody);
     const haFirmado = await document.validateCurrentFirmanteHasAlreadySigned(numSerieList, responseBody);
-    if(haFirmado){
+    if(!haFirmado){
         responseBody.data = false;
         responseBody.status = 'fail';
         responseBody.message = 'Error: El documento ya ha sido firmado por usted';

@@ -6,6 +6,7 @@
         idName: String,
         label: String,
         placeholder: String,
+        maxlength: String
     });
 
     const emit = defineEmits(['txtArea']);
@@ -29,6 +30,7 @@
                             class="form-control form-control-sm"
                             :class="[is_submit_form1 ? (selected ? 'is-valid' : 'is-invalid') : '']" 
                             :placeholder="placeholder"
+                            :maxlength="props.maxlength"
                             @change="submit_form1(); emit('txtArea', selected, is_submit_form1)"
                     ></textarea>
                     <!-- <div class="valid-feedback">Validado</div> -->

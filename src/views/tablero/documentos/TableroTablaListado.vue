@@ -178,6 +178,7 @@
                 return 'creado';
                 break;
             case 'Enviado':
+                titulo = "Enviado"
                 docCreado = false;
                 docEnviado = true;
                 docFirma = false;
@@ -186,6 +187,7 @@
                 return 'enviado';
                 break;
             case 'En Firma':
+                titulo = "En Firma"
                 docCreado = false;
                 docEnviado = false;
                 docFirma = true;
@@ -194,6 +196,7 @@
                 return 'enFirma';
                 break;
             case 'Rechazado':
+                titulo = "Rechazado"
                 docCreado = false;
                 docEnviado = false;
                 docFirma = false;
@@ -202,6 +205,7 @@
                 return 'rechazado';
                 break;
             case 'Terminado':
+                titulo = "Terminado"
                 docCreado = false;
                 docEnviado = false;
                 docFirma = false;
@@ -936,4 +940,5 @@ const showAlert = async (count) => {
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1050;
 }
+
 </style>

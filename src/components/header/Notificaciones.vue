@@ -1,18 +1,49 @@
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+//Stores
+import { useAuthStore } from '@/stores/authStore.js';
+import { useCatalogoStore } from "@/stores/catalogoStore.js";
+import { useFirmaStore } from "@/stores/firmaStore.js";
 //Composable
-import { useGetData } from "@/composables/getData";
+//import { useGetData } from "@/composables/getData";
 //Iconos
 import IconBell from '@/components/icons/IconBell.vue'
 import IconFeatherX from '../icons/IconFeatherX.vue';
 import IconFeatherFileText from '../icons/IconFeatherFileText.vue';
 import IconFeatherCheck from '../icons/IconFeatherCheck.vue';
 
-const {data, getData, loading, errorData} = useGetData();
+
+//Stores
+const catalogoStore = useCatalogoStore();
+const authStore = useAuthStore();
+const firmaStore = useFirmaStore();
+const notificaciones = ref(null);
+const token = authStore.state.user.token;
+
+//const {data, getData, loading, errorData} = useGetData();
 const props= defineProps({
          url: String
      });
-getData(props.url);
+//getData(props.url);
 
+async function obtenerNotificaciones() {
+  try {
+    const response = await catalogoStore.getNotificaciones(props.url, token);
+    notificaciones.value = response;
+  } catch (error) {
+    console.error('Error al obtener notificaciones', error);
+  }
+}
+
+  obtenerNotificaciones();
+  const pollingTimer = setInterval(obtenerNotificaciones, 120000);
+
+onMounted(async() => {
+   
+});
+onBeforeUnmount(() => {
+  clearInterval(pollingTimer);
+});
 </script>
 <template>
     <div class="dropdown nav-item notification-dropdown btn-group">
@@ -23,14 +54,16 @@ getData(props.url);
             aria-expanded="false"
             class="btn dropdown-toggle btn-icon-only nav-link"
           >
-            <IconBell />
-            <span class="badge badge-success"></span>
+            <IconBell :class="{ 'svg-notif': notificaciones && notificaciones.length > 0 }"/>
+            <span v-if="notificaciones && notificaciones.length > 0" class="badge badge-success"></span>
           </a>
+         
           <ul
             class="dropdown-menu dropdown-menu-right"
             aria-labelledby="ddlnotify"
+            v-if="notificaciones && notificaciones.length > 0"
           >
-          <div v-for="notificacion in data">
+          <div v-for="notificacion in notificaciones">
             <li role="presentation" >
               <a href="javascript:;" class="dropdown-item">
                 <div class="media" :class="notificacion.icon_tipo_notif">
@@ -41,10 +74,6 @@ getData(props.url);
                     <div class="data-info">
                       <h6>{{ notificacion.message }}</h6>
                     </div>
-                    <!-- <div class="icon-status">
-                      <IconFeatherX></IconFeatherX>
-                      <IconFeatherCheck></IconFeatherCheck>
-                    </div> -->
                   </div></div
               ></a>
             </li>
@@ -85,5 +114,9 @@ getData(props.url);
 }
 .navbar .navbar-item .nav-item.dropdown.notification-dropdown .dropdown-menu .icon-status svg.feather-x {
     color: #bfc9d4;
+}
+
+.svg-notif {
+    fill: rgba(123, 140, 144, 0.2392156863);
 }
 </style>

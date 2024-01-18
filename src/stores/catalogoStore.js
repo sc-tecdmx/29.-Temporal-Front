@@ -124,6 +124,20 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
          }
   }
 
+  const getNotificaciones = async(url, token) =>{
+    try {
+      const axiosInstance = axios.create({
+        "Access-Control-Allow-Origin": "*",
+      });
+      const res = await axiosInstance.get(url);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }finally{
+        //loading.value = false
+    }
+  }
+
   //Alerts
   const showMessage = (msg = '', type = 'success') => {
     const toast = window.Swal.mixin({
@@ -146,6 +160,7 @@ export const useCatalogoStore = defineStore('catalogoStore',() => {
         deleteCatalogo,
         getNuevoDocumento, 
         getDetalleDocumento,
-        getDocumentsUser
+        getDocumentsUser,
+        getNotificaciones
        }
 })

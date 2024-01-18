@@ -107,10 +107,20 @@ export async function getCerFromPFX(pfxBase64, password){
 
 export async function validationPreviousToStore(cerBase64, keyBase64, password, pdfBase64, token){
     let responseBody = new ResponseBody();
+
     const certificate = new CertificateCer(cerBase64, keyBase64, password, responseBody);
     if(responseBody.status=='fail'){
         console.log('Error: ', responseBody.message);
         responseBody.data = false;
+        return responseBody;
+    }
+
+    const isCertVigente = await certificate.isCertificadoVigente(responseBody);
+    if(isCertVigente.data == false){
+        console.log('Error: El certificado no está vigente');
+        responseBody.status = 'fail';
+        responseBody.data = false;
+        responseBody.message = 'Error: El certificado no está vigente';
         return responseBody;
     }
 
@@ -120,6 +130,8 @@ export async function validationPreviousToStore(cerBase64, keyBase64, password, 
     const haFirmado = await document.validateCurrentFirmanteHasAlreadySigned(numSerieList, responseBody);
     if(haFirmado){
         responseBody.data = false;
+        responseBody.status = 'fail';
+        responseBody.message = 'Error: El documento ya ha sido firmado por usted';
         return responseBody;
     }
     responseBody.data = true;

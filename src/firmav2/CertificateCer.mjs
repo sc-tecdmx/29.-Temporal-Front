@@ -35,17 +35,35 @@ export class CertificateCer {
 
         //LLave privada
         const pemEncryptedPrivateKey = `-----BEGIN ENCRYPTED PRIVATE KEY-----\n${this.keyBase64}\n-----END ENCRYPTED PRIVATE KEY-----\n`;
-        this.privateKey = forge.pki.decryptRsaPrivateKey(pemEncryptedPrivateKey, this.password); //rsaPrivateKeyParameters
+        try {
+            this.privateKey = forge.pki.decryptRsaPrivateKey(pemEncryptedPrivateKey, this.password); //rsaPrivateKeyParameters
+        } catch (error) {
+            responseBody.data = false;
+            responseBody.status = "fail";
+            responseBody.message = 'La contraseña es incorrecta';
+            return responseBody;
+        }
+        if (this.privateKey === null) {
+            responseBody.data = false;
+            responseBody.status = "fail";
+            responseBody.message = 'La contraseña es incorrecta';
+            return responseBody;
+        } else {
+            //Generación de pfx
+            const keypem = forge.pki.privateKeyToPem(this.privateKey);
+            const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
+            this.p12 = forge.pkcs12.toPkcs12Asn1(privateKeyDecrypted, this.x509Cert, this.password,
+                { generateLocalKeyId: true, friendlyName: 'test', algorithm: '3des' }
+            );
+            const p12Der = forge.asn1.toDer(this.p12).getBytes();
+            this.pfx = new Uint8Array(p12Der).buffer;
+            responseBody.data = true;
+            responseBody.status = "success";
+            responseBody.message = 'Se han cargado los datos correctamente';
+            return responseBody;
+        }
 
-        //Generación de pfx
-        const keypem = forge.pki.privateKeyToPem(this.privateKey);
-        const privateKeyDecrypted = forge.pki.privateKeyFromPem(keypem);
-        this.p12 = forge.pkcs12.toPkcs12Asn1(privateKeyDecrypted, this.x509Cert, this.password,
-            { generateLocalKeyId: true, friendlyName: 'test', algorithm: '3des' }
-        );
-        const p12Der = forge.asn1.toDer(this.p12).getBytes();
-        this.pfx = new Uint8Array(p12Der).buffer;
-      
+
     }
 
     isCertificadoVigente(responseBody) {

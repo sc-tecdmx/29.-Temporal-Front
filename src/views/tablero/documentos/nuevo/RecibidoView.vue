@@ -39,7 +39,6 @@ let certificadoModal = ref(null);
 let rechazoModal = ref(null);
 const loadFirma = ref(false);
 
-
 const urlDetalle = import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`;
 
 async function obtenerDetalle(url) {

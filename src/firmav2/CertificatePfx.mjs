@@ -26,8 +26,10 @@ export class CertificatePfx {
     }
 
     loadData() {
-        const buffer = Buffer.from(this.pfxBase64, 'base64');
-        const pkcs12Asn1 = forge.asn1.fromDer(buffer.toString('binary'));
+        // const buffer = Buffer.from(this.pfxBase64, 'base64');
+        // const pkcs12Asn1 = forge.asn1.fromDer(buffer.toString('binary'));
+        const buffer = new Uint8Array(atob(this.pfxBase64).split('').map(char => char.charCodeAt(0)));
+        const pkcs12Asn1 = forge.asn1.fromDer(String.fromCharCode.apply(null, buffer));
 
         const bags = this.decryptPFX(pkcs12Asn1, this.password);
         let aliasBag = bags.certAliasBag;

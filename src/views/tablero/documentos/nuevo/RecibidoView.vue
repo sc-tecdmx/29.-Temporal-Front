@@ -16,7 +16,7 @@ import { useMeta } from "@/composables/use-meta";
 import { useAuthStore } from '@/stores/authStore.js';
 import { useCatalogoStore } from "@/stores/catalogoStore.js";
 import { useFirmaStore } from "@/stores/firmaStore.js";
-import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
+import { main_pfx, main_cer, validationPreviousToStore } from '@/firmav2/main-refactor.mjs';
 //Stores
 const catalogoStore = useCatalogoStore();
 const authStore = useAuthStore();
@@ -161,18 +161,20 @@ if(archivoEsCer.value){
 
 if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
     || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
-   await goFirma();
-   //await enviaFirma();
-  // await firmaStore.enviaFirma(
-  //    certificado.value.archivoCer,
-  //    certificado.value.archivoCer,
-  //    certificado.value.archivoKey,
-  //    certificado.value.contrasenaCer,
-  //    documento.value.documentosAdjuntos,
-  //    archivoEsCer.value,
-  //    token
-  //    );
 
+    const cerFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+    const keyFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
+    const response = ref(null);
+
+     for (let i = 0; i < documento.value.documentosAdjuntos.length; i++) {
+       response.value = await validationPreviousToStore(cerFile.base64, keyFile.base64, certificado.value.contrasenaCer, documento.value.documentosAdjuntos[i].docBase64, token);
+       if(!response.value.data){
+         showMessage(response.value.message, 'error');
+       }
+     }
+      if(response.value.data){
+        await goFirma();
+      }
 }
 };
 

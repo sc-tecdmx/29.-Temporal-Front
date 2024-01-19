@@ -4,7 +4,7 @@
     import { useRouter } from 'vue-router';
     import { useAuthStore } from '@/stores/authStore.js';
     import { useFirmaStore } from "@/stores/firmaStore.js";
-    import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
+    import { main_pfx, main_cer, validationPreviousToStore } from '@/firmav2/main-refactor.mjs';
     //flatpickr para Fecha
     import flatPickr from 'vue-flatpickr-component';
     import 'flatpickr/dist/flatpickr.css';
@@ -287,7 +287,22 @@ if(archivoEsCer.value){
 
 if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
     || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
-  await goFirma();
+    
+    const cerFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+    const keyFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
+    const response = ref(null);
+
+     for (let i = 0; i < certificado.value.documento.length; i++) {
+       response.value = await validationPreviousToStore(cerFile.base64, keyFile.base64, certificado.value.contrasenaCer, certificado.value.documento[i].docBase64, token);
+       if(!response.value.data){
+         showMessage(response.value.message, 'error');
+       }
+     }
+      if(response.value.data){
+        await goFirma();
+        //await enviaModoFirma();//here 
+        //await enviaFirma();//here
+      } 
 }
 };
 const goFirma = async () => {

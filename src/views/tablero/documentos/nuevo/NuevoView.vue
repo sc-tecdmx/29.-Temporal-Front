@@ -35,7 +35,7 @@ import IconPlus from '@/components/icons/IconPlus.vue'
 //Firma
 // import { getCertificadoData } from "@/firma/main.mjs";
 // import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
-import {main_pfx, main_cer} from '@/firmav2/main-refactor.mjs';
+import { main_pfx, main_cer, validationPreviousToStore } from '@/firmav2/main-refactor.mjs';
 
 //useMeta({ title: 'Vue Multiselect' });
 /** ./Multiselect */
@@ -58,9 +58,7 @@ const catGruposFirmante = ref(null);
 const catGruposDestinatario = ref(null);
 
 const urlNewDoc = import.meta.env.VITE_API_LARURL + import.meta.env.VITE_CAT_NUEVO_DOC;
-
 const token = authStore.state.user.token;
-//console.log("token", token)
 
 const envApp = import.meta.env.VITE_ENV_APP;
 
@@ -89,6 +87,7 @@ async function obtenerCatalogos(url) {
   return await catalogoStore.getCatalogo(url, token);
 }
 
+
 const catExpedientes = ref([])
 const valueExpediente =  ref('-');
  const getExpediente = async (num_exp) => {
@@ -116,12 +115,9 @@ const thDestinatarios = ["Nombre", "Instrucción","Estado","Editar", ""];
 
 /* Fin catálogos */
 
-/* ..// Select 2 */
-// const items = ref([]);
 const selected_file = ref(null);
 const selected_file_cer = ref(null);
 const selected_file_key = ref(null);
-//const contrasenaCer = ref(null);
 
 const certificado = ref({
   archivoCer: "",
@@ -223,9 +219,7 @@ const form = ref({
   chkPrioridad: false,
   inputPDF: false
 });
-// const formFirma = ref({
-//     name:''
-// });
+
 const is_submit_form = ref(false);
 
 /* Set params */
@@ -453,9 +447,7 @@ const submit_formulario = () => {
        if (form.inputAsuntoDoc == undefined) {
          form.inputAsuntoDoc = false;
        }
-      //  if (form.inputElaboro == undefined) {
-      //    form.inputElaboro = false;
-      //  }
+      
        if(form.tablaFirmantes == undefined){
         form.tablaFirmantes =  false;
        }
@@ -495,9 +487,7 @@ const submit_formulario = () => {
        if (!form.inputAsuntoDoc) {
          arrayCampos.value.push("Asunto");
        }
-      //  if (!form.inputElaboro) {
-      //    arrayCampos.value.push("Elaboró");
-      //  }
+      
        if(!form.tablaFirmantes){
         arrayCampos.value.push("Lista de Firmante(s)");
        }
@@ -537,7 +527,6 @@ onMounted(async() => {
   decodeToken();
   //bind_data();
   catNuevoDoc.value = await obtenerCatNuevoDoc(urlNewDoc);
-  //console.log(catNuevoDoc.value.data);
   catGruposFirmante.value = await obtenerCatalogos(import.meta.env.VITE_CAT_GET_GRUPOS_FIR);
   catGruposDestinatario.value = await obtenerCatalogos(import.meta.env.VITE_CAT_GET_GRUPOS_DES);
   catDestino.value = catNuevoDoc.value.data.catDestino;
@@ -809,7 +798,6 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
         uint8: uint8
       });
     };
-
     fileReader.onerror = () => {
       reject(new Error('No se pudo leer el archivo.'));
     };
@@ -860,9 +848,22 @@ const submit_formFirma = async () => {
   
   if(selected_file_cer.value && selected_file_key.value && certificado.value.contrasenaCer
       || !archivoEsCer.value && selected_file_cer.value && certificado.value.contrasenaCer){
-    console.log("campos llenos");
-    await enviaModoFirma();//here 
-    //await enviaFirma();//here
+    //console.log("campos llenos");
+    const cerFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoCer);
+    const keyFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
+    const response = ref(null);
+
+     for (let i = 0; i < certificado.value.documento.length; i++) {
+       const pdfFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento[i]);
+       response.value = await validationPreviousToStore(cerFile.base64, keyFile.base64, certificado.value.contrasenaCer, pdfFile.base64, token);
+       if(!response.value.data){
+         showMessage(response.value.message, 'error');
+       }
+     }
+      if(response.value.data){
+        await enviaModoFirma();//here 
+        //await enviaFirma();//here
+      }
   }
 };
 const numExpediente = ref(null);

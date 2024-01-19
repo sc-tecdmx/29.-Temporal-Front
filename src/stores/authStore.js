@@ -171,56 +171,18 @@ export const useAuthStore = defineStore('authStore',()=>{
                 console.log('Error al cargar menú:',error)
             }
     }
-
-    //Alerts 
-    // const showAlert = async (tipo, mensaje) => {
-    //   //console.log(mensaje)
-    //   switch(tipo){
-    //   case 'rechazar':
-    //     new window.Swal({
-    //         icon: 'warning',
-    //         title: '&#191;Desea rechazar este documento?',
-    //         text: "El documento será rechazado para todos los firmantes",
-    //         showCancelButton: true,
-    //         confirmButtonText: 'Rechazar',
-    //         padding: '2em',
-    //     }).then(async(result) => {
-    //         if (result.value) {
-    //           try {
-    //             await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-    //                console.log(response)
-    //                //showAlert('rechazar', response.data.message);
-    //                new window.Swal('¡Rechazado!', response.data.message, 'success');
-    //                 setTimeout(()=>{
-    //                   window.location.reload();
-    //                 }, 500);
-    //                   });
-                  
-    //              } catch (error) {
-    //                console.log(error)
-    //              }
-    //         }
-    //     });
-    //     break;
-    //   case 'enviarFirmantes':
-    //     new window.Swal({
-    //         icon: 'success',
-    //         title: 'Enviar',
-    //         text: mensaje,
-    //         showCancelButton: false,
-    //         confirmButtonText: 'Aceptar',
-    //         padding: '2em',
-    //       }).then((result) => {
-    //           if (result.value) {
-    //             window.location.href = "/";
-    //           }
-    //       });
-    //     break;
-    //   default:
-    //     alert("Sin alerta");
-    //     break;
-    // }
-    // };
+    const getUserInfo = async(id,token) => {
+      let urlUserInfo = import.meta.env.VITE_API_SEGURL + import.meta.env.VITE_GET_USERINFO + id;
+      let headers = {headers:{"Authorization": `Bearer ${token}`}};
+            try {
+              const response = await axios.get(urlUserInfo, headers);
+              //console.log(response);
+              return response.data.data;
+            } catch (error) {
+                console.log('Error al cargar menú:',error)
+            }
+    }
+    
     const showMessage = (msg = '', type = 'success') => {
       const toast = window.Swal.mixin({
           toast: true,
@@ -244,6 +206,7 @@ export const useAuthStore = defineStore('authStore',()=>{
       resetPass, 
       state, 
       loadingUser,
-      getMenuUser
+      getMenuUser,
+      getUserInfo
     }
 })

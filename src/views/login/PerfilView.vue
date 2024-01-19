@@ -8,7 +8,7 @@ import { useMeta } from "@/composables/use-meta";
 useMeta({ title: "Perfil de usuario" });
 
 //composable
-import { useGetData } from "@/composables/getData";
+//import { useGetData } from "@/composables/getData";
 //Stores
 import { useAuthStore } from '@/stores/authStore.js';
 import { useFirmaStore } from "@/stores/firmaStore.js";
@@ -20,17 +20,25 @@ import IconMapPin from "@/components/icons/IconMapPin.vue";
 import IconFeatherFileText from "@/components/icons/IconFeatherFileText.vue";
 
 let certificadoModal = ref(null);
-const { data, getData, loading, errorData } = useGetData();
+//const { data, getData, loading, errorData } = useGetData();
+//getData("http://localhost/j/perfil_usuario.php");
+
 const archivoEsCer = ref(false);
 const contrasenaCer = ref(null);
 const selected_file = ref(null);
 
 
-getData("http://localhost/j/perfil_usuario.php");
+
 
 const authStore = useAuthStore();
 const firmaStore = useFirmaStore();
 const token = authStore.state.user.token;
+const userInfo = ref(null);
+const user = JSON.parse(localStorage.getItem('data'));
+
+async function obtenerUserInfo() {
+  return await authStore.getUserInfo(user, token);
+}
 
 const change_file_cer = (event) => {
   selected_file.value = event.target.files[0];
@@ -50,6 +58,7 @@ const initPopup = () => {
 };
 onMounted(async() => {
   initPopup();
+  userInfo.value = await obtenerUserInfo();
 });
 
 const cargaCertificado = async() => {  
@@ -113,9 +122,10 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
               <h3 class="">Perfil</h3>
             </div>
             <div class="text-center user-info">
-              <img src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" />
+              <img v-if="userInfo?.pathFotografia != null" :src="userInfo?.pathFotografia" alt="avatar" width="150" height="150"/>
+              <img v-else src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" width="150" height="150"/>
               <p class="">
-                {{ data?.nombre }} {{ data?.apellido1 }} {{ data?.apellido2 }}
+                {{ userInfo?.nombre }} {{ userInfo?.apellido1 }} {{ userInfo?.apellido2 }}
               </p>
             </div>
             <div class="user-info-list">
@@ -123,24 +133,27 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
                 <ul class="contacts-block list-unstyled">
                   <li class="contacts-block__item">
                     <IconAward />
-                    {{ data?.puesto.s_desc_nombramiento }}
+                    {{ userInfo?.puesto }}
                   </li>
 
                   <li class="contacts-block__item">
                     <IconMail></IconMail>
-                    {{ data?.s_email_inst }}
+                    {{ userInfo?.correo }}
                   </li>
                   <li class="contacts-block__item">
-                    <IconMapPin></IconMapPin>
-                    {{ data?.area.s_desc_area }}
+                    
+                    <div class="user-meta-info">
+                      <div class="user-name">
+                        <IconMapPin></IconMapPin>
+                        {{ userInfo?.unidadAdscripcion }}
+                      </div>
+                      <div class="user-work ms-5">
+                        {{ userInfo?.area }}
+                      </div>
+                    </div>
                   </li>
-                  <li class="contacts-block__item">
+                  <li class="contacts-block__item mt-4">
                     <IconFeatherFileText></IconFeatherFileText>
-                    Certificado
-                    <p class="ms-5 text-secondary">
-                      Válido de {{ data?.certificado.d_fecha_registro }} a
-                      {{ data?.certificado.d_fecha_revocación }}
-                    </p>
                     <button
                       class="btn btn-primary"
                       data-bs-toggle="modal"

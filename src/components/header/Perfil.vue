@@ -28,8 +28,8 @@ onMounted(async() => {
             aria-expanded="false"
             class="btn dropdown-toggle btn-icon-only user nav-link"
           >
-            <img v-if="userInfo?.pathFotografia != null" :src="userInfo?.pathFotografia" alt="avatar" />
-            <img v-else src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" />
+            <img v-if="userInfo?.pathFotografia != null" :src="userInfo?.pathFotografia" alt="avatar" class="rounded-circle profile-img"/>
+            <img v-else src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" class="rounded-circle profile-img"/>
           </a>
           <ul
             class="dropdown-menu dropdown-menu-right"

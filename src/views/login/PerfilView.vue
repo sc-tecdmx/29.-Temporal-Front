@@ -122,8 +122,8 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
               <h3 class="">Perfil</h3>
             </div>
             <div class="text-center user-info">
-              <img v-if="userInfo?.pathFotografia != null" :src="userInfo?.pathFotografia" alt="avatar" width="150" height="150"/>
-              <img v-else src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" width="150" height="150"/>
+              <img v-if="userInfo?.pathFotografia != null" :src="userInfo?.pathFotografia" alt="avatar" width="150" height="150" class="rounded-circle profile-img"/>
+              <img v-else src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" width="150" height="150" class="rounded-circle profile-img"/>
               <p class="">
                 {{ userInfo?.nombre }} {{ userInfo?.apellido1 }} {{ userInfo?.apellido2 }}
               </p>

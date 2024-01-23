@@ -68,12 +68,8 @@ async function obtenerCatalogo(url) {
   return await catalogoStore.getCatalogo(url, token);
 }
 const delete_row = (item) => {
-  //if (confirm("¿Desea borrar este registro?")) {
     let urlCat = import.meta.env.VITE_CAT_DEL_EXP + item.id;
-
     catalogoStore.deleteCatalogo(urlCat, token);
-    //items.value = items.value.filter((d) => d.id != item.id);
-  //}
 };
 const edit_user = (item) => {
   //console.log(item);
@@ -117,8 +113,6 @@ const guardar_item = () => {
     };
     catalogoStore.saveCatalogo(urlCat, saveItem, token);
   }
-
-  //showMessage('User saved successfully.');
   addContactModal.hide();
 };
 onMounted(async () => {
@@ -130,7 +124,6 @@ onMounted(async () => {
   }
 
   initPopup();
-  //bind_data();
   setTimeout(() => {
     initTooltip();
   }, 500);
@@ -266,6 +259,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               v-model="params.numExpediente"
                                               class="form-control form-control-sm"
                                               placeholder="Ingrese número de expediente"
+                                              maxlength="100"
                                             />
                                           </div>
                                         </div>
@@ -277,6 +271,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               v-model="params.descripcion"
                                               class="form-control form-control-sm"
                                               placeholder="Ingrese la decripción"
+                                              maxlength="255"
                                             />
                                           </div>
                                         </div>

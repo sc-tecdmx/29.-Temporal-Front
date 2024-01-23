@@ -268,6 +268,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               v-model="params.descripcion"
                                               class="form-control form-control-sm"
                                               placeholder="Ingresar tipo de documento"
+                                              maxlength="200"
                                             />
                                           </div>
                                         </div>

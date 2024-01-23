@@ -263,6 +263,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               v-model="params.nombramiento"
                                               class="form-control form-control-sm"
                                               placeholder="Ingrese descripción del puesto"
+                                              maxlength="100"
                                             />
                                           </div>
                                         </div>
@@ -274,6 +275,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               v-model="params.tipoUsuario"
                                               class="form-control form-control-sm"
                                               placeholder="Ingrese tipo de usuario"
+                                              maxlength="1"
                                             />
                                           </div>
                                         </div>

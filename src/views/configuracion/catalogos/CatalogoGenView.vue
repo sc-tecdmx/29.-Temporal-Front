@@ -22,6 +22,7 @@ const urlGetCat = ref("");
 const urlSaveCat = ref("");
 const urlEditCat = ref("");
 const urlDelCat = ref("");
+const maxlength = ref("");
 
 //console.log(tipoCat)
 
@@ -37,6 +38,7 @@ onMounted(async() => {
                 urlSaveCat.value = import.meta.env.VITE_CAT_ADD_PRIOR
                 urlEditCat.value = import.meta.env.VITE_CAT_EDIT_PRIOR
                 urlDelCat.value = import.meta.env.VITE_CAT_DEL_PRIOR
+                maxlength.value = "30"
                 break;
             case 'destino-de-documento':
                 headers.value = ["id", "destino", "acciones"];
@@ -44,6 +46,7 @@ onMounted(async() => {
                 urlSaveCat.value = import.meta.env.VITE_CAT_ADD_DEST
                 urlEditCat.value = import.meta.env.VITE_CAT_EDIT_DEST
                 urlDelCat.value = import.meta.env.VITE_CAT_DEL_DEST
+                maxlength.value = "50"
                 break;
             case 'etapa-documento':
                 headers.value = ["id", "etapa", "acciones"];
@@ -51,6 +54,7 @@ onMounted(async() => {
                 urlSaveCat.value = import.meta.env.VITE_CAT_ADD_ETAPADOC
                 urlEditCat.value = import.meta.env.VITE_CAT_EDIT_ETAPADOC
                 urlDelCat.value = import.meta.env.VITE_CAT_DEL_ETAPADOC
+                maxlength.value = "40"
                 break;
             case 'estado-usuario':
                 headers.value = ["id", "descripcion", "acciones"];
@@ -58,6 +62,23 @@ onMounted(async() => {
                 urlSaveCat.value = import.meta.env.VITE_CAT_ADD_ESTUSUARIO
                 urlEditCat.value = import.meta.env.VITE_CAT_EDIT_ESTUSUARIO
                 urlDelCat.value = import.meta.env.VITE_CAT_DEL_ESTUSUARIO
+                maxlength.value = "255"
+                break;
+            case 'instruccion-firmante':
+                headers.value = ["id", "instruccion", "acciones"];
+                urlGetCat.value = import.meta.env.VITE_CAT_GET_INST_FIR
+                urlSaveCat.value = import.meta.env.VITE_CAT_ADD_INST_FIR
+                urlEditCat.value = import.meta.env.VITE_CAT_EDIT_INST_FIR
+                urlDelCat.value = import.meta.env.VITE_CAT_DEL_INST_FIR 
+                maxlength.value = "20"
+                break;
+            case 'instruccion-destinatario':
+                headers.value = ["id", "instruccion", "acciones"];
+                urlGetCat.value = import.meta.env.VITE_CAT_GET_INST_DEST
+                urlSaveCat.value = import.meta.env.VITE_CAT_ADD_INST_DEST
+                urlEditCat.value = import.meta.env.VITE_CAT_EDIT_INST_DEST
+                urlDelCat.value = import.meta.env.VITE_CAT_DEL_INST_DEST 
+                maxlength.value = "20"
                 break;
             default:
                 if (confirm("No existe catálogo")) {
@@ -95,6 +116,7 @@ onMounted(async() => {
                         :urlSave="urlSaveCat"
                         :urlEdit="urlEditCat"
                         :urlDelete="urlDelCat"
+                        :maxlength="maxlength"
                         v-if="catDisponible"
                     ></TablaCatalogoDesc>
                 </div>

@@ -25,8 +25,9 @@ const props = defineProps({
   urlSave: String,
   urlEdit: String,
   urlDelete: String,
+  maxlength: String
 });
-//console.log("PROPS", props)
+// console.log("PROPS", props)
 let addContactModal = ref(null);
 
 //const params = ref({ id: null, descripcion: ""});
@@ -99,19 +100,14 @@ const initTooltip = () => {
 };
 
 const delete_row = (item) => {
-    if (confirm('¿Desea borrar este registro?')) {
         let urlCat = props.urlDelete + item.id
-        
         catalogoStore.deleteCatalogo(urlCat, token);
-        //items.value = items.value.filter((d) => d.id != item.id);
-    }
 };
 const edit_item = (item) => {
   //console.log(item);
   params.value = { id: null, descripcion: ''};
    if (item) {
         asignarObjeto(item);
-       //params.value = JSON.parse(JSON.stringify(item));
    }
   addContactModal.show();
 };
@@ -141,8 +137,6 @@ const guardar_item = () => {
     }
     catalogoStore.saveCatalogo(urlCat, saveItem, token);
     }
-
-  //showMessage('User saved successfully.');
   addContactModal.hide();
 };
 </script>
@@ -231,7 +225,12 @@ const guardar_item = () => {
                         <div class="col-md-12">
                           <div class="form-group mb-4">
                             <label>Descripción</label>
-                            <input type="text" v-model="params.descripcion" class="form-control form-control-sm" placeholder="Ingrese la decripción"/>
+                            <input type="text" 
+                                  v-model="params.descripcion" 
+                                  class="form-control form-control-sm" 
+                                  placeholder="Ingrese la decripción"
+                                  :maxlength="props.maxlength"
+                            />
                           </div>
                         </div>
                       </div>
@@ -253,9 +252,6 @@ const guardar_item = () => {
   </div>
 </template>
 <style>
-/* .custom-table .table td, .custom-table .table th {
-    padding: 4px 30px;
-} */
 .custom-table-cat .table td, .custom-table .table th {
     padding: 4px 30px;
 }

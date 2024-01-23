@@ -284,6 +284,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               v-model="params.sexo"
                                               class="form-control form-control-sm"
                                               placeholder="Ingrese la decripción"
+                                              maxlength="20"
                                             />
                                           </div>
                                         </div>

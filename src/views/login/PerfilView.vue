@@ -7,8 +7,6 @@ import { getCerFromPFX } from '@/firmav2/main-refactor.mjs';
 import { useMeta } from "@/composables/use-meta";
 useMeta({ title: "Perfil de usuario" });
 
-//composable
-//import { useGetData } from "@/composables/getData";
 //Stores
 import { useAuthStore } from '@/stores/authStore.js';
 import { useFirmaStore } from "@/stores/firmaStore.js";
@@ -20,15 +18,10 @@ import IconMapPin from "@/components/icons/IconMapPin.vue";
 import IconFeatherFileText from "@/components/icons/IconFeatherFileText.vue";
 
 let certificadoModal = ref(null);
-//const { data, getData, loading, errorData } = useGetData();
-//getData("http://localhost/j/perfil_usuario.php");
 
 const archivoEsCer = ref(false);
 const contrasenaCer = ref(null);
 const selected_file = ref(null);
-
-
-
 
 const authStore = useAuthStore();
 const firmaStore = useFirmaStore();

@@ -5,7 +5,7 @@ import "@/assets/sass/users/user-profile.scss";
 import { getCerFromPFX } from '@/firmav2/main-refactor.mjs';
 
 import { useMeta } from "@/composables/use-meta";
-useMeta({ title: "Perfil de usuario" });
+useMeta({ title: "Perfil de usuaria/o" });
 
 //Stores
 import { useAuthStore } from '@/stores/authStore.js';
@@ -231,4 +231,9 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
       </div>
       <!-- Fin Modal -->
 </template>
-<style></style>
+<style>
+.dropdown-menu.show {
+    display: block;
+    border-color: #194891;
+}
+</style>

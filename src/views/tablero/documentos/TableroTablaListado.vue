@@ -764,7 +764,6 @@ const showAlert = async (count) => {
             </div>
             <div class="modal-body">
                 <p v-if="pathdocumento.docBase64 == null">base64 null</p>
-                <!-- <PDF :src="pathdocumento.docBase64" v-else></PDF> -->
                 <embed
                 :src="'data:application/pdf;base64,'+ pathdocumento.docBase64"
                 type="application/pdf" width="100%" height="600px"/>
@@ -908,6 +907,8 @@ const showAlert = async (count) => {
 <style>
 .font-list{
     font-size: 12px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .creado svg {
     color: #ced2d6;

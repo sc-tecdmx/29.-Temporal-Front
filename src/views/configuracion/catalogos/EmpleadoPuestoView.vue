@@ -15,7 +15,7 @@ import flatPickr from 'vue-flatpickr-component';
     import 'flatpickr/dist/flatpickr.css';
     import '@/assets/sass/forms/custom-flatpickr.css';
 
-useMeta({ title: "Catálogo empleados" });
+useMeta({ title: "Catálogo empleada/os" });
 const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
 const token = authStore.state.user.token;
@@ -235,24 +235,26 @@ const showMessage = (msg = '', type = 'success') => {
                                 </div>
                               </template>
                               <template #acciones="props">
-                                <a
-                                  href="javascript:void(0);"
-                                  title="Edit"
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  @click=" params.id = props.row.id; edit_user(props.row); "
-                                >
-                                  <IconEdit2 class="me-3"></IconEdit2>
-                                </a>
-                                <a
-                                  href="javascript:void(0);"
-                                  title="Delete"
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  @click="delete_row(props.row)"
-                                >
-                                  <IconFeatherTrashVue></IconFeatherTrashVue>
-                                </a>
+                                <div class="text-center">
+                                  <a
+                                    href="javascript:void(0);"
+                                    title="Edit"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    @click=" params.id = props.row.id; edit_user(props.row); "
+                                  >
+                                    <IconEdit2></IconEdit2>
+                                  </a>
+                                  <!--<a
+                                    href="javascript:void(0);"
+                                    title="Delete"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    @click="delete_row(props.row)"
+                                  >
+                                    <IconFeatherTrashVue></IconFeatherTrashVue>
+                                  </a>-->
+                                </div>                                
                               </template>
                               <template #empleado="props">
                                 {{ props.row.empleado }} {{ props.row.apellido1 }} {{ props.row.apellido2 }}

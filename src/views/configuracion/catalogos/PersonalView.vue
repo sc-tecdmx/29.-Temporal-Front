@@ -9,7 +9,7 @@ import IconFeatherTrashVue from "@/components/icons/IconFeatherTrash.vue";
 import { useMeta } from "@/composables/use-meta";
 import router from "@/router";
 
-useMeta({ title: "Catálogo empleados" });
+useMeta({ title: "Catálogo de personal" });
 const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
 const token = authStore.state.user.token;

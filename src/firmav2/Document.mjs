@@ -69,7 +69,7 @@ export class Document {
             for(let i = 0 ; i < numSerieList.length; i++){
                 if (part1[0] === numSerieList[i]) {
                     responseBody.status = 'fail';
-                    responseBody.message = 'Error ya fue firmado por este usuario';
+                    responseBody.message = 'Error ya fue firmado por este usuaria/o';
                     return false
                 }
             }

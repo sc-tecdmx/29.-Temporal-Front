@@ -101,9 +101,9 @@ const submit_formulario = () => {
               >
                 <div class="form">
                   <div id="username-field" class="field-wrapper input">
-                    <label for="username">USUARIO</label>
+                    <label for="username">USUARIA/O</label>
                     <IconFeatherUser></IconFeatherUser>
-                    <input type="text" class="form-control" placeholder="Usuario" v-model="params.usuario"/>
+                    <input type="text" class="form-control" placeholder="usuaria/o" v-model="params.usuario"/>
                   </div>
 
                   <div id="email-field" class="field-wrapper input">

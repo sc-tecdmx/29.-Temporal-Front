@@ -15,7 +15,7 @@ import SwitchRounded from "@/components/wrapper/SwitchRounded.vue";
 import FechaGeneric from "@/components/wrapper/FechaGeneric.vue";
 
 import { useMeta } from "@/composables/use-meta";
-useMeta({ title: "Registro de empleado" });
+useMeta({ title: "Registro de empleada/o" });
 
 const pwd_type = ref("password");
 const selected_file = ref(null);
@@ -267,7 +267,7 @@ const submit_formulario = () => {
 
   //  //Alerts
   if (!form.idNumEmpleado) {
-    arrayCampos.value.push("Número de empleado");
+    arrayCampos.value.push("Número de empleada/o");
   }
   if (!form.nombre) {
     arrayCampos.value.push("Nombre");
@@ -346,7 +346,7 @@ const selected_area = ref("");
         <div class="form-form-wrap form-custom">
           <div class="form-container">
             <div class="form-content">
-              <h1 class="">Registrar empleado</h1>
+              <h1 class="">Registrar empleada/o</h1>
               <form class="text-start" novalidate @submit.stop.prevent="submit_formulario">
                 <div class="d-flex justify-content-center m-5" v-if="!loadingCat">
                   <div class="spinner-border text-primary" role="status" >
@@ -378,8 +378,8 @@ const selected_area = ref("");
                     <div class="col-12 col-md-6">
                       <InputValidado
                         idName="numEmpleado"
-                        label="Número de empleado:"
-                        placeholder="Ingresar número de empleado"
+                        label="Número de empleada/o:"
+                        placeholder="Ingresar número de empleada/o"
                         @inputData="opcionInputNumEmpleado"
                       ></InputValidado>
                     </div>
@@ -457,7 +457,7 @@ const selected_area = ref("");
                       <InputType
                         idName="emailPersonal"
                         label="Correo personal:"
-                        placeholder="usuario@dominio.com"
+                        placeholder="usuaria/o@dominio.com"
                         type="email"
                         pattern=".+@example\.com"
                         @inputData="inputemailPersonal"
@@ -467,7 +467,7 @@ const selected_area = ref("");
                       <InputType
                         idName="emailInstitucional"
                         label="Correo institucional:"
-                        placeholder="usuario@tecdmx.org.mx"
+                        placeholder="usuaria/o@tecdmx.org.mx"
                         type="email"
                         pattern=".+@example\.com"
                         @inputData="inputemailInstiticional"
@@ -548,7 +548,7 @@ const selected_area = ref("");
                   <div class="d-sm-flex justify-content-between">
                     <div class="field-wrapper">
                       <button type="submit" class="btn btn-primary">
-                        Registrar empleado
+                        Registrar empleada/o
                       </button>
                     </div>
                   </div>

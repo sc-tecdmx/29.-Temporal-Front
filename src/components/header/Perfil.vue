@@ -1,5 +1,4 @@
 <script setup>
-import { ref, onMounted } from 'vue';
 import IconFeatherUser from '../icons/IconFeatherUser.vue';
 import IconFeatherInbox from '../icons/IconFeatherInbox.vue';
 import IconFeatherLogout from '../icons/IconFeatherLogout.vue';
@@ -8,16 +7,8 @@ import IconFeatherSettings from '../icons/IconFeatherSettings.vue';
 import { useAuthStore } from '../../stores/authStore.js';
 
 const authStore = useAuthStore();
-const token = authStore.state.user.token;
-const userInfo = ref(null);
-const user = JSON.parse(localStorage.getItem('data'));
+const foto = JSON.parse(localStorage.getItem('foto'));
 
-async function obtenerUserInfo() {
-  return await authStore.getUserInfo(user, token);
-}
-onMounted(async() => {
-  userInfo.value = await obtenerUserInfo();
-});
 </script>
 <template>
             <div class="dropdown nav-item user-profile-dropdown btn-group">
@@ -28,7 +19,7 @@ onMounted(async() => {
             aria-expanded="false"
             class="btn dropdown-toggle btn-icon-only user nav-link"
           >
-            <img v-if="userInfo?.pathFotografia != null" :src="userInfo?.pathFotografia" alt="avatar" class="rounded-circle profile-img"/>
+            <img v-if="foto != null" :src="foto" alt="avatar" class="rounded-circle profile-img"/>
             <img v-else src="@/assets/images/tecdmx/profile_90x90.png" alt="avatar" class="rounded-circle profile-img"/>
           </a>
           <ul

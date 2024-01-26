@@ -494,7 +494,7 @@ const verificaArray = () => {
                   </div>
                 </div> -->
                 <div class="alert alert-light-danger alert-dismissible border-0 mb-4" role="alert" v-if="duplicado">
-                    <strong>Este empleado ya ha sido agregado.</strong>
+                    <strong>Este empleada/o ya ha sido agregado.</strong>
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">×</button>
                 </div>
               </form>

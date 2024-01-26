@@ -43,14 +43,14 @@ const loginSubmit = async() =>{
                     <div class="form-container">
                         <div class="form-content">
                             <h1 class="">Iniciar sesión</h1>
-                            <p class="">Ingresar usuario y contraseña para continuar.</p>
+                            <p class="">Ingresar usuaria/o y contraseña para continuar.</p>
 
                             <form class="text-start" @submit.prevent="loginSubmit">
                                 <div class="form">
                                     <div id="username-field" class="field-wrapper input">
                                         <label for="username">CORREO</label>
                                         <IconFeatherUser></IconFeatherUser>
-                                        <input v-model="email" type="text" class="form-control" placeholder="usuario" />
+                                        <input v-model="email" type="text" class="form-control" placeholder="usuaria/o" />
                                     </div>
 
                                     <div id="password-field" class="field-wrapper input mb-2">

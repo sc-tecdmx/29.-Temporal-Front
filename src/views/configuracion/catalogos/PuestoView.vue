@@ -269,12 +269,12 @@ const showMessage = (msg = '', type = 'success') => {
                                         </div>
                                         <div class="col-md-5">
                                           <div class="form-group mb-4">
-                                            <label>Tipo de usuario</label>
+                                            <label>Tipo de usuaria/o</label>
                                             <input
                                               type="text"
                                               v-model="params.tipoUsuario"
                                               class="form-control form-control-sm"
-                                              placeholder="Ingrese tipo de usuario"
+                                              placeholder="Ingrese tipo de usuaria/o"
                                               maxlength="1"
                                             />
                                           </div>

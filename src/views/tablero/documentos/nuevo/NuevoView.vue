@@ -506,7 +506,7 @@ const submit_formulario = () => {
 
        if(empleadosRepetidos.value != null){
         if(empleadosRepetidos.value.length > 0){
-          arrayCampos.value.push("Al menos un usuario está registrado tanto en la lista de firmantes como en la lista de destinatarios");
+          arrayCampos.value.push("Al menos un usuaria/o está registrado tanto en la lista de firmantes como en la lista de destinatarios");
         }
         }
        if (!arrayCampos.value.length == 0) {
@@ -1394,12 +1394,12 @@ const decodeToken = () => {
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Empleado duplicado</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Empleada/o duplicado</h5>
           <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close" ></button>
         </div>
         <div class="modal-body">
           <p class="modal-text">
-            No es posible asignar doble función,firmante y destinatario, a un empleado simultaneamente.
+            No es posible asignar doble función,firmante y destinatario, a un empleada/o simultaneamente.
           </p>
           <div class="toast-body text-dark">
             <ul>

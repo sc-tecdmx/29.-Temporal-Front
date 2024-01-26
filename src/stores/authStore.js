@@ -9,6 +9,7 @@ export const useAuthStore = defineStore('authStore',()=>{
     const state =  ref({
         user: JSON.parse(localStorage.getItem('user')),
         returnUrl: null
+        
     })
     const loadingUser = ref(false);
     const loginUser = async(email, password) => {
@@ -25,11 +26,15 @@ export const useAuthStore = defineStore('authStore',()=>{
               usuario.value = localStorage.setItem('user', JSON.stringify(response.data));
               localStorage.setItem('data', JSON.stringify(response.data.data));
               state.value.user = JSON.parse(localStorage.getItem('user'));
+              const info = await getUserInfo(localStorage.getItem('data'), state.value.user.token);
+              localStorage.setItem('foto', JSON.stringify(info.pathFotografia));
+
               if (response.data.status === "failed" || response.data.token == null) {
                 showMessage(response.data.message,'error');
               } else {
                 router.push('/');
               }
+
              } catch (error) {
                  console.log(error);
                  showMessage("No se encuentra registrado", 'error');

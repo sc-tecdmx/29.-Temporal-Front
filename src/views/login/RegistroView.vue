@@ -44,7 +44,7 @@ const submit_formulario = () => {
 
   //   //  //Alerts
   //   if (!form.idNumEmpleado) {
-  //     arrayCampos.value.push("Número de empleado");
+  //     arrayCampos.value.push("N&#250;mero de empleado");
   //   }
   //   if (!form.nombre) {
   //     arrayCampos.value.push("Nombre");
@@ -92,7 +92,7 @@ const submit_formulario = () => {
               <h1 class="">Registro</h1>
               <p class="signup-link register">
                 ¿Tienes cuenta?
-                <router-link to="/account/login">Iniciar sesión</router-link>
+                <router-link to="/account/login">Iniciar sesi&#243;n</router-link>
               </p>
               <form
                 class="text-start"
@@ -107,26 +107,25 @@ const submit_formulario = () => {
                   </div>
 
                   <div id="email-field" class="field-wrapper input">
-                    <label for="email">CORREO ELECTRÓNICO</label>
+                    <label for="email">CORREO ELECTR&#211;NICO</label>
                     <IconFeatherAtSign></IconFeatherAtSign>
                     <input
                       type="email"
                       class="form-control"
-                      placeholder="Correo electrónico"
+                      placeholder="Correo electr&#243;nico"
                       v-model="params.email"
                     />
                   </div>
 
                   <div id="password-field" class="field-wrapper input mb-2">
                     <div class="d-flex justify-content-between">
-                      <label for="password">CONTRASEÑA</label>
-                      <!-- <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link> -->
+                      <label for="password">CONTRASE&#209;A</label>
                     </div>
                     <IconFeatherLock></IconFeatherLock>
                     <input
                       :type="pwd_type"
                       class="form-control"
-                      placeholder="Contraseña"
+                      placeholder="Contrase&#241;a"
                       v-model="password"
                       @change="verificaPassword(password)"
                     />
@@ -151,16 +150,9 @@ const submit_formulario = () => {
                     </svg>
 
                     <p class="mt-3 fst-italic">La contraseña debe tener al entre 8 y 16 caracteres, 
-                        al menos un dígito, al menos una minúscula, 
-                        al menos una mayúscula y al menos un caracter no alfanumérico.</p>
+                        al menos un d&#237;gito, al menos una min&#250;scula, 
+                        al menos una may&#250;scula y al menos un caracter no alfanum&#233;rico.</p>
                   </div>
-
-                  <!-- <div class="terms_condition mb-4">
-                                        <div class="checkbox-outline-primary custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" value="true" id="chkTerms" />
-                                            <label class="custom-control-label" for="chkTerms"> Acepto  <a href="javascript:;"> terminos y condiciones </a></label>
-                                        </div>
-                                    </div> -->
 
                   <div class="d-sm-flex justify-content-between">
                     <div class="field-wrapper">

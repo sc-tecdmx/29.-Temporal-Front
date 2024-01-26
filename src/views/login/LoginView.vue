@@ -42,21 +42,21 @@ const loginSubmit = async() =>{
                 <div class="form-form-wrap">
                     <div class="form-container">
                         <div class="form-content">
-                            <h1 class="">Iniciar sesión</h1>
+                            <h1 class="">Iniciar sesi&#243;n</h1>
                             <p class="">Ingresar usuaria/o y contraseña para continuar.</p>
 
                             <form class="text-start" @submit.prevent="loginSubmit">
                                 <div class="form">
                                     <div id="username-field" class="field-wrapper input">
-                                        <label for="username">CORREO</label>
+                                        <label for="username">CORREO ELECTR&#211;NICO</label>
                                         <IconFeatherUser></IconFeatherUser>
-                                        <input v-model="email" type="text" class="form-control" placeholder="usuaria/o" />
+                                        <input v-model="email" type="text" class="form-control" placeholder="correo electr&#243;nico" />
                                     </div>
 
                                     <div id="password-field" class="field-wrapper input mb-2">
                                         <div class="d-flex justify-content-between">
-                                            <label for="password">CONTRASEÑA</label>
-                                            <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contraseña?</router-link>
+                                            <label for="password">CONTRASE&#209;A</label>
+                                            <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contrase&#241;a?</router-link>
                                         </div>
                                         <IconFeatherLock></IconFeatherLock>
                                         <input v-model="password" :type="pwd_type" class="form-control" placeholder="Password" />

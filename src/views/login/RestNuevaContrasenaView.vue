@@ -40,7 +40,7 @@
         if(form.value.contrasena_nueva != form.value.confirma_contrasena){
             is_confirma_contrasena.value =false;
             contrasena_confirmada.value = true;
-            return alert("contraseña diferente");
+            return alert("contrase&#241;a diferente");
          }else{
             is_contrasena_nueva.value = true;
             is_confirma_contrasena.value =true;
@@ -56,7 +56,7 @@
         if (regex.test(password)) {
             form.value.contrasena_nueva = password;
         } else {
-            alert("La contraseña no cumple con los criterios establecidos");
+            alert("La contrase&#241;a no cumple con los criterios establecidos");
         }
     }
 
@@ -68,7 +68,7 @@
                 <div class="form-form-wrap">
                     <div class="form-container">
                         <div class="form-content">
-                            <h1 class="">Cambiar contraseña</h1>
+                            <h1 class="">Cambiar contrase&#241;a</h1>
                             <form novalidate class="text-start" @submit.stop.prevent ="submit_form">
                                 <!-- Toast -->
                                         <div aria-live="polite" aria-atomic="true" class="position-relative" v-if="contrasena_confirmada">
@@ -79,7 +79,7 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                                                         </div>
                                                         <div class="toast-body text-dark">
-                                                            Las contraseñas no coinciden.
+                                                            Las contrase&#241;as no coinciden.
                                                         </div>
                                                     </div>
                                             </div>
@@ -88,12 +88,12 @@
                                 <div class="form">
                                     <div id="password-nueva" class="field-wrapper input mb-2">
                                         <div class="d-flex justify-content-between">
-                                            <label for="password">NUEVA CONTRASEÑA</label>
+                                            <label for="password">NUEVA CONTRASE&#209;A</label>
                                         </div>
                                         <IconFeatherLock></IconFeatherLock>
                                         <input :type="pwd_type" 
                                                 class="form-control" 
-                                                placeholder="Ingresa una nueva contraseña"
+                                                placeholder="Ingresa una nueva contrase&#241;a"
                                                 v-model="password"
                                                 :class="[is_contrasena_nueva ? (form.contrasena_nueva ? 'is-valid' : 'is-invalid') : '']"
                                                 @change="verificaPassword(password)"
@@ -115,22 +115,22 @@
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                             <circle cx="12" cy="12" r="3"></circle>
                                         </svg>
-                                        <p class="mt-3 fst-italic">La contraseña debe tener al entre 8 y 16 caracteres, 
-                                            al menos un dígito, al menos una minúscula, 
-                                            al menos una mayúscula y al menos un caracter no alfanumérico.
+                                        <p class="mt-3 fst-italic">La contrase&#241;a debe tener al entre 8 y 16 caracteres, 
+                                            al menos un d&#237;gito, al menos una min&#250;scula, 
+                                            al menos una may&#250;scula y al menos un caracter no alfanum&#233;rico.
                                         </p>
                                         <div class="valid-feedback"></div>
-                                        <div class="invalid-feedback">Ingrese contraseña nueva</div>
+                                        <div class="invalid-feedback">Ingrese contrase&#241;a nueva</div>
                                     </div>
 
                                     <div id="password-nueva-confirma" class="field-wrapper input mb-2">
                                         <div class="d-flex justify-content-between">
-                                            <label for="password">CONFIRMAR NUEVA CONTRASEÑA</label>
+                                            <label for="password">CONFIRMAR NUEVA CONTRASE&#209;A</label>
                                         </div>
                                         <IconFeatherLock></IconFeatherLock>
                                         <input :type="pwd_type" 
                                                 class="form-control" 
-                                                placeholder="Ingresa una nueva contraseña" 
+                                                placeholder="Ingresa una nueva contrase&#241;a" 
                                                 v-model="form.confirma_contrasena" 
                                                 :class="[is_confirma_contrasena ? (form.confirma_contrasena ? 'is-valid' : 'is-invalid') : '']"
                                                 />
@@ -152,11 +152,11 @@
                                             <circle cx="12" cy="12" r="3"></circle>
                                         </svg>
                                         <div class="valid-feedback">Correcto</div>
-                                        <div class="invalid-feedback">Confirma contraseña</div>
+                                        <div class="invalid-feedback">Confirma contrase&#241;a</div>
                                     </div>
                                     <div class="d-sm-flex justify-content-between">
                                         <div class="field-wrapper">
-                                            <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+                                            <button type="submit" class="btn btn-primary">Cambiar contrase&#241;a</button>
                                         </div>
                                     </div>
                                 </div>

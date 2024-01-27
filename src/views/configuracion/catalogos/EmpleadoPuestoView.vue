@@ -48,6 +48,9 @@ const table_option = ref({
     id: (h, row, index) => {
       return "#";
     },
+    empleado: (h, row, index) => {
+      return "Empleada/o";
+    },
   },
   perPage: 5,
   perPageValues: [5, 10, 20, 50],
@@ -184,7 +187,7 @@ const showMessage = (msg = '', type = 'success') => {
                 <div class="invoice-detail-body">
                   <div class="invoice-detail-title mb-0">
                     <div class="col-xl-5 invoice-address-company">
-                      <h3>Catálogo empleado-puesto</h3>
+                      <h3>Catálogo empleada/o-puesto</h3>
                     </div>
                   </div>
                   <div class="layout-px-spacing">

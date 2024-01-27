@@ -28,6 +28,9 @@ const table_option2 = ref({
     id: (h, row, index) => {
       return "#";
     },
+    tipoUsuario: (h, row, index) => {
+      return "Tipo usuaria/o";
+    },
   },
   perPage: 10,
   perPageValues: [ 10, 20, 50],

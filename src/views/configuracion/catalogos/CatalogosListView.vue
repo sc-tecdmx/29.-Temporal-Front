@@ -30,7 +30,7 @@ const authStore = useAuthStore();
                 <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
                     <div class="card text-center mb-3" style="width: 15rem">
                         <div class="card-body">
-                        <h5 class="card-title">Empleado-Puesto</h5>
+                        <h5 class="card-title">Empleada/o-Puesto</h5>
                         <p class="card-text">
                         </p>
                         <a href="/config/catalogo/empleado-puesto" class="btn btn-primary">Administrar</a>
@@ -80,7 +80,7 @@ const authStore = useAuthStore();
                 <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12">
                     <div class="card text-center mb-3" style="width: 15rem">
                         <div class="card-body">
-                        <h5 class="card-title">Estado usuario</h5>
+                        <h5 class="card-title">Estado usuaria/o</h5>
                         <p class="card-text">
                         </p>
                         <router-link to="/config/catalogo/estado-usuario" class="btn btn-primary">Administrar</router-link>

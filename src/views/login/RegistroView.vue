@@ -103,7 +103,7 @@ const submit_formulario = () => {
                   <div id="username-field" class="field-wrapper input">
                     <label for="username">USUARIA/O</label>
                     <IconFeatherUser></IconFeatherUser>
-                    <input type="text" class="form-control" placeholder="usuaria/o" v-model="params.usuario"/>
+                    <input type="text" class="form-control" placeholder="usuaria/o" v-model="params.usuario" maxlength="20"/>
                   </div>
 
                   <div id="email-field" class="field-wrapper input">
@@ -114,6 +114,7 @@ const submit_formulario = () => {
                       class="form-control"
                       placeholder="Correo electr&#243;nico"
                       v-model="params.email"
+                      maxlength="256"
                     />
                   </div>
 
@@ -127,6 +128,7 @@ const submit_formulario = () => {
                       class="form-control"
                       placeholder="Contrase&#241;a"
                       v-model="password"
+                      maxlength="255"
                       @change="verificaPassword(password)"
                     />
                     <svg

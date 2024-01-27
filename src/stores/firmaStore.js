@@ -11,20 +11,10 @@ export const useFirmaStore = defineStore('firmaStore',() => {
 
     const rechazarDocumento = async(data, token) => {
         const url = urlPKI + "/api/documento/rechazar-documento";
-        //showAlert('rechazar');
-        // try {
-        //   await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}}).then((response) => {
-        //      console.log(response)
-        //      //showAlert('rechazar', response.data.message);
-        //         });
-            
-        //    } catch (error) {
-        //      console.log(error)
-        //    }
         new window.Swal({
           icon: 'warning',
           title: '\u00BFDesea rechazar este documento?',
-          text: "El documento ser\u00E1 rechazado para todos los firmantes",
+          text: "El documento ser\u00E1 rechazado para todas las personas firmantes",
           showCancelButton: true,
           confirmButtonText: 'Rechazar',
           padding: '2em',

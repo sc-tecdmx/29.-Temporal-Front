@@ -150,15 +150,28 @@ const guardar_item = () => {
     //add user
     //console.log("add");
     const urlCat = import.meta.env.VITE_CAT_ADD_GRUPOS;
-    let saveItem = {
-        "idArea": 5,
-        "tipoGrupo": params.value.tipoGrupo,
-        "nombreGrupo": params.value.nombreGrupo,
-        "personas": arrayIntegrantes.value
+    //console.log(params.value.tipoGrupo)
+    if(params.value.tipoGrupo === 'Personas Firmantes'){
+      let saveItem = {
+          "idArea": 5,
+          "tipoGrupo": 'Firmantes',
+          "nombreGrupo": params.value.nombreGrupo,
+          "personas": arrayIntegrantes.value
+      }
+      //console.log(saveItem);
+      catalogoStore.saveCatalogo(urlCat, saveItem, token);
+    }else if(params.value.tipoGrupo === 'Personas Destinatarias'){
+      let saveItem = {
+          "idArea": 5,
+          "tipoGrupo": 'Destinatarios',
+          "nombreGrupo": params.value.nombreGrupo,
+          "personas": arrayIntegrantes.value
+      }
+      //console.log(saveItem);
+      catalogoStore.saveCatalogo(urlCat, saveItem, token);
     }
     
-    //console.log(saveItem);
-    catalogoStore.saveCatalogo(urlCat, saveItem, token);
+    
     arrayIntegrantes.value = null;
   }
 
@@ -234,8 +247,8 @@ const bind_grupos = () => {
      { id: 3, instruccion: "Acuse" },
    ];
   catTipoGrupo.value = [
-    { id: 1, tipoGrupo: "Firmantes" },
-    { id: 2, tipoGrupo: "Destinatarios" },
+    { id: 1, tipoGrupo: "Personas Firmantes" },
+    { id: 2, tipoGrupo: "Personas Destinatarias" },
   ];
 };
 const usuarioSelected = ref(false);
@@ -366,7 +379,7 @@ const showMessage = (msg = '', type = 'success') => {
                                 <div class="row layout-spacing layout-top-spacing" id="cancel-row" >
                                 <div class="col-lg-12">
                                   <div class="panel-body searchable-container" :class="[grid_type]">
-                                    <h4>Firmantes</h4>
+                                    <h4>Personas firmantes</h4>
                                     <div class="searchable-items" :class="[grid_type]">
                                       <div class="items items-header-section">
                                         <div class="item-content">
@@ -400,7 +413,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               <label class="custom-control-label" :for="`chk-${grupo.id}`" ></label>
                                             </div> -->
                                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapseOne' + grupo.id" aria-expanded="false" aria-controls="collapseOne">
-                                              <IconDropDown></IconDropDown>
+                                              <IconDropDown />
                                             </button>
                                             <div class="user-meta-info ms-2">
                                               <p class="user-name">
@@ -483,7 +496,7 @@ const showMessage = (msg = '', type = 'success') => {
                               <div class="row layout-spacing layout-top-spacing" id="cancel-row" >
                                 <div class="col-lg-12">
                                   <div class="panel-body searchable-container" :class="[grid_type]">
-                                    <h4>Destinatarios</h4>
+                                    <h4>Personas destinatarias</h4>
                                     <div class="searchable-items" :class="[grid_type]">
                                       <div class="items items-header-section">
                                         <div class="item-content">
@@ -517,7 +530,7 @@ const showMessage = (msg = '', type = 'success') => {
                                               <label class="custom-control-label" :for="`chk-${grupo.id}`" ></label>
                                             </div> -->
                                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapseOne' + grupo.id" aria-expanded="false" aria-controls="collapseOne">
-                                              <IconDropDown></IconDropDown>
+                                              <IconDropDown />
                                             </button>
                                             <div class="user-meta-info">
                                               <p class="user-name">
@@ -647,11 +660,11 @@ const showMessage = (msg = '', type = 'success') => {
                                           ></RadioGroup>
                                         </div>
                                       </div>
-                                      <div class="row">
+                                      <div class="row mt-2">
                                         <div class="col-md-12">
                                           <div class="form-group mb-0">
                                             <TablaAgregarGrupo
-                                              titulo="Agregar integrantes"
+                                              titulo="Agregar personas integrantes"
                                               id_tabla="firmantes"
                                               :thtabla="thPersonal"
                                               :tbTabla="catPersonal"

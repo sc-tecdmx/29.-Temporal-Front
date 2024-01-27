@@ -133,10 +133,6 @@ const enviarFirmantes = () => {
 
 
 const pathdocumento = ref("");
-// const pdf_view = (adjuntos) => {
-//   console.log(adjuntos)
-//   //pathdocumento.value = path;
-// };
 const getNombre = (path) => {
   const parts = path.split('/');
   const fileName = parts[parts.length - 1];
@@ -180,7 +176,6 @@ if(selected_file_cer.value && selected_file_key.value && certificado.value.contr
 
 const goFirma = async () => {
   loadFirma.value = true;
-  //firmaStore.goToFirma(documento.value.idDocumento, token);
   try {
     const verificaGoFirma = await firmaStore.goToFirma(documento.value.idDocumento, token);
     console.log("GO-FIRMA", verificaGoFirma);
@@ -189,7 +184,6 @@ const goFirma = async () => {
       await enviaFirma();
     } else {
       console.log(verificaGoFirma)
-      //alert("No se puede firmar");
       showMessage(verificaGoFirma.data.message, 'error');
       setTimeout(()=>{
         window.location.reload();
@@ -443,6 +437,9 @@ const submit_rechazo = () => {
                                   <p class="inv-email-address">
                                     <b>Prioridad:</b> {{ documento.prioridad }}
                                   </p>
+                                  <p class="inv-email-address">
+                                    <b>Etapa:</b> {{ documento.etapaDocumento }}
+                                  </p>
                                 </div>
                                 <div
                                   class="col-sm-6 align-self-center mt-3 text-sm-end"
@@ -655,7 +652,6 @@ const submit_rechazo = () => {
                           >
                             Rechazar
                           </button>
-                          <!-- <router-link to="#" class="btn btn-danger btn-edit">Rechazar</router-link> -->
                         </div>
                       </div>
                     </div>

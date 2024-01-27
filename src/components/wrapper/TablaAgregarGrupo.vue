@@ -105,10 +105,10 @@ watch(() => props.tipoGrupo, async (nuevoTipoGrupo) => {
 const actualizarCatInstruccion = async (tipoGrupo = props.tipoGrupo) => {
   catInstruccionTEMP.value = await obtenerCatNuevoDoc(urlNewDoc);
 
-  if (tipoGrupo === 'Firmantes') {
+  if (tipoGrupo === 'Personas Firmantes') {
     catInstruccion.value = catInstruccionTEMP.value.data.catInstruccionFirmantes;
     instDisponible.value = true;
-  } else if (tipoGrupo === 'Destinatarios') {
+  } else if (tipoGrupo === 'Personas Destinatarias') {
     catInstruccion.value = catInstruccionTEMP.value.data.catInstruccionDestinatarios;
     instDisponible.value = true;
   }
@@ -244,14 +244,14 @@ const save_user = () => {
     //params.fechaLimite = "";
     //console.log("PARAMS Firman",params)
     
-    if(props.tipoGrupo === 'Firmantes'){
+    if(props.tipoGrupo === 'Personas Firmantes'){
       let empleado={
         "idEmpleado": selected.value.id,
         "idInstFirmante": params.id_instruccion,
         "idInstDest": null
       }
       arrayEnviado.value.push(empleado);
-    } else if(props.tipoGrupo === 'Destinatarios'){
+    } else if(props.tipoGrupo === 'Personas Destinatarias'){
       let empleado={
         "idEmpleado": selected.value.id,
         "idInstFirmante": null,
@@ -304,10 +304,10 @@ const verificaArray = () => {
 <template>
   <div class="invoice-detail-items me-3">
     <div class="row">
-      <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 invoice-address-company">
+      <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 invoice-address-company">
         <h4>{{ titulo }}</h4>
       </div>
-      <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 text-sm-end text-center layout-spacing align-self-end">
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 text-sm-end text-center layout-spacing align-self-end">
         <div class="d-flex justify-content-sm-end justify-content-center">
           <a href="javascript:;" @click="edit_user">
             <svg
@@ -397,7 +397,7 @@ const verificaArray = () => {
       <div class="modal-content mailbox-popup">
         <div class="modal-header">
           <h5 class="modal-title">
-            {{ selected.id_tabla || params.id_tabla ? "Editar integrante" : "Agregar integrante" }}
+            {{ selected.id_tabla || params.id_tabla ? "Editar persona integrante" : "Agregar persona integrante" }}
           </h5>
           <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" class="btn-close"></button>
         </div>

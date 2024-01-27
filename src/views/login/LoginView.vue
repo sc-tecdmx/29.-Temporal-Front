@@ -48,9 +48,9 @@ const loginSubmit = async() =>{
                             <form class="text-start" @submit.prevent="loginSubmit">
                                 <div class="form">
                                     <div id="username-field" class="field-wrapper input">
-                                        <label for="username">CORREO ELECTR&#211;NICO</label>
+                                        <label for="username">USUARIA/O</label>
                                         <IconFeatherUser></IconFeatherUser>
-                                        <input v-model="email" type="text" class="form-control" placeholder="correo electr&#243;nico" />
+                                        <input v-model="email" type="text" class="form-control" placeholder="usuaria/o" maxlength="256"/>
                                     </div>
 
                                     <div id="password-field" class="field-wrapper input mb-2">
@@ -59,7 +59,7 @@ const loginSubmit = async() =>{
                                             <router-link to="/account/recupera_contrasena" class="forgot-pass-link">¿Olvidaste tu contrase&#241;a?</router-link>
                                         </div>
                                         <IconFeatherLock></IconFeatherLock>
-                                        <input v-model="password" :type="pwd_type" class="form-control" placeholder="Password" />
+                                        <input v-model="password" :type="pwd_type" class="form-control" placeholder="Password" maxlength="255"/>
                                         <svg
                                             @click="set_pwd_type"
                                             xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ const loginSubmit = async() =>{
                                         </a>
                                     </div> -->
 
-                                    <p class="signup-link">¿No estas registrado? <router-link to="/account/registro">Crea una cuenta</router-link></p>
+                                    <p class="signup-link">¿No tienes registro? <router-link to="/account/registro">Crea una cuenta</router-link></p>
                                 </div>
                             </form>
                         </div>

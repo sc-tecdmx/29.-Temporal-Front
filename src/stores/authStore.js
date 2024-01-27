@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('authStore',()=>{
 
              } catch (error) {
                  console.log(error);
-                 showMessage("No se encuentra registrado", 'error');
+                 showMessage("No se encuentra registrada/o", 'error');
              }finally{
                 loadingUser.value = false;
              }

@@ -346,7 +346,7 @@ const selected_area = ref("");
         <div class="form-form-wrap form-custom">
           <div class="form-container">
             <div class="form-content">
-              <h1 class="">Registrar empleada/o</h1>
+              <h1 class="">Registrar persona servidora p&#250;blica</h1>
               <form class="text-start" novalidate @submit.stop.prevent="submit_formulario">
                 <div class="d-flex justify-content-center m-5" v-if="!loadingCat">
                   <div class="spinner-border text-primary" role="status" >
@@ -457,7 +457,7 @@ const selected_area = ref("");
                       <InputType
                         idName="emailPersonal"
                         label="Correo personal:"
-                        placeholder="usuaria/o@dominio.com"
+                        placeholder="ejemplo@dominio.com"
                         type="email"
                         pattern=".+@example\.com"
                         @inputData="inputemailPersonal"
@@ -467,7 +467,7 @@ const selected_area = ref("");
                       <InputType
                         idName="emailInstitucional"
                         label="Correo institucional:"
-                        placeholder="usuaria/o@tecdmx.org.mx"
+                        placeholder="ejemplo@tecdmx.org.mx"
                         type="email"
                         pattern=".+@example\.com"
                         @inputData="inputemailInstiticional"
@@ -529,7 +529,7 @@ const selected_area = ref("");
                     <div class="col-12 col-md-6">
                       <SwitchRounded
                         class="mt-4 ms-5"
-                        label="Es titular"
+                        label="Es persona titular"
                         id="sw-titular"
                         @chkSwitch="opcionSwitchTitular"
                       ></SwitchRounded>
@@ -548,7 +548,7 @@ const selected_area = ref("");
                   <div class="d-sm-flex justify-content-between">
                     <div class="field-wrapper">
                       <button type="submit" class="btn btn-primary">
-                        Registrar empleada/o
+                        Registrar
                       </button>
                     </div>
                   </div>

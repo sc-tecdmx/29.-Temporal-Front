@@ -40,6 +40,7 @@ import { main_pfx, main_cer, validationPreviousToStore } from '@/firmav2/main-re
 //useMeta({ title: 'Vue Multiselect' });
 /** ./Multiselect */
 useMeta({ title: "Nuevo documento" });
+const isCaptura = ref(false);
 //Config URLs
 const urlPKI = import.meta.env.VITE_API_PKIURL;
 const urlLAR = import.meta.env.VITE_API_LARURL;
@@ -379,6 +380,7 @@ const opcionSwitchOrdenFirma = (idData) => {
   paramsEnviar.value.configuraciones.ordenFirma = idData;
 };
 const opcionSwitchModoCaptura = (idData) => {
+  isCaptura.value = idData;
   //params.value.configuracion.modoCaptura = idData;
   paramsEnviar.value.configuraciones.modoCaptura = idData;
 };
@@ -506,7 +508,7 @@ const submit_formulario = () => {
 
        if(empleadosRepetidos.value != null){
         if(empleadosRepetidos.value.length > 0){
-          arrayCampos.value.push("Al menos un usuaria/o está registrado tanto en la lista de firmantes como en la lista de destinatarios");
+          arrayCampos.value.push("Al menos un usuaria/o está registrada/o tanto en la lista de firmantes como en la lista de destinatarios");
         }
         }
        if (!arrayCampos.value.length == 0) {
@@ -1106,9 +1108,9 @@ const decodeToken = () => {
                   <!-- .// Fin del Título del documento -->
                   <!-- Agregar Firmantes -->
                   <TablaAgregar
-                    titulo="Agregar Firmantes"
+                    titulo="Agregar Personas Firmantes"
                     id_tabla="firmantes"
-                    label="firmante"
+                    label="persona firmante"
                     :thtabla="thFirmantes"
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccion"
@@ -1119,9 +1121,9 @@ const decodeToken = () => {
 
                   <!-- Agregar Destinatarios -->
                    <TablaAgregar
-                    titulo="Agregar Destinatarios"
+                    titulo="Agregar Personas Destinatarias"
                     id_tabla="destinatarios"
-                    label="destinatario"
+                    label="persona destinataria"
                     :thtabla="thDestinatarios"
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccionDest"
@@ -1225,18 +1227,19 @@ const decodeToken = () => {
                         href="javascript:;"
                         class="btn btn-primary btn-send"
                         @click="enviaCaptura()"
-                        >Guardar captura</a
-                      >
+                        >Guardar captura
+                      </a>
                     </div>
                     <div class="col-xl-4 col-md-4">
-                      <a
+                      <button
                         id="btn-certificado"
                         class="btn btn-secondary btn-send p-3"
                         href="javascript:void(0);"
+                        :disabled="isCaptura"
                         @click="submit_formulario()"
                       >
                         Firmar ahora
-                      </a>
+                      </button>
                     </div>
                     <!-- Hacer una distincion entre "firmar" y "firmar y enviar" -->
                     <!-- <div class="col-xl-3 col-md-3">

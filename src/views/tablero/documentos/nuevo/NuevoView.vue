@@ -604,8 +604,7 @@ const enviaModoFirma = async() => {
   loadFirma.value = true;
   certificadoModal.hide();
   console.log('enviar enviaModoFirma---------');
-  //let urlAltaDoc = urlPKI + "/api/documento/alta-documento";
-  let urlAltaDoc = urlPKI + "/api/documento/alta-documento-modo-firmar-ahora";
+  let urlAltaDoc = urlPKI + "/api/firma/alta-documento-modo-firmar-ahora";
   const post = {
     /*"folio": paramsEnviar.value.folio,*/
     "folioEspecial": paramsEnviar.value.folioEspecial,

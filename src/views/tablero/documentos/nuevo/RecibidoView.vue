@@ -111,16 +111,22 @@ const setContrasena = (contrasena) => {
 /* Termina Modal firmar ahora */
 
 /* Modal Rechazo*/
-const motivoRechazo = () => {
-  // console.log("motivo rechazo");
-  // console.log(documento.value.idDocumento);
-  let post ={
-      "idDocumento": documento.value.idDocumento,
-      "codigoFirmaAplicada": "Rechazado",
-      "tipoUsuario": "firmante"
-  }
-  firmaStore.rechazarDocumento(post,token);
-};
+const is_submit_rechazo = ref(false);
+const formRechazo = ref({ descripcion: '' });
+const submit_rechazo = () => {
+  is_submit_rechazo.value = true;
+        if (formRechazo.value.descripcion) {
+          let post ={
+              "idDocumento": documento.value.idDocumento,
+              "codigoFirmaAplicada": "Rechazado",
+              "tipoUsuario": "firmante",
+              "descripcion": formRechazo.value.descripcion
+          }
+          //console.log(post)
+          firmaStore.rechazarDocumento(post,token);
+        }
+        rechazoModal.hide();
+    };
 /* Termina Modal Rechazo*/
 /* Enviar a Firmantes*/
 const enviarFirmantes = () => {
@@ -344,23 +350,6 @@ const status_btn = () => {
       break;
   }
 };
-const is_submit_rechazo = ref(false);
-const formRechazo = ref({ motivo: '' });
-const submit_rechazo = () => {
-  is_submit_rechazo.value = true;
-        if (formRechazo.value.motivo) {
-          let post ={
-              "idDocumento": documento.value.idDocumento,
-              "codigoFirmaAplicada": "Rechazado",
-              "tipoUsuario": "firmante",
-              "motivo": formRechazo.value.motivo
-          }
-          //console.log(post)
-          //Falta el nuevo servicio que contenga el motivo
-          firmaStore.rechazarDocumento(post,token);
-        }
-        rechazoModal.hide();
-    };
     const showAlert = async (count) => {
       new window.Swal({
           icon: 'success',
@@ -424,13 +413,16 @@ const submit_rechazo = () => {
                                 <div class="col-sm-4 text-sm-end">
                                   <p class="inv-list-number">
                                     <span class="inv-title">Folio : </span>
-                                    <span class="inv-number">{{
-                                      documento.folioDocumento
-                                    }}</span>
+                                    <span class="inv-number">
+                                      {{ documento.folioDocumento }}
+                                    </span>
                                   </p>
                                 </div>
 
                                 <div class="col-sm-6 align-self-center mt-3">
+                                  <p class="inv-street-addr">
+                                    <b>Número de oficio:</b> {{ documento.numOficio }}
+                                  </p>
                                   <p class="inv-street-addr">
                                     <b>Destino:</b> {{ documento.tipoDestino }}
                                   </p>
@@ -594,17 +586,7 @@ const submit_rechazo = () => {
                                       <IconFeatherFileText class="me-2"></IconFeatherFileText>
                                       {{ getNombre(doc.documentoPath) }}
                                     </a>
-                                    <!-- <PDF :src="doc.docBase64"></PDF> -->
                                   </div>
-                                  <!-- <a
-                                    href="javascript:;"
-                                    class="btn dropdown-toggle btn-icon-only"
-                                    @click=" pdf_view( documento.documentosAdjuntos) "
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalPDF"
-                                  >
-                                    <IconFeatherFileText></IconFeatherFileText>
-                                  </a> -->
                                 </div>
                               </div>
                             </div>
@@ -759,14 +741,6 @@ const submit_rechazo = () => {
                               <div class="row justify-content-end">
                                 <div class="col-3">
                                   <button type="submit" class="btn mt-2 btn-success btn-send">Firmar</button>
-                                  <!-- <a
-                                    id="btn-modal-firma"
-                                    class="btn btn-success btn-send p-3"
-                                    href="javascript:void(0);"
-                                    @click="enviaFirma()"
-                                  >
-                                    Firmar
-                                  </a> -->
                                 </div>
                               </div>
                             </form>
@@ -801,7 +775,7 @@ const submit_rechazo = () => {
                                       <div class="row">
                                           <div class="col-md-12 form-group">
                                               <label for="fullName">Motivo del rechazo</label>
-                                              <input v-model="formRechazo.motivo" id="fullName" type="text" class="form-control form-control-sm" :class="[is_submit_rechazo ? (formRechazo.motivo ? 'is-valid' : 'is-invalid') : '']" />
+                                              <input v-model="formRechazo.descripcion" id="fullName" type="text" class="form-control form-control-sm" :class="[is_submit_rechazo ? (formRechazo.descripcion ? 'is-valid' : 'is-invalid') : '']" />
                                               <!-- <div class="valid-feedback">Looks good!</div> -->
                                               <div class="invalid-feedback">Ingresar el motivo del rechazo</div>
                                           </div>

@@ -2,6 +2,7 @@
     import { onMounted, ref } from 'vue';
     //import axios from 'axios';
     import { useRouter } from 'vue-router';
+    
     import { useAuthStore } from '@/stores/authStore.js';
     import { useFirmaStore } from "@/stores/firmaStore.js";
     import { main_pfx, main_cer, validationPreviousToStore } from '@/firmav2/main-refactor.mjs';
@@ -435,7 +436,7 @@ const initPopup = () => {
     idDocumento: '', 
     codigoFirmaAplicada:'', 
     tipoUsuario: '',
-    motivo: '' });
+    descripcion: '' });
   const rechazar = (documento) => {
          formRechazo.value.idDocumento = documento.row.idDocumento;
          formRechazo.value.codigoFirmaAplicada =  "Rechazado";
@@ -443,8 +444,7 @@ const initPopup = () => {
     };
 const submit_rechazo = () => {
   is_submit_rechazo.value = true;
-         if (formRechazo.value.motivo) {
-           //Falta el nuevo servicio que contenga el motivo
+         if (formRechazo.value.descripcion) {
            firmaStore.rechazarDocumento(formRechazo.value,token);
            rechazoModal.hide();
          }
@@ -875,7 +875,7 @@ const showAlert = async (count) => {
                                       <div class="row">
                                           <div class="col-md-12 form-group">
                                               <label for="fullName">Motivo del rechazo</label>
-                                              <input v-model="formRechazo.motivo" id="fullName" type="text" class="form-control form-control-sm" :class="[is_submit_rechazo ? (formRechazo.motivo ? 'is-valid' : 'is-invalid') : '']" />
+                                              <input v-model="formRechazo.descripcion" id="fullName" type="text" class="form-control form-control-sm" :class="[is_submit_rechazo ? (formRechazo.descripcion ? 'is-valid' : 'is-invalid') : '']" />
                                               <!-- <div class="valid-feedback">Looks good!</div> -->
                                               <div class="invalid-feedback">Ingresar el motivo del rechazo</div>
                                           </div>

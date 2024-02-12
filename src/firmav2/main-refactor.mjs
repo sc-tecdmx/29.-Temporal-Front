@@ -17,7 +17,7 @@ const apiFirma = import.meta.env.VITE_API_PKIURL;
 const urlTransaccion = apiFirma+'/api/firma/transaccion/get-transaccion';
 const urlOCPS = apiFirma+'/api/ocsp-validar'
 const urlTSP = apiFirma+'/api/tsp-timestamp';
-const urlBuildAndStoreFirma = apiFirma+'/api/documento/firmar-documento';
+const urlBuildAndStoreFirma = apiFirma+'/api/firma/firmar-documento';
 const urlgetSerialNumberUser = apiFirma+'/api/documento/numero-serie';
 
 class ResponseBody {

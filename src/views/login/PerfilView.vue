@@ -104,6 +104,14 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
     fileReader.readAsArrayBuffer(file);
   });
 }
+
+const formatDate = (fecha) => {
+  const date = new Date(fecha);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`; 
+}
 </script>
 <template>
   <div class="row no-gutters justify-content-center">
@@ -158,6 +166,53 @@ async function getMimeTypeAndArrayBufferFromFile_v2(file) {
                   </li>
                 </ul>
               </div>
+              <div id="tableLight" class="col-lg-12 col-12 layout-spacing">
+                    <div class="statbox panel box box-shadow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                    <h4>Certificado(s) vinculado(s)</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-light table-responsive">
+                                <table role="table" aria-busy="false" aria-colcount="5" class="table b-table table-hover" id="__BVID__310">
+                                    <thead role="rowgroup" class="">
+                                        <tr role="row" class="">
+                                            <th role="columnheader" scope="col" aria-colindex="1" class=""><div>#</div></th>
+                                            <th role="columnheader" scope="col" aria-colindex="2" class=""><div>No.Serie</div></th>
+                                            <th role="columnheader" scope="col" aria-colindex="4" class=""><div>Emisor</div></th>
+                                            <th role="columnheader" scope="col" aria-colindex="3" class=""><div>Registro</div></th>
+                                            <th role="columnheader" scope="col" aria-colindex="3" class=""><div>Revocación</div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody v-for="(item, i) in userInfo?.certificados" :key="item.name" role="rowgroup">
+                                        <tr role="row" class="">
+                                            <td aria-colindex="1" role="cell" class="">{{ i + 1 }}</td>
+                                            <td aria-colindex="2" role="cell" class="">
+                                              <a class="btn dropdown-toggle btn-icon-only text-truncate" href="#" role="button" id="pendingTask" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 12px;">
+                                                  <span class="d-inline-block text-truncate" style="max-width: 200px;">
+                                                    {{ item['noSerie'] }}
+                                                  </span>
+                                              </a>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li class="font-list">
+                                                      {{ item['noSerie'] }}
+                                                    </li>
+
+                                                </ul>
+                                              </td>
+                                            <td aria-colindex="4" role="cell" class="">{{ item.emisor }}</td>
+                                            <td aria-colindex="3" role="cell" class="">{{ formatDate(item['fchRegistro']) }}</td>
+                                            <td aria-colindex="3" role="cell" class="">{{ formatDate(item['fchRevocación']) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
         </div>

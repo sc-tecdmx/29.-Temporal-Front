@@ -30,10 +30,12 @@
          label: String,
          value: String,
          placeholder: String,
-         disabled: Boolean
+         disabled: Boolean,
+         //valorInicial: String
      });
     const emit = defineEmits(['inputData'])
-    const selected = ref('');
+    const selected = ref(props.value || '');
+    // const selected = ref('');
 
     watch(() => props.value, async (nuevoValue) => {
       await limpiarInput(nuevoValue);
@@ -48,10 +50,6 @@
         is_submit_form1.value = true;
     };
 
-    const showMessage = (msg = '', type = 'success') => {
-        const toast = window.Swal.mixin({ toast: true, position: 'top', showConfirmButton: false, timer: 3000 });
-        toast.fire({ icon: type, title: msg, padding: '10px 20px' });
-    };
     const catExpedientes = ref([]);
     const getExpediente = async (num_exp) => {
               const url_exp = import.meta.env.VITE_API_LARURL + "/api/autocompletado?query=" + num_exp;

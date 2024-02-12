@@ -56,7 +56,7 @@ onMounted(async() => {
                 urlDelCat.value = import.meta.env.VITE_CAT_DEL_ETAPADOC
                 maxlength.value = "40"
                 break;
-            case 'estado-usuario':
+            case 'estado-de-usuaria-o':
                 headers.value = ["id", "descripcion", "acciones"];
                 urlGetCat.value = import.meta.env.VITE_CAT_GET_ESTUSUARIO
                 urlSaveCat.value = import.meta.env.VITE_CAT_ADD_ESTUSUARIO

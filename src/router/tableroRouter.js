@@ -24,7 +24,8 @@ export default {
     component: appLayout,
     children: [
         { path: '/', name: 'inicio', component: IndexViewVue},
-        { path: '/documento/nuevo', name: 'nuevo', component: NuevoViewVue },
+        { path: '/documento/nuevo/:id?', name: 'nuevo', component: NuevoViewVue },
+        //{ path: '/documento/nuevo', name: 'nuevo', component: NuevoViewVue },
         { path: '/documento/recibido/:id', name: 'recibido', component: RecibidoViewVue},
         // Administración del sistema
         { path: '/account/perfil', name: 'perfil', component: PerfilViewVue},

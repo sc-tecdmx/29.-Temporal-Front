@@ -5,10 +5,7 @@ import axios from "axios";
 import "@/assets/sass/apps/contacts.scss";
 //Componentes
 import IconFeatherTrash from "../icons/IconFeatherTrash.vue";
-//import IconAlertOctagon from "../icons/IconAlertOctagon.vue";
 import IconEdit2 from "../icons/IconEdit2.vue";
-//composable
-//import { useGetData } from "@/composables/getData";
 //Stores
 import { useAuthStore } from '@/stores/authStore.js';
 import { useCatalogoStore } from "@/stores/catalogoStore";
@@ -29,30 +26,80 @@ const props = defineProps({
   thtabla: ref([]),
   tbTabla: ref([]),
   opInstruccion: Object,
-  opGrupos: Object
+  opGrupos: Object,
+  valorInicial: Object
 });
+
 const emit = defineEmits(["tablaFirmantes"]);
-//console.log(props)
-//const { data, getData, loading, errorData } = useGetData();
+//  console.log(props);
 const catEmpleados = ref({});
 const catGrupos = ref({});
-
-async function obtenerCatalogo(url) {
-  return await catalogoStore.getCatalogo(url, token);
-}
-
 const catInstruccion = props.opInstruccion;
 const selected = ref("0");
 const selectedGroup = ref("0");
 const instruccion = ref("");
-//const prioridad = ref("");
 const nuevoUsuario_email = ref("");
 const submit_listado = ref(false);
 let secuencia = 0;
-
 const thtabla = props.thtabla;
 const arrayTabla = ref([]);
 const arrayEnviado = ref([]);
+
+//Clase para instrucción
+const class_instruccion = (valor) =>{
+  for(let i = 0 ; i < catInstruccion.length; i++){
+    if(valor == catInstruccion[i].id){
+      return catInstruccion[i].instruccion
+    }
+  }
+};
+const class_idInstruccion = (valor) =>{
+  // console.log(valor)
+   for(let i = 0 ; i < catInstruccion.length; i++){
+     if(valor == catInstruccion[i].instruccion){
+       return catInstruccion[i].id
+     }
+   }
+};
+async function obtenerCatalogo(url) {
+  return await catalogoStore.getCatalogo(url, token);
+}
+
+const editarDocumento = () => {
+    let max_user_id=0;
+    for (let i = 0; i < props.valorInicial.length; i++) {
+      //Valida que el arreglo de la tabla tiene datos para obtener la secuencia
+      if(arrayTabla.value.length != 0){
+          secuencia = arrayTabla.value.length + 1;
+          max_user_id = arrayTabla.value.reduce((max, character) => (character.id_tabla > max ? character.id_tabla : max), arrayTabla.value[0].id_tabla);
+      }else{
+          secuencia = secuencia + 1;
+          max_user_id = 0;
+      }
+      let empleado = {
+        id_tabla: max_user_id + 1,
+        idEmpleado: props.valorInicial[i].numEmpleado,
+        usuario: {
+                nombre: props.valorInicial[i].nombre,
+                apellido1: props.valorInicial[i].apellido1,
+                apellido2: props.valorInicial[i].apellido2,
+                puesto: props.valorInicial[i].puesto,
+                area: props.valorInicial[i].area
+            },
+        id_instruccion: class_idInstruccion(props.valorInicial[i].instruccion),
+        instruccion: props.valorInicial[i].instruccion,
+        secuencia: secuencia,
+      };
+      arrayTabla.value.push(empleado);
+      let emp={
+        "secuencia": secuencia,
+        "idEmpleado": props.valorInicial[i].numEmpleado,
+        "instruccion": props.valorInicial[i].instruccion
+      }
+      arrayEnviado.value.push(emp);
+    }
+    emit('tablaFirmantes', arrayEnviado, submit_listado);
+}
 
 var params = new Object;
 params = {
@@ -70,7 +117,6 @@ params = {
     },
   id_instruccion: "",
   instruccion: "",
-  /*prioridad: "",*/
   secuencia: 0,
   nuevoUsuario_email: "",
 };
@@ -98,16 +144,17 @@ const agruparEmpleados = async() => {
      }
      groupByArea[area].push(element);
    });
-   //console.log("GROUP---",groupByArea)
    catEmpleados.value = groupByArea;
 }
 
 onMounted(async() => {
   initPopup();
   agruparEmpleados();
-   //catEmpleados.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_EMPLEADOS);
-  //console.log(catEmpleados)
   catGrupos.value = props.opGrupos;
+  if(props.valorInicial.length > 0){
+    editarDocumento();
+  }
+  
 });
 
 const usuarioSelected = ref(false);
@@ -128,7 +175,6 @@ const edit_user = (user) => {
              },
          id_instruccion: "",
          instruccion: "",
-         /*prioridad: "",*/
          secuencia: 0,
          nuevoUsuario_email: "",
          };
@@ -138,7 +184,6 @@ const edit_user = (user) => {
         usuarioSelected.value = false;
         selected.value = "0";
         instruccion.value = "";
-        //prioridad.value = "";
         nuevoUsuario_email.value="";
      }else{
       
@@ -149,13 +194,11 @@ const edit_user = (user) => {
         params.id_tabla = user.id_tabla;
         selected.value = 'otro';
         instruccion.value = user.id_instruccion;
-        //prioridad.value = user.prioridad;
         secuencia = user.secuencia;
       }else{
         
         selected.value = user;
         instruccion.value = user.id_instruccion;
-        //prioridad.value = user.prioridad;
         nuevoUsuario_email.value="";
         secuencia = user.secuencia;
       }
@@ -166,32 +209,11 @@ const edit_user = (user) => {
 };
 
 const edit_grupo = (grupo) => {
-  //  console.log("edit-grupo");
-  //  console.log(grupo);
    selectedGroup.value = "0";
      addGrupoModal.show();
 };
-//Clase para instrucción
-const class_instruccion = (valor) =>{
-  for(let i = 0 ; i < catInstruccion.length; i++){
-    if(valor == catInstruccion[i].id){
-
-      return catInstruccion[i].instruccion
-    }
-  }
-};
-const class_idInstruccion = (valor) =>{
-  //console.log(valor)
-   for(let i = 0 ; i < catInstruccion.length; i++){
-    //console.log(catInstruccion[i].instruccion)
-     if(valor == catInstruccion[i].instruccion){
-       return catInstruccion[i].id
-     }
-   }
-};
 
 const add_grupo = () => {
-//console.log(selectedGroup.value.personas);
    if (selectedGroup.value == '0') {
       alert('Elegir grupo.', 'error');
       return true;
@@ -199,7 +221,6 @@ const add_grupo = () => {
      let max_user_id=0;
 
      for (let i = 0; i < selectedGroup.value.personas.length; i++) {
-        //console.log(selectedGroup.value.personas[i])
         //Valida que el arreglo de la tabla tiene datos para obtener la secuencia
         if(arrayTabla.value.length != 0){
             secuencia = arrayTabla.value.length + 1;
@@ -233,7 +254,7 @@ const add_grupo = () => {
   addGrupoModal.hide();
 };
 const save_user = () => {
-  // console.log("SELECTED",selected)
+
    email_valido.value = true;
 
    if (selected.value == '0') {
@@ -264,7 +285,6 @@ const save_user = () => {
         (d) => d.id_tabla == selected.value.id_tabla || d.id_tabla == params.id_tabla
       );
 
-     //user.prioridad = prioridad.value;
      user.nuevoUsuario_email = nuevoUsuario_email.value;
      user.id_instruccion = instruccion.value;
      user.instruccion = class_instruccion(user.id_instruccion);
@@ -294,7 +314,6 @@ const save_user = () => {
     params.instruccion = class_instruccion(params.id_instruccion);
     params.idUsuario = "";
     
-    //console.log("PARAMS Firman",params)
     let empleado={
       "secuencia": secuencia,
       "idEmpleado": selected.value.id,
@@ -305,14 +324,13 @@ const save_user = () => {
 
   }
 
-  //alert("User saved successfully.");
   addContactModal.hide();
 };
 
 const duplicado = ref(false);
 const esCorreoElectronico = correoElectronico => /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(correoElectronico);
 const verificaDuplicado= (data) => {
-  //console.log("verificaDuplicado",data)
+
   if(esCorreoElectronico(data)){
     duplicado.value = arrayTabla.value.find((empleado) => empleado.nuevoUsuario_email === data);
     return duplicado;
@@ -328,7 +346,7 @@ const verificaDuplicado= (data) => {
 const email_valido = ref(false);
 
 const delete_row = (item) => {
-  //console.log(item)
+
   if (confirm('¿Desea eliminar este registro?')) {
     arrayTabla.value = arrayTabla.value.filter((d) => d.id_tabla != item.id_tabla);
     arrayEnviado.value = arrayEnviado.value.filter((d) => d.idEmpleado != item.idEmpleado);
@@ -460,9 +478,6 @@ const verificaArray = () => {
                       <select v-model="selected" class="form-select form-select-sm" @change="verificaDuplicado(selected)" :disabled="usuarioSelected">
                         <option value="0">--Seleccionar--</option>
                         <option :value="selected" v-if="usuarioSelected && selected != 'otro'">{{ selected.usuario.nombre }} {{ selected.usuario.apellido1 }} {{ selected.usuario.apellido2 }}</option>
-                        <!-- <option v-for="opcion in catEmpleados" :value="opcion" v-if="!usuarioSelected">
-                          {{ opcion.nombre }} {{ opcion.apellido1 }} {{ opcion.apellido2 }}
-                        </option> -->
                         <optgroup v-for="(items, area) in catEmpleados" :label="area" :key="area">
                           <option v-for="item in items" :key="item.id" :value="item">{{ item.nombre }} {{ item.apellido1 }} {{ item.apellido2 }}</option>
                         </optgroup>
@@ -507,8 +522,6 @@ const verificaArray = () => {
                             <select v-model="instruccion" class="form-select form-select-sm" :id="'selectInst-' + props.id_tabla">
                               <option value="">-- Seleccionar --</option>
                               <option :value="opInstruccion.id" v-for="opInstruccion in catInstruccion">{{ opInstruccion.instruccion }}</option>
-                              <!-- <option value="2">Rúbrica</option>
-                              <option value="3">Acuse</option> -->
                             </select>
                             <div class="valid-feedback">Válido</div>
                             <div class="invalid-feedback">

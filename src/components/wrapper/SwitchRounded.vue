@@ -4,11 +4,13 @@
 
     const props= defineProps({
         label: String,
-        id:String
+        id:String,
+        valorInicial: Boolean
     });
     const emit = defineEmits(['chkSwitch']);
+    const selected = ref(props.valorInicial || '');
 
-    const selected = ref('');
+
 </script>
 <template>
     <div class="form-check form-switch ms-3">

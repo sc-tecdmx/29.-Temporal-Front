@@ -546,6 +546,14 @@ const showAlert = async (count) => {
             padding: '10px 20px',
         });
     };
+    const redirect = (etapa, idDocumento) =>{
+         if(etapa === 'Creado'){
+          const idDoc = ref(JSON.stringify(idDocumento));
+        router.push(`/documento/nuevo/${idDocumento}`);
+         }else{
+        router.push(`/documento/recibido/${idDocumento}`);
+         }
+    }
 </script>
 <template>
     <div class="layout-px-spacing">
@@ -617,7 +625,7 @@ const showAlert = async (count) => {
                                     class="btn dropdown-toggle btn-icon-only ms-2"
                                     data-bs-toggle="tooltip"
                                     title="Detalle"
-                                    @click="router.push(`/documento/recibido/${props.row.idDocumento}`)">
+                                    @click="redirect(props.row.etapa, props.row.idDocumento)">
                                     <IconEye></IconEye>
                                 </a>
                                 <a class="btn dropdown-toggle btn-icon-only text-truncate ms-2" 

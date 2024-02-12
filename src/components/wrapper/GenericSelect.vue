@@ -11,8 +11,9 @@
     'label', 
     //'is_submit_form'
   ]);
-//console.log("PROPS", props)
-  const selectedValue = ref(props.value);
+// console.log("PROPS-GenericSelect", props)
+
+  const selectedValue = ref("");
   const emit = defineEmits(['opcionSelect']);
 
   const options = props.items.map(item => {
@@ -25,7 +26,6 @@
         option[key] = item[key];
       }
     }
-  
     return option;
   });
 
@@ -33,6 +33,16 @@
     const submit_form3 = () => {
         is_submit_form3.value = true;
     };
+
+    if(props.value != null){
+      if(props.valueField == 'id'){
+        const obj = props.items.find(elemento => elemento.tipoDocumento === props.value);
+        selectedValue.value = obj.id;
+        emit('opcionSelect', selectedValue,is_submit_form3)
+      }else{
+        selectedValue.value = props.value;
+      }
+    }
   </script>
   <template>
 <div class="panel-body">
@@ -45,7 +55,7 @@
               class="form-select form-select-sm"
               :class="[is_submit_form3 ? (selectedValue ? 'is-valid' : 'is-invalid') : '']"
               :id="idName"
-              @change="submit_form3(); emit('opcionSelect', selectedValue)">
+              @change="submit_form3(); emit('opcionSelect', selectedValue,is_submit_form3)">
           <option value="">-- Seleccionar --</option>
           <option v-for="option in options" :key="option[props.keyField]" :value="option[props.valueField]">
             {{ option[props.labelField] }}

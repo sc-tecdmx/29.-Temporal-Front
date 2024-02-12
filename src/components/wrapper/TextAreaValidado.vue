@@ -6,7 +6,8 @@
         idName: String,
         label: String,
         placeholder: String,
-        maxlength: String
+        maxlength: String,
+        valorInicial: String
     });
 
     const emit = defineEmits(['txtArea']);
@@ -17,6 +18,12 @@
     const submit_form1 = () => {
         is_submit_form1.value = true;
     };
+    
+    if (props.valorInicial === undefined) {
+        selected.value = "";
+    }else{
+        selected.value = props.valorInicial;
+    }
 </script>
 <template>
     <div class="row">

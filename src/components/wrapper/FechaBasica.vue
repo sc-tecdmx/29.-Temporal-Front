@@ -14,26 +14,24 @@
         obligatorio: Boolean
     });
 
+    // console.log("DATE",props.date)
     const emit = defineEmits(['dateSelected']);
     let dias = 0;
 
     if(props.dias > 0){
         dias = props.dias;
     }
-    // console.log("date");
-    // console.log(props.date);
-
+    
     const config = ref({
-        minDate: new Date().fp_incr(dias),
+        minDate: props.date ? props.date : new Date().fp_incr(dias),
         dateFormat: 'Y-m-d',
         allowInput: true,
-    })
+    })   
 
     const selected = ref();
 
     onMounted(()=>{
-        selected.value = props.date;
-        //console.log(selected);
+        selected.value = props.date || '';
     });
 
     const is_submit_form3 = ref(false);

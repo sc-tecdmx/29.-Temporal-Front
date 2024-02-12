@@ -7,11 +7,17 @@
 
     const props= defineProps({
             label: String,
-            //picked: String,
+            picked: String,
             opPrioridad: Object
         });
     const emit = defineEmits(['opcionCheck']);
     const picked = ref("");
+
+    if (props.picked === undefined) {
+        picked.value = "";
+    }else{
+        picked.value = props.picked;
+    }
 
 </script>
 <template>

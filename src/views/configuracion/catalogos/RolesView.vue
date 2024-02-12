@@ -1,76 +1,348 @@
 <script setup>
-import { onMounted } from "vue";
-//composable
-import { useGetData } from "../../../composables/getData";
-//componentes
-import ListaAcordion from "@/components/wrapper/ListaAcordion.vue"
+import { ref, onMounted } from "vue";
+
+//Stores
+import { useAuthStore } from "@/stores/authStore.js";
+import { useCatalogoStore } from "@/stores/catalogoStore";
 //Iconos
-import IconDropDownVue from "@/components/icons/IconDropDown.vue";
+import IconEdit2 from "@/components/icons/IconEdit2.vue";
+import IconFeatherTrashVue from "@/components/icons/IconFeatherTrash.vue";
+import { useMeta } from "@/composables/use-meta";
 
-const {data, getData, loading, errorData} = useGetData();
+useMeta({ title: "Catálogo roles" });
 
-onMounted(() => {
-  getData("http://localhost/j/roles.php");
+//Variables
+const authStore = useAuthStore();
+const catalogoStore = useCatalogoStore();
+const token = authStore.state.user.token;
+const errorAb = ref(false);
+const catRoles = ref(null);
+const catDisponible = ref(false);
+const headers = ["id", "rolPadre", "etiqueta", "descripcion", "acciones"];
+let addContactModal = ref(null);
+const params = ref({ id: null, rolPadre: "", etiqueta: "", descripcion: "" });
+
+//Configuración de tabla
+const table_option2 = ref({
+  headings: {
+    id: (h, row, index) => {
+      return "#";
+    },
+    descripcion:(h, row, index) => {
+      return "Descripción";
+    }
+  },
+  perPage: 5,
+  perPageValues: [5, 10, 20, 50],
+  skin: "table table-hover",
+  columnsClasses: { actions: "actions text-center" },
+  sortable: headers,
+  sortIcon: {
+    base: "sort-icon-none",
+    up: "sort-icon-asc",
+    down: "sort-icon-desc",
+  },
+  pagination: { nav: "scroll", chunk: 5 },
+  texts: {
+    count: "Mostrando {from} a {to} de {count}",
+    filter: "",
+    filterPlaceholder: "Buscar...",
+    limit: "Resultados:",
+  },
+  resizableColumns: false,
 });
 
+const initPopup = () => {
+  addContactModal = new window.bootstrap.Modal(
+    document.getElementById("addContactModal")
+  );
+};
 
+const initTooltip = () => {
+  var tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  );
+  tooltipTriggerList.map((tooltipTriggerEl) => {
+    return new window.bootstrap.Tooltip(tooltipTriggerEl);
+  });
+};
+async function obtenerCatalogo(url) {
+  return await catalogoStore.getCatalogo(url, token);
+}
+const delete_row = (item) => {
+  //if (confirm("¿Desea borrar este registro?")) {
+    let urlCat = import.meta.env.VITE_CAT_DEL_ROLES + item.id;
+    catalogoStore.deleteCatalogo(urlCat, token);
+    //items.value = items.value.filter((d) => d.id != item.id);
+  //}
+};
+const edit_user = (item) => {
+  //console.log(item);
+  params.value = { id: null, rolPadre: "", etiqueta: "", descripcion: "" };
+  if (item) {
+    errorAb.value = false;
+    params.value = JSON.parse(JSON.stringify(item));
+  }
+  addContactModal.show();
+};
+const validarAbreviatura = () => {
+  const regex = /^[a-zA-Z]$/;
+  errorAb.value = !regex.test(params.value.abreviatura);
+};
+const guardar_item = () => {
+  //console.log("SAVE-PARAMS -- ", params);
+  if (!params.value.sexo) {
+    //alert("Ingresar descripción");
+    showMessage('Ingresar descripción.', 'error');
+    return true;
+  }
+  if (!params.value.abreviatura) {
+    //alert("Ingresar abreviatura");
+    showMessage('Ingresar abreviatura.', 'error');
+    return true;
+  }
+
+  if (params.value.id) {
+    //console.log("edit");
+    //update user
+    let editItem = {
+      nombreItem: params.value.sexo,
+      abreviatura: params.value.abreviatura,
+    };
+    const urlCat = import.meta.env.VITE_CAT_EDIT_ROLES + params.value.id;
+    catalogoStore.editCatalogo(urlCat, editItem, token);
+    errorAb.value = false;
+  } else {
+    //add user
+    //console.log("add");
+    const urlCat = import.meta.env.VITE_CAT_ADD_ROLES;
+    let saveItem = {
+      descripcion: params.value.sexo,
+      abreviatura: params.value.abreviatura,
+    };
+    catalogoStore.saveCatalogo(urlCat, saveItem, token);
+  }
+  addContactModal.hide();
+};
+onMounted(async () => {
+  try {
+    catRoles.value = await obtenerCatalogo(import.meta.env.VITE_CAT_GET_ROLES);
+    catDisponible.value = true;
+  } catch (error) {
+    console.log(error);
+  }
+
+  initPopup();
+  //bind_data();
+  setTimeout(() => {
+    initTooltip();
+  }, 500);
+});
+const showMessage = (msg = '', type = 'success') => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    };
 </script>
 <template>
-    <div class="row no-gutters justify-content-center">
-    <div class="col-12 col-xxl-10">
-      <h3 class="mt-4">Catálogo Roles</h3>
-      <!-- <ListaAcordion
-        title="Catálogo Roles"
-        url="http://localhost/j/roles.php"
-      ></ListaAcordion> -->
-      <div class="contenedor_cat">
-        <div class="d-flex justify-content-center">
-          <div class="spinner-border text-primary" role="status" v-if="loading">
-            <span class="visually-hidden">Cargando información ...</span>
-          </div>
-          <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" v-if="errorData">
-            <div class="toast-header-error">
-              <strong class="me-auto">Error</strong>
-              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body-error">
-              {{ errorData }}
-            </div>
-          </div>
-        </div>
-        <div class="d-flex flex-lg-column justify-content-start m-3">
-          <div id="toggleAccordion" class="accordion">
-            <div class="card" v-for="rol in data">
-              <header class="card-header" role="tab">
-                <section class="mb-0 mt-0">
-                  <div
-                    class="collapsed d-flex justify-content-between"
-                    role="menu"
-                    data-bs-toggle="collapse"
-                    :data-bs-target="`#${rol.rol_id}`"
-                    aria-expanded="true"
-                    aria-controls="headingTwo1"
-                  >
-                    {{ rol.nombre }}
-                    <div class="icons" v-if="rol.permisos">
-                      <IconDropDown />
+  <div class="layout-px-spacing apps-invoice-add">
+    <div
+      class="row invoice layout-top-spacing layout-spacing no-gutters justify-content-center"
+    >
+      <div class="col-xxl-10 col-12">
+        <div class="doc-container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="invoice-content">
+                <div class="invoice-detail-body">
+                  <div class="invoice-detail-title mb-0">
+                    <div class="col-xl-5 invoice-address-company">
+                      <h3>Catálogo roles</h3>
                     </div>
                   </div>
-                </section>
-              </header>
-              <div
-                :id="rol.rol_id"
-                class="collapse"
-                aria-labelledby="headingTwo1"
-                data-bs-parent="#toggleAccordion"
-                v-if="rol.permisos"
-              >
-                <div class="card-body">
-                  <ul class="list-unstyled">
-                    <li v-for="permiso in rol.permisos">
-                      {{ permiso.nombre }}
-                    </li>
-                  </ul>
+                  <div class="layout-px-spacing">
+                    <div class="row d-flex justify-content-center">
+                      <div class="col-lg-10 col-sm-12 layout-spacing">
+                        <div
+                          class="d-flex justify-content-sm-end justify-content-end mb-3"
+                        >
+                          <a href="javascript:;" @click="edit_user">
+                            <svg
+                              id="btn-add-contact"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="feather feather-plus"
+                            >
+                              <line x1="12" y1="5" x2="12" y2="19"></line>
+                              <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                          </a>
+                        </div>
+                        <div class="panel p-0">
+                          <div class="custom-table custom-table-cat">
+                            <div class="d-flex justify-content-center m-5" v-if="!catDisponible">
+                                <div class="spinner-border text-primary" role="status" >
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            
+                            <v-client-table :data="catRoles" :columns="headers" :options="table_option2" v-if="catDisponible">
+                              <template #id="props">
+                                <div class="checkbox-outline-primary custom-control custom-checkbox">
+                                  <input
+                                    variant="primary"
+                                    type="checkbox"
+                                    class="custom-control-input"
+                                    :id="props.row.id"
+                                  />
+                                  <label
+                                    class="custom-control-label"
+                                    :for="props.row.id"
+                                  ></label>
+                                </div>
+                              </template>
+                              <template #acciones="props">
+                                <a
+                                  href="javascript:void(0);"
+                                  title="Edit"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="top"
+                                  @click=" params.id = props.row.id; edit_user(props.row); "
+                                >
+                                  <IconEdit2 class="me-3"></IconEdit2>
+                                </a>
+                                <a
+                                  href="javascript:void(0);"
+                                  title="Delete"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="top"
+                                  @click="delete_row(props.row)"
+                                >
+                                  <IconFeatherTrashVue></IconFeatherTrashVue>
+                                </a>
+                              </template>
+                            </v-client-table>
+                          </div>
+                        </div>
+                        <div class="mt-3 d-flex justify-content-end">
+                          <router-link to="/config/catalogos" class="btn btn-primary">Regresar a catálogos</router-link>
+                        </div>
+
+                        <!-- Modal -->
+                        <div
+                          id="addContactModal"
+                          class="modal fade"
+                          aria-labelledby="exampleModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div
+                            class="modal-dialog modal-md modal-dialog-centered"
+                          >
+                            <div class="modal-content mailbox-popup">
+                              <div class="modal-header">
+                                <h5 class="modal-title">
+                                  {{ params.id ? "Editar" : "Agregar" }}
+                                </h5>
+                                <button
+                                  type="button"
+                                  data-dismiss="modal"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                  class="btn-close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="add-contact-box">
+                                  <div class="add-contact-content">
+                                    <form id="addContactModalTitle">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="form-group mb-4">
+                                            <label>Rol padre</label>
+                                            <input
+                                              type="text"
+                                              v-model="params.rolPadre"
+                                              class="form-control form-control-sm"
+                                              placeholder="Ingrese rol padre"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="form-group mb-4">
+                                            <label>Descripción</label>
+                                            <input
+                                              type="text"
+                                              v-model="params.descripcion"
+                                              class="form-control form-control-sm"
+                                              placeholder="Ingrese la decripción"
+                                              maxlength="40"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="form-group mb-4">
+                                            <label>Etiqueta</label>
+                                            <input
+                                              type="text"
+                                              v-model="params.etiqueta"
+                                              class="form-control form-control-sm text-uppercase"
+                                              placeholder="etiqueta"
+                                              maxlength="15"
+                                              @input="validarAbreviatura"
+                                            />
+                                            <p v-if="errorAb">
+                                              Requiere una letra. [A...Z]
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-default"
+                                  data-dismiss="modal"
+                                  data-bs-dismiss="modal"
+                                >
+                                  <i class="flaticon-cancel-12"></i> Cancelar
+                                </button>
+                                <button
+                                  type="button"
+                                  class="btn btn-primary"
+                                  @click="guardar_item()"
+                                  :disabled="errorAb"
+                                >
+                                  {{ params.id ? "Editar" : "Agregar" }}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -81,28 +353,8 @@ onMounted(() => {
   </div>
 </template>
 <style>
-.contenedor_cat {
-  margin: 1rem 1rem 1rem;
-  padding: 10px;
-  border: solid #b2b4ba;
-  border-width: 1px;
-  border-radius: 6px;
-}
-.card-header {
-    color: #fff;
-    background-color: #194891;
-}
-.toast-header-error {
-    display: flex;
-    align-items: center;
-    padding: 7px;
-    background: #E7515A;
-    color: #fff;
-    border-bottom: 1px solid rgba(33, 150, 243, 0.3411764706);
-}
-.toast-body-error {
-    padding: 16px 12px;
-    color: #000;
-    word-wrap: break-word;
+.custom-table-cat .table td,
+.custom-table .table th {
+  padding: 4px 30px;
 }
 </style>

@@ -1,24 +1,23 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import axios from 'axios';
-//import jwtDecode from "vue-jwt-decode";
 import VueJwtDecode from "vue-jwt-decode";
 import "@/assets/sass/apps/invoice-add.scss";
 import router from "@/router";
+import { useRoute, useRouter } from "vue-router";
 //-----------------------
 import "@/assets/sass/forms/file-upload-with-preview.min.css";
-//import "@/assets/sass/forms/custom-flatpickr.css";
 import { useMeta } from "@/composables/use-meta";
 /** Multiselect */
 import "@/assets/sass/scrollspyNav.scss";
 import "@suadelabs/vue3-multiselect/dist/vue3-multiselect.css";
 //flatpickr
-//import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import "@/assets/sass/forms/custom-flatpickr.css";
 //Stores
 import { useAuthStore } from '@/stores/authStore.js';
 import { useCatalogoStore } from "@/stores/catalogoStore";
+import { useFirmaStore } from "@/stores/firmaStore";
 //Componentes
 import TablaAgregar from "@/components/wrapper/TablaAgregar.vue";
 import TextAreaValidado from "@/components/wrapper/TextAreaValidado.vue";
@@ -29,25 +28,27 @@ import SelectValidado from "@/components/wrapper/SelectValidado.vue";
 import InputValidado from "@/components/wrapper/InputValidado.vue";
 import InputAutocompletable from "@/components/wrapper/InputAutocompletable.vue";
 import CheckGroup from "@/components/wrapper/CheckGroup.vue";
-
+import GenericSelect from "@/components/wrapper/GenericSelect.vue";
 //Iconos
 import IconPlus from '@/components/icons/IconPlus.vue'
+import IconFeatherX from '@/components/icons/IconFeatherX.vue'
 //Firma
-// import { getCertificadoData } from "@/firma/main.mjs";
-// import { getMimeTypeAndArrayBufferFromFile } from "@/firma/main.mjs";
 import { main_pfx, main_cer, validationPreviousToStore } from '@/firmav2/main-refactor.mjs';
-
-//useMeta({ title: 'Vue Multiselect' });
 /** ./Multiselect */
 useMeta({ title: "Nuevo documento" });
+
+const route = useRoute();
+const documento = ref(null);
 const isCaptura = ref(false);
+// console.log(`${route.params.id}`)
+
 //Config URLs
 const urlPKI = import.meta.env.VITE_API_PKIURL;
 const urlLAR = import.meta.env.VITE_API_LARURL;
 
 const catalogos = ref({});
 const catDestino = ref({});
-const catTipoDocumento = ref({});
+const catTipoDocumento = ref([]);
 const catInstruccion = ref({});
 const catInstruccionDest = ref({});
 const catNuevoDoc = ref(null);
@@ -55,9 +56,11 @@ const catNuevoDoc = ref(null);
 const catPrioridad = ref({});
 const authStore = useAuthStore();
 const catalogoStore = useCatalogoStore();
+const firmaCatalogo = useFirmaStore();
 const catGruposFirmante = ref(null);
 const catGruposDestinatario = ref(null);
-
+const selected_destino = ref("");
+const selected_tipoDoc = ref("");
 const urlNewDoc = import.meta.env.VITE_API_LARURL + import.meta.env.VITE_CAT_NUEVO_DOC;
 const token = authStore.state.user.token;
 
@@ -80,6 +83,9 @@ const envApp = import.meta.env.VITE_ENV_APP;
   }
 }
 
+async function obtenerDetalle(url) {
+  return await catalogoStore.getDetalleDocumento(url, token);
+}
 
 async function obtenerCatNuevoDoc(url) {
   return await catalogoStore.getNuevoDocumento(url, token);
@@ -90,22 +96,31 @@ async function obtenerCatalogos(url) {
 
 
 const catExpedientes = ref([])
-const valueExpediente =  ref('-');
+const valueExpediente =  ref('');
  const getExpediente = async (num_exp) => {
               const url_exp = urlLAR + "/api/autocompletado?query=" + num_exp;
               try {
                 valueExpediente.value = ' ';
                 const { data } = await axios.get(url_exp, getAuthorizationHeadersForLaravel(token));
                   //console.log(data);
-                  params.value.nombreExpediente = data[0].s_descripcion;
+                  paramsEnviar.value.nombreExpediente = data[0].s_descripcion;
                   valueExpediente.value = data[0].s_num_expediente;
                   catExpedientes.value = data;
               } catch (error) {
                   console.log(error);
-                  if (confirm("El expediente no existe, favor de agregarlo")) {
-                    expDesc.value = false;
-                    valueExpediente.value = '';
-                  }
+                  new window.Swal({
+                      icon: 'warning',
+                      title: '\u00A1El expediente no existe!',
+                      text: "Favor de agregarlo",
+                      showCancelButton: false,
+                      confirmButtonText: 'Aceptar',
+                      padding: '2em',
+                  }).then(async(result) => {
+                      if (result.value) {
+                        expDesc.value = false;
+                        valueExpediente.value = '';
+                      }
+                  });
               }
           };
 
@@ -128,49 +143,49 @@ const certificado = ref({
 });
 
 /* JSON */
-const params = ref({
-  folio:"",
-  folioEspecial:"",
-  numExpediente: "",
-  nombreExpediente:"",
-  tipoDestino: "",
-  tipoDocumento: "",
-  tipoPrioridad: "",
-  asunto: "",
-  contenido: "",
-  fechaLimiteFirma: "",
-  fechaDocumento: "",
-  elaboro: "",
-  notas: "",
-  configuracion: {
-    ordenFirma: "",
-    modoCaptura: "",
-    generaNumeroOficio: "",
-  },
-  firmantes: [
-     {
-       idFirmante: "",
-       firma: "",
-       secuencia:"",
-       /*prioridad:''*/
-     },
-  ],
-  destinatarios: [
-    {
-      idDestinatario: "",
-      instruccion: "",
-      /*prioridad:''*/
-    },
-  ],
-  documentos: []
-});
+// const params = ref({
+//   idDocumento: null,
+//   folio:"",
+//   folioEspecial:"",
+//   numExpediente: "",
+//   nombreExpediente:"",
+//   tipoDestino: null,
+//   tipoDocumento: "",
+//   tipoPrioridad: "",
+//   asunto: "",
+//   contenido: "",
+//   fechaLimiteFirma: "",
+//   fechaDocumento: "",
+//   elaboro: "",
+//   notas: "",
+//   configuracion: {
+//     ordenFirma: false,
+//     modoCaptura: false,
+//     generaNumeroOficio: false,
+//   },
+//   firmantes: [
+//     //  {
+//     //    idFirmante: "",
+//     //    firma: "",
+//     //    secuencia:"",
+//     //  },
+//   ],
+//   destinatarios: [
+//     // {
+//     //   idDestinatario: "",
+//     //   instruccion: "",
+//     // },
+//   ],
+//   documentos: []
+// });
 //params enviar
 const paramsEnviar = ref({
+  idDocumento: null,
   folio:"",
   folioEspecial:"",
   numExpediente: "",
-  tipoDestino: "",
-  tipoDocumento: "",
+  tipoDestino: null,
+  tipoDocumento: null,
   tipoPrioridad: "",
   asunto: "",
   contenido: "",
@@ -184,20 +199,20 @@ const paramsEnviar = ref({
   notificaciones:[],
   enOrden: true,
   firmantes: [
-     {
-      secuencia:"",
-      idEmpleado: "",
-      idUsuario:"",
-      fechaLimite:"2023-10-30T00:17:41.188+00:00",
-      instruccion: "",
-      tipoFirma:"Firma"
-     },
+    //  {
+      // secuencia:"",
+      // idEmpleado: "",
+      // idUsuario:"",
+      // //fechaLimite:"2023-10-30T00:17:41.188+00:00",
+      // instruccion: "",
+      // //tipoFirma:"Firma"
+    //  },
   ],
   destinatarios: [
-    {
-      idEmpleado: "",
-      instruccion: "",
-    },
+    // {
+    //   idEmpleado: "",
+    //   instruccion: "",
+    // },
   ],
   documentosAdjuntos: []
 });
@@ -211,7 +226,6 @@ const form = ref({
   inputFolioDocumento: false,
   inputfechaCreacion: false,
   inputNumExpediente: false,
-  /*inputNombreExpediente: false,*/
   inputAsuntoDoc: false,
   inputElaboro: false,
   tablaFirmantes: false,
@@ -225,9 +239,9 @@ const is_submit_form = ref(false);
 
 /* Set params */
 const opcionSelectDestino = (idOpcion, campoValido) => {
-  //console.log("DEST", idOpcion)
-  //params.value.tipoDestino = idOpcion;
-  paramsEnviar.value.tipoDestino = idOpcion.label;
+  console.log("DEST", idOpcion)
+  console.log(campoValido)
+  paramsEnviar.value.tipoDestino = idOpcion;
   if (idOpcion == 0) {
     form.selectDestino = false;
   } else {
@@ -237,14 +251,11 @@ const opcionSelectDestino = (idOpcion, campoValido) => {
 const otroDocumento = ref(false);
 const expDesc = ref(false);
 const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
-  //console.log("TIPO-DOC", idOpcion);
   otroDocumento.value = false;
-  //console.log(idOpcion)
   if(idOpcion.label === 'Otro'){
     otroDocumento.value = true;
   }else{
-    //params.value.tipoDocumento = idOpcion;
-    paramsEnviar.value.tipoDocumento = idOpcion.id;
+    paramsEnviar.value.tipoDocumento = idOpcion;
   }
   
   if (idOpcion == 0) {
@@ -256,7 +267,7 @@ const opcionSelectTipoDocumento = (idOpcion, campoValido) => {
 //otro- tipo de documento
 const inputOtroTipDoc = (idOpcion, campoValido) => {
   //console.log(idOpcion)
-  params.value.tipoDocumento = idOpcion;
+  //params.value.tipoDocumento = idOpcion;
   
   paramsEnviar.value.tipoDocumento = idOpcion;
   if (idOpcion == 0) {
@@ -298,12 +309,7 @@ const opcionInputNumeroExpediente = (idData, campoValido) => {
   }
 };
 const opcionInputNombreExpediente = (idData, campoValido) => {
-  params.value.nombreExpediente = idData;
-  // if (idData == 0) {
-  //   form.inputNombreExpediente = false;
-  // } else {
-  //   form.inputNombreExpediente = campoValido;
-  // }
+  paramsEnviar.value.nombreExpediente = idData;
 };
 const opcionInputAsunto = (idData, campoValido) => {
   //params.value.asunto = idData;
@@ -315,7 +321,7 @@ const opcionInputAsunto = (idData, campoValido) => {
   }
 };
 const opcionInputElaboro = (idData, campoValido) => {
-  params.value.elaboro = idData;
+  paramsEnviar.value.elaboro = idData;
   if (idData == 0) {
     form.inputElaboro = false;
   } else {
@@ -344,8 +350,6 @@ const tablaFirmantes = (data, campoValido, dataCompleto) => {
       }
     }
   }
-  // console.log("DATOS", data, dataCompleto)
-  //  //if (data == 0 || dataCompleto == undefined) {
    if (data == 0) {
      if(paramsEnviar.value.firmantes.length > 0){
         form.tablaFirmantes = false;
@@ -353,7 +357,6 @@ const tablaFirmantes = (data, campoValido, dataCompleto) => {
    } else {
      form.tablaFirmantes = campoValido;
    }
-   //console.log("VAlida", form.tablaFirmantes)
 };
 const tablaDestinatarios = (data, campoValido, dataCompleto) => {
   empleadosRepetidos.value = null
@@ -389,11 +392,11 @@ const opcionSwitchGeneraOficio = (idData) => {
   paramsEnviar.value.configuraciones.generaNumeroOficio =idData;
 };
 const opcionTxtAreaNotas = (idData) => {
-  params.value.notas = idData;
+  // params.value.notas = idData;
   paramsEnviar.value.notas = idData;
 };
 const opcionDateDocumento = (date, campoValido) => {
-  params.value.fechaDocumento = date;
+  paramsEnviar.value.fechaDocumento = date;
   if (date == 0) {
     form.inputfechaCreacion = false;
   } else {
@@ -410,13 +413,7 @@ const opcionCheckPrioridad = (opcionCheck) => {
   }
 };
 const opcionDateLimiteFirma = (date, campoValido) => {
-    //params.value.fechaLimiteFirma = date;
     paramsEnviar.value.fechaLimiteFirma = date;
-//   if (date == 0) {
-//     form.inputfechaCreacion = false;
-//   } else {
-//     form.inputfechaCreacion = campoValido;
-//   }
 };
 
 /* FIN Set params */
@@ -443,9 +440,6 @@ const submit_formulario = () => {
        if (form.inputNumExpediente == undefined) {
          form.inputNumExpediente = false;
        }
-      //  if (form.inputNombreExpediente == undefined) {
-      //    form.inputNombreExpediente = false;
-      //  }
        if (form.inputAsuntoDoc == undefined) {
          form.inputAsuntoDoc = false;
        }
@@ -482,10 +476,6 @@ const submit_formulario = () => {
        if (!form.inputNumExpediente) {
          arrayCampos.value.push("Número de Expediente");
        }
-      //  if (!form.inputNombreExpediente) {
-      //    //descripcion del expediente
-      //    arrayCampos.value.push("Nombre de Expediente");
-      //  }
        if (!form.inputAsuntoDoc) {
          arrayCampos.value.push("Asunto");
        }
@@ -519,15 +509,18 @@ const submit_formulario = () => {
 };
 /* Fecha del documento y fecha limite */
     let dt = new Date();
-    params.value.fechaDocumento = JSON.parse(JSON.stringify(dt));
+    paramsEnviar.value.fechaDocumento = JSON.parse(JSON.stringify(dt));
 //   dt.setDate(dt.getDate() + 5);
 //   params.value.configuracion.fechaLimite = dt;
 const catDisponible = ref(false);
-const headerData = ref(null);
+// const catDisponibleEdit = ref(false);
+// const headerData = ref(null);
 onMounted(async() => {
   initPopup();
   decodeToken();
-  //bind_data();
+   if(`${route.params.id}` != ''){
+     getDocCreado();
+   }
   catNuevoDoc.value = await obtenerCatNuevoDoc(urlNewDoc);
   catGruposFirmante.value = await obtenerCatalogos(import.meta.env.VITE_CAT_GET_GRUPOS_FIR);
   catGruposDestinatario.value = await obtenerCatalogos(import.meta.env.VITE_CAT_GET_GRUPOS_DES);
@@ -540,32 +533,114 @@ onMounted(async() => {
     catDisponible.value = true;
   }, 10);
 });
-const documentos = ref([]);
-/* Obtener documentos */
-const change_file = async(event) => {
-  //console.log("FILES",event.target.files)
-  //selected_file.value = event.target.files[0];
-  //params.value.documentos = selected_file.value;
-  paramsEnviar.value.documentosAdjuntos = [];
-  documentos.value = [];
-  selected_file.value = event.target.files;
-  //console.log(selected_file)
 
-  for (let i = 0; i < selected_file.value.length; i++) {
-    //console.log(selected_file.value[i].name);
-    documentos.value.push(selected_file.value[i].name);
-    const docFileObj = await getMimeTypeAndArrayBufferFromFile_v2(selected_file.value[i]);
-    //console.log(docFileObj)
-    let objeto = {
-      fileType: 'PDF',
-      docBase64: docFileObj.base64
+const getDocCreado = async() => {
+    
+    documento.value = await obtenerDetalle(import.meta.env.VITE_API_LARURL +`/api/documento/${route.params.id}`);
+    console.log("Documento creado");
+    console.log(documento);
+
+    paramsEnviar.value.idDocumento = documento.value.idDocumento;
+    paramsEnviar.value.fechaDocumento = documento.value.fechaCreacion;
+    paramsEnviar.value.elaboro = documento.value.nombreEmpleado + " " + documento.value.apellido1Empleado + " " + documento.value.apellido2Empleado
+    paramsEnviar.value.folio = documento.value.folioDocumento;
+    paramsEnviar.value.folioEspecial = documento.value.folioEspecial;
+    paramsEnviar.value.asunto = documento.value.asunto;
+    paramsEnviar.value.tipoDestino = documento.value.tipoDestino;
+    paramsEnviar.value.tipoDocumento = documento.value.tipoDocumento;
+    paramsEnviar.value.contenido = documento.value.contenido;
+    paramsEnviar.value.notas = documento.value.notas;
+    paramsEnviar.value.tipoPrioridad = documento.value.prioridad;
+    paramsEnviar.value.fechaLimiteFirma = documento.value.fechaLimiteFirma;
+    paramsEnviar.value.firmantes = documento.value.firmantes;
+    paramsEnviar.value.destinatarios = documento.value.destinatarios;
+    valueExpediente.value = documento.value.numExpediente;
+    paramsEnviar.value.numExpediente = documento.value.numExpediente;
+    paramsEnviar.value.nombreExpediente = documento.value.expedienteDes
+    expDesc.value = true;
+
+    documento.value.configuracion.forEach(function(elemento) {
+      switch (elemento.atributo) {
+          case "GNUMOF":
+            paramsEnviar.value.configuraciones.generaNumeroOficio = true;
+            break;
+          case "MODCAP":
+            paramsEnviar.value.configuraciones.modoCaptura = true;
+            isCaptura.value = true;
+            break;
+          case "FIRM":
+            paramsEnviar.value.configuraciones.ordenFirma = true;
+            break;
+          default:
+              console.log("No existe la opción");
+      }
+    });
+    paramsEnviar.value.documentosAdjuntos = documento.value.documentosAdjuntos
+    documento.value.documentosAdjuntos.forEach(function(elemento) {
+      let docAdjunto = {
+        "docBase64": elemento.docBase64,
+        "documentoPath": elemento.documentoPath,
+        "fileType": elemento.fileType,
+        "hash": elemento.hash,
+        "name": getNombre(elemento.documentoPath)
+      };
+      archivosAdjuntos.value.push(docAdjunto);
+     });
+    
+     console.log("PARAMS",paramsEnviar)
+     console.log("FORM", form)
+    if(paramsEnviar.value.idDocumento == null){
+        form.selectDestino = false;
+      }else{
+        form.selectDestino = true;
+      }
+    if(paramsEnviar.value.numExpediente == null){
+        form.inputNumExpediente = false;
+      }else{
+        form.inputNumExpediente = true;
+      }
+    if(paramsEnviar.value.asunto == null){
+        form.inputAsuntoDoc = false;
+      }else{
+        form.inputAsuntoDoc = true;
+      }
+    
+}
+const getNombre = (path) => {
+  const parts = path.split('/');
+  const fileName = parts[parts.length - 1];
+  return fileName;
+};
+// const documentos = ref([]);
+/* Obtener documentos */
+const archivosAdjuntos = ref([]);
+
+const change_file = async (event) => {
+  const nuevosArchivos = event.target.files;
+  for (let i = 0; i < nuevosArchivos.length; i++) {
+    const nuevoArchivo = nuevosArchivos[i];
+    const archivoExistente = archivosAdjuntos.value.find(
+      (archivo) => archivo.name === nuevoArchivo.name
+    );
+    if (!archivoExistente) {
+      archivosAdjuntos.value.push(nuevoArchivo);
+      console.log("ARCH--ADJ",archivosAdjuntos)
+      certificado.value.documento = archivosAdjuntos.value;
+      const docFileObj = await getMimeTypeAndArrayBufferFromFile_v2(nuevoArchivo);
+      let objeto = {
+        fileType: 'PDF',
+        docBase64: docFileObj.base64
+      }
+     paramsEnviar.value.documentosAdjuntos.push(objeto);
     }
-    //params.value.documentos.push(objeto);
-    paramsEnviar.value.documentosAdjuntos.push(objeto);
   }
-  //certificado.value.documento = event.target.files[0];
-  certificado.value.documento = event.target.files;
   form.inputPDF = true;
+  event.target.value = null;
+};
+const eliminarArchivo = (index) => {
+  archivosAdjuntos.value.splice(index, 1);
+  paramsEnviar.value.documentosAdjuntos.splice(index,1);
+  certificado.value.documento = archivosAdjuntos.value;
 };
 
 /* Modal firmar ahora */
@@ -589,13 +664,6 @@ const change_file_key = (event) => {
   selected_file_key.value = event.target.files[0];
   certificado.value.archivoKey = selected_file_key.value;
   is_submit_form_key.value = false;
-  alertFirma.value = false;
-};
-
-const setContrasena = (contrasena) => {
-  //console.log("constraseña" + contrasena.value);
-  certificado.value.contrasenaCer = contrasena.value;
-  is_submit_form_pass.value = true;
   alertFirma.value = false;
 };
 
@@ -659,6 +727,32 @@ const enviaModoFirma = async() => {
 
 /* Guarda Captura */
 const enviaCaptura = async() => {
+
+  if (!paramsEnviar.value.tipoDestino) {
+    showMessage('Ingresar destino de documento.', 'error');
+    return true;
+  }
+  if (!paramsEnviar.value.tipoDocumento) {
+    showMessage('Ingresar tipo de documento.', 'error');
+    return true;
+  }
+  if (!paramsEnviar.value.numExpediente) {
+    showMessage('Ingrese número de expediente.', 'error');
+    return true;
+  }
+  if (paramsEnviar.value.firmantes.length == 0) {
+    showMessage('Ingresar al menos una persona firmante.', 'error');
+    return true;
+  }
+  if (paramsEnviar.value.destinatarios.length == 0) {
+    showMessage('Ingresar al menos una persona destinataria.', 'error');
+    return true;
+  }
+  if (!paramsEnviar.value.tipoPrioridad) {
+    showMessage('Seleccione la prioridad del documento.', 'error');
+    return true;
+  }
+
   loadFirma.value = true;
   let urlAltaDoc = urlPKI + "/api/documento/alta-documento-modo-captura";
   const post = {
@@ -687,29 +781,41 @@ const enviaCaptura = async() => {
         }
     ],
     "notificaciones":[],
-    //"enOrden": true,
     "enOrden": paramsEnviar.value.configuraciones.ordenFirma,
     "firmantes": paramsEnviar.value.firmantes,
     "destinatarios":paramsEnviar.value.destinatarios,
     "documentosAdjuntos":paramsEnviar.value.documentosAdjuntos
 }
    console.log("Guardar",post);
-            try {
-                await axios.post(urlAltaDoc, post, {headers:{
-                 "Authorization": `Bearer ${token}`,
-                 "Content-Type": "application/json"
-               }}).then((response) => {
-                 if(response.data.status === 'fail'){
-                   loadFirma.value = false;
-                   showMessage(response.data.message, 'error');
-                 }else{
-                   loadFirma.value = false;
-                   showAlert('guardar');
-                 }
-                });
-            } catch (error) {
-              console.log(error)
+
+   if(paramsEnviar.value.idDocumento){
+    console.log("POST a enviar",post)
+      const responseEdit = await firmaCatalogo.editarDocumento(paramsEnviar.value.idDocumento, post, token);
+      console.log("RESP-EDIT", responseEdit)
+      if(responseEdit == false){
+        setTimeout(()=>{
+          loadFirma.value = false;
+        }, 5000);
+        
+      }
+   }else{
+    try {
+          await axios.post(urlAltaDoc, post, {headers:{
+                  "Authorization": `Bearer ${token}`,
+                  "Content-Type": "application/json"
+          }}).then((response) => {
+            if(response.data.status === 'fail'){
+                loadFirma.value = false;
+                showMessage(response.data.message, 'error');
+            }else{
+                loadFirma.value = false;
+                showAlert('guardar');
             }
+          });
+      } catch (error) {
+        console.log(error)
+      }
+   }
 };
 /* Envia documento a firma */
 const enviaFirma = async () => {
@@ -854,6 +960,8 @@ const submit_formFirma = async () => {
     const keyFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.archivoKey);
     const response = ref(null);
 
+    console.log("CERTIFIC",certificado.value.documento)
+
      for (let i = 0; i < certificado.value.documento.length; i++) {
        const pdfFile = await getMimeTypeAndArrayBufferFromFile_v2(certificado.value.documento[i]);
        response.value = await validationPreviousToStore(cerFile.base64, keyFile.base64, certificado.value.contrasenaCer, pdfFile.base64, token);
@@ -861,6 +969,7 @@ const submit_formFirma = async () => {
          showMessage(response.value.message, 'error');
        }
      }
+     console.log("RESPONSE",response)
       if(response.value.data){
         await enviaModoFirma();//here 
         //await enviaFirma();//here
@@ -989,7 +1098,7 @@ const decodeToken = () => {
                             <!-- Verifica que sea del día de hoy en adelante -->
                             <FechaBasica
                                 label="Fecha de documento:"
-                                :date="params.fechaDocumento"
+                                :date="paramsEnviar.fechaDocumento"
                                 @dateSelected="opcionDateDocumento"
                                 :dias="0"
                                 :obligatorio="true"
@@ -999,6 +1108,7 @@ const decodeToken = () => {
                             <InputValidado
                               idName="elaboro"
                               label="Elaboró:"
+                              :valorInicial="paramsEnviar.elaboro"
                               :placeholder="usuarioSesion.sub"
                               :disabled="true"
                               @inputData="opcionInputElaboro"
@@ -1008,24 +1118,32 @@ const decodeToken = () => {
                         <!-- Datos del documento -->
                         <div class="row">
                           <div class="col-12" :class="[otroDocumento ? 'col-lg-4' : 'col-md-6']">
-                            <SelectValidado
+                            <GenericSelect
                               idName="catDestino"
                               label="Destino de documento:"
-                              :is_submit_form="is_submit_form"
-                              :opciones="catDestino"
+                              :items="catDestino"
                               v-if="catDisponible"
+                              v-model="selected_destino"
+                              keyField="id"
+                              value-field="destino"
+                              label-field="destino"
+                              :value="paramsEnviar.tipoDestino"
                               @opcionSelect="opcionSelectDestino"
-                            ></SelectValidado>
+                            ></GenericSelect>
                           </div>
                           <div class="col-12" :class="[otroDocumento ? 'col-lg-4' : 'col-md-6']">
-                            <SelectValidado
+                            <GenericSelect
                               idName="catTipoDocumento"
                               label="Tipo de documento:"
-                              :is_submit_form="is_submit_form"
-                              :opciones="catTipoDocumento"
-                              @opcionSelect="opcionSelectTipoDocumento"
+                              :items="catTipoDocumento"
                               v-if="catDisponible"
-                            ></SelectValidado>
+                              v-model="selected_tipoDoc"
+                              keyField="id"
+                              value-field="id"
+                              label-field="tipoDocumento"
+                              :value="paramsEnviar.tipoDocumento"
+                              @opcionSelect="opcionSelectTipoDocumento"
+                            ></GenericSelect>
                           </div>
                           <div class="col-12 col-md-6 col-lg-4" :class="[otroDocumento ? '' : 'd-none']">
                             <InputValidado
@@ -1042,6 +1160,7 @@ const decodeToken = () => {
                             <InputValidado
                               idName="folioDocumento"
                               label="Folio del documento:"
+                              :valorInicial="paramsEnviar.folio.toString()"
                               placeholder="---"
                               :disabled="true"
                               @inputData="opcionInputFolioDocumento"
@@ -1051,6 +1170,7 @@ const decodeToken = () => {
                             <InputValidado
                               idName="folio"
                               label="Folio especial:"
+                              :valorInicial="paramsEnviar.folioEspecial"
                               placeholder="folio"
                               maxlength="50"
                               @inputData="opcionInputFolio"
@@ -1069,8 +1189,9 @@ const decodeToken = () => {
                             <InputValidado
                               idName="nombreExpediente"
                               label="Nombre de Expediente:"
-                              :placeholder="params.nombreExpediente"
+                              :placeholder="paramsEnviar.nombreExpediente"
                               :disabled="true"
+                              :valorInicial="paramsEnviar.nombreExpediente"
                               @inputData="opcionInputNombreExpediente"
                             ></InputValidado>
                           </div>
@@ -1085,6 +1206,7 @@ const decodeToken = () => {
                             <InputValidado
                               idName="asuntoDocumento"
                               label="Asunto:"
+                              :valorInicial="paramsEnviar.asunto"
                               placeholder="Asunto"
                               maxlength="255"
                               @inputData="opcionInputAsunto"
@@ -1096,6 +1218,7 @@ const decodeToken = () => {
                             <TextAreaValidado
                               label="Contenido:"
                               placeholder="Agregue el contenido"
+                              :valorInicial="paramsEnviar.contenido"
                               maxlength="2048"
                               @txtArea="opcionInputContenido"
                             ></TextAreaValidado>
@@ -1114,6 +1237,7 @@ const decodeToken = () => {
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccion"
                     :opGrupos="catGruposFirmante"
+                    :valorInicial="paramsEnviar.firmantes"
                     v-if="catDisponible"
                     @tablaFirmantes = "tablaFirmantes"
                   ></TablaAgregar>
@@ -1127,6 +1251,7 @@ const decodeToken = () => {
                     :tbTabla="catalogos"
                     :opInstruccion="catInstruccionDest"
                     :opGrupos="catGruposDestinatario"
+                    :valorInicial="paramsEnviar.destinatarios"
                     v-if="catDisponible"
                     @tablaFirmantes = "tablaDestinatarios"
                   ></TablaAgregar>
@@ -1136,6 +1261,7 @@ const decodeToken = () => {
                     <TextAreaNotas
                       label="Notas:"
                       placeholder="Agregue sus observaciones"
+                      :valorInicial="paramsEnviar.notas"
                       maxlength="1000"
                       @txtArea="opcionTxtAreaNotas"
                     ></TextAreaNotas>
@@ -1151,22 +1277,26 @@ const decodeToken = () => {
                     class="ms-5"
                     label="Firmar en este orden"
                     id="sw-orden"
+                    :valorInicial="paramsEnviar.configuraciones.ordenFirma"
                     @chkSwitch="opcionSwitchOrdenFirma"
                   ></SwitchRounded>
                   <SwitchRounded
                     class="ms-5"
                     label="Mantener en modo captura"
                     id="sw-captura"
+                    :valorInicial="paramsEnviar.configuraciones.modoCaptura"
                     @chkSwitch="opcionSwitchModoCaptura"
                   ></SwitchRounded>
                   <SwitchRounded
                     class="ms-5"
                     label="Generar número de oficio"
                     id="sw-oficio"
+                    :valorInicial="paramsEnviar.configuraciones.generaNumeroOficio"
                     @chkSwitch="opcionSwitchGeneraOficio"
                   ></SwitchRounded>
                   <CheckGroup
                     label="Prioridad"
+                    :picked="paramsEnviar.tipoPrioridad"
                     :opPrioridad="catPrioridad"
                     v-if="catDisponible"
                     @opcionCheck="opcionCheckPrioridad"
@@ -1181,6 +1311,7 @@ const decodeToken = () => {
                       <div class="col-12 col-sm-8 col-lg-4">
                         <FechaBasica
                             label="Fecha límite de firma:"
+                            :date="paramsEnviar.fechaLimiteFirma"
                             @dateSelected="opcionDateLimiteFirma"
                             :dias="1"
                             :obligatorio="false"
@@ -1201,12 +1332,17 @@ const decodeToken = () => {
                               id="formFileMultiple"
                               @change="change_file"
                               accept=".pdf"
-                              :class="[is_submit_form_doc ? (selected_file ? 'is-valid' : 'is-invalid') : '']"
+                              :class="[is_submit_form_doc ? (archivosAdjuntos.length ? 'is-valid' : 'is-invalid') : '']"
                               multiple
                         />
                       </div>
                       <ul>
-                        <li v-for="doc in documentos"> {{ doc }}</li>
+                        <li v-for="(doc, index) in archivosAdjuntos" :key="index" class="mt-1">
+                          {{ doc.name }}
+                          <a @click="eliminarArchivo(index)">
+                            <IconFeatherX class="icono"/>
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -1226,7 +1362,8 @@ const decodeToken = () => {
                         href="javascript:;"
                         class="btn btn-primary btn-send"
                         @click="enviaCaptura()"
-                        >Guardar captura
+                        >
+                        {{ paramsEnviar.idDocumento ? "Editar captura" : "Guardar captura" }}
                       </a>
                     </div>
                     <div class="col-xl-4 col-md-4">
@@ -1428,12 +1565,6 @@ const decodeToken = () => {
   <!-- Termina Spinner -->
 </template>
 <style>
-/* .custom-alert-1 {
-    background-color: #194891;
-    border-color: #759090;
-    border-radius: 5px;
-    color: #fff;
-} */
 #spinner-overlay {
   position: fixed;
   top: 0;
@@ -1442,5 +1573,15 @@ const decodeToken = () => {
   height: 100%;
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1050;
+}
+
+.icono {
+    width: 10;
+    height: 10;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 </style>

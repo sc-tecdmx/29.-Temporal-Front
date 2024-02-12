@@ -1,80 +1,72 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 //import { defineProps } from 'vue';
 import '@/assets/sass/scrollspyNav.scss';
 
 //composable
 import { useGetData } from "@/composables/getData";
-
-    const {data, getData, loading, errorData} = useGetData();
+const {data, getData, loading, errorData} = useGetData();
 
     const props= defineProps({
         idName: String,
         label: String,
         is_submit_form: Boolean,
-        opciones: Object
+        opciones: Object,
+        valorInicial: String
     });
-
     const emit = defineEmits(['opcionSelect']);
 
     const selected = ref('');
     const catalogo = ref({});
-
     catalogo.value = props.opciones;
-    //console.log("PROPS: ", props.opciones);
-
-    // getData(props.url);
-
     const is_submit_form3 = ref(false);
     const submit_form3 = () => {
         is_submit_form3.value = true;
     };
-
-    const showMessage = (msg = '', type = 'success') => {
-        const toast = window.Swal.mixin({ toast: true, position: 'top', showConfirmButton: false, timer: 3000 });
-        toast.fire({ icon: type, title: msg, padding: '10px 20px' });
-    };
-
-const arrayOpciones = ref([]);
-
-// class mapOpciones{
-//     constructor(id,label){
-//         this.id = id;
-//         this.label = label;
-//     }
-// }
+    const arrayOpciones = ref([]);
 
 for (let i = 0; i < catalogo.value.length; i++) {
     let id ='';
     let label ='';
     Object.entries(catalogo.value[i]).map(entry =>{
             const [key, value] = entry
-            //console.log({key, value})
-            //console.log(key.includes("id"))
-            
             if(key.includes("id")){
-                //console.log(key)
                  id = value;
             }else{
                 label = value;
             }
-
-            
         })
-        //let objeto= new mapOpciones(id,label);
         let objeto= {
             id: id,
             label: label
         };
-        //   console.log("mapOpciones --- ")
-        //   console.log( objeto)
-          arrayOpciones.value.push(objeto);
-            // console.log("arrayOpciones");     
-            // console.log(arrayOpciones);     
+          arrayOpciones.value.push(objeto);   
 }
+
+onMounted(() => {
+     if(props.valorInicial != null){
+         //console.log("VALOR", props.valorInicial)
+
+         for (let i = 0; i < catalogo.value.length; i++) {
+             let id ='';
+             let label ='';
+             Object.entries(catalogo.value[i]).map(entry =>{
+                     const [key, value] = entry
+                     //console.log("ENTRY",entry)
+                     if(value == props.valorInicial){
+                         selected.value= {
+                             id: key,
+                             label: value
+                         };
+                         //console.log("Selected",selected.value)
+                         return selected;
+                     }
+                 }) 
+         }
+     }
+});
    
 </script>
-
 <template>
 <div class="panel-body">
         <div class="row">

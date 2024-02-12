@@ -81,7 +81,36 @@ export const useFirmaStore = defineStore('firmaStore',() => {
            console.log(error)
          }
     }
-    const cargaCertificado = async(data, token) => {
+  const editarDocumento = async(idDoc, data, token) => {
+       const urlEdit = urlPKI + "/api/documento/editar-documento/" + idDoc;
+       try {
+         const response = await axios.put(urlEdit, data, {headers:{"Authorization": `Bearer ${token}`}});
+         console.log(response);
+
+         if(response.data.status === 'Success'){
+          new window.Swal({
+            icon: 'success',
+            title: 'Actualizado',
+            text: response.data.message,
+            showCancelButton: false,
+            confirmButtonText: 'Aceptar',
+            padding: '2em',
+          }).then((result) => {
+              if (result.value) {
+                window.location.href = "/";
+              }
+          });
+         }else{
+          showMessage(response.data.message, 'error');
+          return false;
+         }
+       } catch (error) {
+         console.log("Error", error);
+         return false;
+       }
+  }
+
+  const cargaCertificado = async(data, token) => {
       const url = urlPKI + import.meta.env.VITE_ADD_CERTIFICADO;
       try {
         const response = await axios.post(url, data, {headers:{"Authorization": `Bearer ${token}`}});
@@ -118,6 +147,7 @@ export const useFirmaStore = defineStore('firmaStore',() => {
         rechazarDocumento,
         goToFirma,
         enviarFirmantes,
+        editarDocumento,
         cargaCertificado
        }
 })
